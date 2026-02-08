@@ -12,7 +12,7 @@ class ReceiptScannerPage extends StatefulWidget {
 
 class _ReceiptScannerPageState extends State<ReceiptScannerPage> {
   File? _imageFile;
-  List<Map<String, String>> _items = [];
+  Map<String, String>? _totalItem;
   bool _isProcessing = false;
 
   Future<void> _pickImage() async {
@@ -23,7 +23,7 @@ class _ReceiptScannerPageState extends State<ReceiptScannerPage> {
       setState(() {
         _imageFile = File(pickedImage.path);
         _isProcessing = true;
-        _items.clear();
+        _totalItem = null;
       });
       await _processImage(File(pickedImage.path));
     }
@@ -32,28 +32,53 @@ class _ReceiptScannerPageState extends State<ReceiptScannerPage> {
   Future<void> _processImage(File imageFile) async {
     final inputImage = InputImage.fromFile(imageFile);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-
     final RecognizedText recognizedText =
         await textRecognizer.processImage(inputImage);
 
     final lines = recognizedText.text.split('\n');
+    final targetKeywords = [
+      'satış tutar',
+      'satış',
+      'tutar',
+      'toplam',
+      'ödenecek',
+      'kdv dahil',
+      'genel toplam',
+      'ödeme tutarı',
+    ];
 
-    final List<Map<String, String>> parsedItems = [];
+    final amountRegex = RegExp(r'([\d]+[.,]\d{2})');
 
-    final regex = RegExp(r'(.+?)\s+([\d]+[.,]\d{2})');
+    Map<String, String>? foundItem;
 
-    for (final line in lines) {
-      final match = regex.firstMatch(line);
-      if (match != null) {
-        parsedItems.add({
-          'name': match.group(1)!.trim(),
-          'price': match.group(2)!.trim(),
-        });
+    for (int i = 0; i < lines.length; i++) {
+      final lowerLine = lines[i].toLowerCase();
+      if (targetKeywords.any((keyword) => lowerLine.contains(keyword))) {
+        // Aynı satırda rakam var mı?
+        final matchSameLine = amountRegex.firstMatch(lines[i]);
+        if (matchSameLine != null) {
+          foundItem = {
+            'label': lines[i],
+            'amount': matchSameLine.group(1)!.trim(),
+          };
+          break;
+        }
+        // Alt satırda rakam var mı?
+        if (i + 1 < lines.length) {
+          final matchNextLine = amountRegex.firstMatch(lines[i + 1]);
+          if (matchNextLine != null) {
+            foundItem = {
+              'label': lines[i],
+              'amount': matchNextLine.group(1)!.trim(),
+            };
+            break;
+          }
+        }
       }
     }
 
     setState(() {
-      _items = parsedItems;
+      _totalItem = foundItem;
       _isProcessing = false;
     });
 
@@ -63,7 +88,7 @@ class _ReceiptScannerPageState extends State<ReceiptScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Fiş OCR Demo')),
+      appBar: AppBar(title: const Text('Fiş Tutar OCR')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -73,23 +98,33 @@ class _ReceiptScannerPageState extends State<ReceiptScannerPage> {
               icon: const Icon(Icons.camera_alt),
               label: const Text("Fotoğraf Çek"),
             ),
-            if (_isProcessing) const CircularProgressIndicator(),
-            if (_imageFile != null) Image.file(_imageFile!),
             const SizedBox(height: 16),
-            Expanded(
-              child: _items.isEmpty
-                  ? const Text('Hiçbir ürün algılanmadı.')
-                  : ListView.builder(
-                      itemCount: _items.length,
-                      itemBuilder: (context, index) {
-                        final item = _items[index];
-                        return ListTile(
-                          title: Text(item['name']!),
-                          trailing: Text('${item['price']} ₺'),
-                        );
-                      },
+            if (_isProcessing) const CircularProgressIndicator(),
+            if (_imageFile != null) ...[
+              Image.file(_imageFile!),
+              const SizedBox(height: 16),
+            ],
+            if (_totalItem != null)
+              Card(
+                elevation: 4,
+                color: Colors.green.shade50,
+                child: ListTile(
+                  title: Text(
+                    _totalItem!['label']!,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    '${_totalItem!['amount']} ₺',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
                     ),
-            ),
+                  ),
+                ),
+              )
+            else if (!_isProcessing)
+              const Text('Toplam tutar bulunamadı.'),
           ],
         ),
       ),
