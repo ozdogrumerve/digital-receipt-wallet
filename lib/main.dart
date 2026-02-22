@@ -1,16 +1,32 @@
+import 'package:digital_receipt_wallet/providers/theme_provider.dart';
+import 'package:digital_receipt_wallet/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'receipt_scanner_page.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const DigitalReceiptWalletApp());
+}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DigitalReceiptWalletApp extends StatelessWidget {
+  const DigitalReceiptWalletApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fiş OCR Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const ReceiptScannerPage(),
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "Digital Receipt Wallet",
+            theme: themeProvider.currentTheme,
+            home: const SplashScreen(),
+          );
+        },
+      ),
     );
   }
 }
