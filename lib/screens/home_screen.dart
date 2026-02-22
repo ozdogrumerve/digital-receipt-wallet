@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +23,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               /// HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,15 +51,14 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              /// SUMMARY CARD (Şimdilik 0 state)
+              /// SUMMARY CARD
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Total Spent",
-                          style: theme.textTheme.bodyMedium),
+                      Text("Total Spent", style: theme.textTheme.bodyMedium),
                       const SizedBox(height: 10),
                       Text(
                         "\$0.00",
@@ -107,35 +112,82 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
 
-      /// FAB
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // receipt add ekranı gelecek
-        },
-        child: const Icon(Icons.add),
+      /// ORTA YUVARLAK BUTON
+      floatingActionButton: Container(
+        height: 70,
+        width: 70,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: theme.colorScheme.primary,
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withOpacity(0.4),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      /// BOTTOM NAV (statik label, data yok)
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
+      /// CUSTOM ALT BAR
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(25),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: "Receipts",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: "Reports",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _navItem(Icons.home, "Home", 0),
+            _navItem(Icons.receipt_long, "Receipts", 1),
+
+            const SizedBox(width: 50), // FAB boşluğu
+
+            _navItem(Icons.bar_chart, "Reports", 2),
+            _navItem(Icons.settings, "Settings", 3),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navItem(IconData icon, String label, int index) {
+    final theme = Theme.of(context);
+    final bool isSelected = selectedIndex == index;
+
+    final activeColor = theme.colorScheme.primary;
+    final inactiveColor = theme.textTheme.bodyMedium!.color!.withOpacity(0.5);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: SizedBox(
+        width: 70,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? activeColor : inactiveColor,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? activeColor : inactiveColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
