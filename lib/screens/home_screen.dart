@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,106 +12,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedIndex = 0;
 
+  final List<Widget> pages = const [
+    _HomeTab(),
+    _ReceiptsTab(),
+    _ReportsTab(),
+    SettingsScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// HEADER
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.receipt_long),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Digital Receipt Wallet",
-                        style: theme.textTheme.titleLarge,
-                      ),
-                    ],
-                  ),
-                  CircleAvatar(
-                    backgroundColor: theme.colorScheme.primary,
-                    child: Text(
-                      user?.displayName?.isNotEmpty == true
-                          ? user!.displayName![0].toUpperCase()
-                          : "U",
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  )
-                ],
-              ),
-
-              const SizedBox(height: 40),
-
-              /// SUMMARY CARD
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Total Spent", style: theme.textTheme.bodyMedium),
-                      const SizedBox(height: 10),
-                      Text(
-                        "\$0.00",
-                        style: theme.textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 20),
-                      const LinearProgressIndicator(value: 0),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              /// RECENT SECTION TITLE
-              Text(
-                "Recent Activity",
-                style: theme.textTheme.titleLarge,
-              ),
-
-              const SizedBox(height: 20),
-
-              /// EMPTY STATE
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.receipt,
-                        size: 60,
-                        color: theme.colorScheme.primary.withOpacity(0.4),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "No receipts yet",
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Your scanned receipts will appear here",
-                        style: theme.textTheme.bodyMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: pages[selectedIndex],
 
       /// ORTA YUVARLAK BUTON
       floatingActionButton: Container(
@@ -145,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _navItem(Icons.home, "Home", 0),
             _navItem(Icons.receipt_long, "Receipts", 1),
-
-            const SizedBox(width: 50), // FAB boşluğu
-
+            const SizedBox(width: 50),
             _navItem(Icons.bar_chart, "Reports", 2),
             _navItem(Icons.settings, "Settings", 3),
           ],
@@ -161,7 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isSelected = selectedIndex == index;
 
     final activeColor = theme.colorScheme.primary;
-    final inactiveColor = theme.textTheme.bodyMedium!.color!.withOpacity(0.5);
+    final inactiveColor =
+        theme.textTheme.bodyMedium!.color!.withOpacity(0.5);
 
     return GestureDetector(
       onTap: () {
@@ -174,10 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? activeColor : inactiveColor,
-            ),
+            Icon(icon,
+                color: isSelected ? activeColor : inactiveColor),
             const SizedBox(height: 4),
             Text(
               label,
@@ -187,6 +98,169 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+/// ==================
+/// HOME TAB
+/// ==================
+class _HomeTab extends StatelessWidget {
+  const _HomeTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final user = FirebaseAuth.instance.currentUser;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            /// HEADER
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.receipt_long),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Digital Receipt Wallet",
+                      style: theme.textTheme.titleLarge,
+                    ),
+                  ],
+                ),
+                CircleAvatar(
+                  backgroundColor: theme.colorScheme.primary,
+                  child: Text(
+                    user?.displayName?.isNotEmpty == true
+                        ? user!.displayName![0].toUpperCase()
+                        : "U",
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+
+            const SizedBox(height: 40),
+
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Total Spent",
+                        style: theme.textTheme.bodyMedium),
+                    const SizedBox(height: 10),
+                    Text(
+                      "\$0.00",
+                      style: theme.textTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    const LinearProgressIndicator(value: 0),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            Text(
+              "Recent Activity",
+              style: theme.textTheme.titleLarge,
+            ),
+
+            const SizedBox(height: 20),
+
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.receipt,
+                      size: 60,
+                      color:
+                          theme.colorScheme.primary.withOpacity(0.4),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "No receipts yet",
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Your scanned receipts will appear here",
+                      style: theme.textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+/// ==================
+/// RECEIPTS TAB
+/// ==================
+class _ReceiptsTab extends StatelessWidget {
+  const _ReceiptsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SafeArea(
+      child: Center(
+        child: Text(
+          "Receipts Screen",
+          style: theme.textTheme.headlineMedium,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+/// ==================
+/// REPORTS TAB
+/// ==================
+class _ReportsTab extends StatelessWidget {
+  const _ReportsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SafeArea(
+      child: Center(
+        child: Text(
+          "Reports Screen",
+          style: theme.textTheme.headlineMedium,
         ),
       ),
     );
