@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:digital_receipt_wallet/providers/theme_provider.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -14,6 +16,20 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
 
   bool notificationsEnabled = true;
+  File? selectedImage;
+
+  final ImagePicker picker = ImagePicker();
+
+  Future<void> pickImage() async {
+    final XFile? image =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      setState(() {
+        selectedImage = File(image.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +40,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
-        centerTitle: false,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -36,22 +51,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Center(
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 45,
-                    backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                    child: Text(
-                      user?.displayName?.isNotEmpty == true
-                          ? user!.displayName![0].toUpperCase()
-                          : "U",
-                      style: theme.textTheme.headlineMedium,
-                    ),
+
+                  Stack(
+                    children: [
+
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor:
+                            theme.colorScheme.primary.withOpacity(0.2),
+                        backgroundImage:
+                            selectedImage != null
+                                ? FileImage(selectedImage!)
+                                : null,
+                        child: selectedImage == null
+                            ? Text(
+                                user?.displayName?.isNotEmpty == true
+                                    ? user!.displayName![0].toUpperCase()
+                                    : "U",
+                                style: theme.textTheme.headlineMedium,
+                              )
+                            : null,
+                      ),
+
+                      /// KALEM İKONU
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: pickImage,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+
                   const SizedBox(height: 16),
+
                   Text(
                     user?.displayName ?? "User",
                     style: theme.textTheme.titleLarge,
                   ),
+
                   const SizedBox(height: 4),
+
                   Text(
                     user?.email ?? "",
                     style: theme.textTheme.bodyMedium,
@@ -68,11 +121,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 12),
 
-            _settingsTile(
-              icon: Icons.person_outline,
-              title: "Profile Details",
-              subtitle: "Change name, email, and avatar",
-              onTap: () {},
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.person_outline),
+                title: const Text("Profile Details"),
+                subtitle:
+                    const Text("Change name, email, and avatar"),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -83,12 +140,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 12),
 
-            /// PUSH NOTIFICATIONS
             Card(
               child: ListTile(
                 leading: const Icon(Icons.notifications_none),
                 title: const Text("Push Notifications"),
-                subtitle: const Text("Alerts for large transactions"),
+                subtitle:
+                    const Text("Alerts for large transactions"),
                 trailing: Switch(
                   value: notificationsEnabled,
                   onChanged: (value) {
@@ -102,12 +159,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 12),
 
-            /// VISUAL THEME (ÇALIŞAN)
+            /// THEME SWITCH
             Card(
               child: ListTile(
                 leading: const Icon(Icons.palette_outlined),
                 title: const Text("Visual Theme"),
-                subtitle: const Text("Switch between light and dark"),
+                subtitle:
+                    const Text("Switch between light and dark"),
                 trailing: Switch(
                   value: themeProvider.isDark,
                   onChanged: (value) {
@@ -125,11 +183,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 12),
 
-            _settingsTile(
-              icon: Icons.account_balance_outlined,
-              title: "Bank Sync",
-              subtitle: "Auto-import your transactions",
-              onTap: () {},
+            Card(
+              child: ListTile(
+                leading:
+                    const Icon(Icons.account_balance_outlined),
+                title: const Text("Bank Sync"),
+                subtitle: const Text(
+                    "Auto-import your transactions"),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
             ),
 
             const SizedBox(height: 40),
@@ -138,14 +201,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                icon: const Icon(Icons.logout, color: Colors.red),
+                icon:
+                    const Icon(Icons.logout, color: Colors.red),
                 label: const Text(
                   "Sign Out",
                   style: TextStyle(color: Colors.red),
                 ),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.red),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
@@ -155,7 +220,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const LoginScreen()),
+                        builder: (_) =>
+                            const LoginScreen()),
                     (route) => false,
                   );
                 },
@@ -163,23 +229,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _settingsTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
       ),
     );
   }
