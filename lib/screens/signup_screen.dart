@@ -1,3 +1,5 @@
+import 'package:digital_receipt_wallet/models/user_model.dart';
+import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> register() async {
     setState(() => loading = true);
+
     try {
       final credential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -23,13 +26,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: passwordController.text.trim(),
       );
 
-      await credential.user!.updateDisplayName(nameController.text);
+      final user = credential.user!;
+      await user.updateDisplayName(nameController.text.trim());
+
+      /// 🔥 Firestore User Document Oluştur
+      final userModel = UserModel(
+        uid: user.uid,
+        name: nameController.text.trim(),
+        email: user.email ?? "",
+        photo: null,
+        monthlyBudget: 0,
+        createdAt: DateTime.now(),
+      );
+
+      await FirestoreService().createUserIfNotExists(userModel, Exception("User creation failed"));
+
+      if (!mounted) return;
 
       Navigator.pop(context);
+
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message ?? "Error")));
     }
+
     setState(() => loading = false);
   }
 
@@ -77,7 +97,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: ElevatedButton(
                     onPressed: loading ? null : register,
                     child: loading
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
                         : const Text("Create Account"),
                   ),
                 ),

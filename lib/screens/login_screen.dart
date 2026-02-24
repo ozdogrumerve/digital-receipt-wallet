@@ -15,25 +15,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   bool loading = false;
 
-  Future<void> login() async {
+    Future<void> login() async {
     setState(() => loading = true);
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
+      if (!mounted) return;
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? "Login error")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Login error")),
+      );
     }
+
     setState(() => loading = false);
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -73,7 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: loading ? null : login,
                     child: loading
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
                         : const Text("Sign In"),
                   ),
                 ),
@@ -83,9 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const SignUpScreen()));
+                            builder: (_) =>
+                                const SignUpScreen()));
                   },
-                  child: const Text("Don't have an account? Sign up"),
+                  child:
+                      const Text("Don't have an account? Sign up"),
                 )
               ],
             ),

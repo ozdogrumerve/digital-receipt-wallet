@@ -13,7 +13,7 @@ class FirestoreService {
   /// USER
   /// ===============================
 
-  Future<void> createUserIfNotExists(UserModel user) async {
+  Future<void> createUserIfNotExists(UserModel user, Exception exception) async {
     final doc = await _firestore.collection('users').doc(user.uid).get();
 
     if (!doc.exists) {
