@@ -1,5 +1,5 @@
+import 'package:digital_receipt_wallet/screens/homepage.dart';
 import 'package:digital_receipt_wallet/screens/signup_screen.dart';
-import 'package:digital_receipt_wallet/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,27 +16,27 @@ class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
 
     Future<void> login() async {
-    setState(() => loading = true);
+      setState(() => loading = true);
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
 
-      if (!mounted) return;
+        if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Login error")),
-      );
-    }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? "Login error")),
+        );
+      }
 
-    setState(() => loading = false);
+      setState(() => loading = false);
   }
   
   @override

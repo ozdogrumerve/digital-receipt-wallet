@@ -1,4 +1,5 @@
 import 'package:digital_receipt_wallet/models/user_model.dart';
+import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +104,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         : const Text("Create Account"),
                   ),
                 ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                const LoginScreen()));
+                  },
+                  child:
+                      const Text("Already have an account? Sign in"),
+                )
               ],
             ),
           ),
