@@ -39,6 +39,18 @@ class FirestoreService {
     });
   }
 
+  ///  USER STREAM
+  Stream<UserModel?> getUserStream() {
+    return _firestore
+        .collection('users')
+        .doc(_uid)
+        .snapshots()
+        .map((doc) {
+      if (!doc.exists) return null;
+      return UserModel.fromMap(doc.id, doc.data()!);
+    });
+  }
+
   /// ===============================
   /// RECEIPTS
   /// ===============================

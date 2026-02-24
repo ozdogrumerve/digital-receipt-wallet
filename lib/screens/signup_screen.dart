@@ -29,7 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final user = credential.user!;
       await user.updateDisplayName(nameController.text.trim());
 
-      /// 🔥 Firestore User Document Oluştur
+      ///  Firestore User Document Oluştur
       final userModel = UserModel(
         uid: user.uid,
         name: nameController.text.trim(),
