@@ -44,7 +44,7 @@ final ThemeData lightTheme = ThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       padding: const EdgeInsets.symmetric(vertical: 16),
       elevation: 3,
-      shadowColor: lightPrimary.withOpacity(0.4),
+      shadowColor: lightPrimary.withAlpha(102), // 0.4 * 255 = 102
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -78,7 +78,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   progressIndicatorTheme: ProgressIndicatorThemeData(
     color: lightAccent,
-    circularTrackColor: lightSecondary.withOpacity(0.3),
+    circularTrackColor: lightSecondary.withAlpha(77), // 0.3 * 255 = 76.5 ≈ 77
   ),
 );
 
@@ -116,7 +116,7 @@ final ThemeData darkTheme = ThemeData(
     foregroundColor: darkTextPrimary,
   ),
   cardTheme: CardThemeData(
-    color: darkSecondary.withOpacity(0.75),
+    color: darkSecondary.withAlpha(192), // 0.75 * 255 = 192
     elevation: 3,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
   ),
@@ -127,7 +127,7 @@ final ThemeData darkTheme = ThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       padding: const EdgeInsets.symmetric(vertical: 16),
       elevation: 4,
-      shadowColor: darkPrimary.withOpacity(0.5),
+      shadowColor: darkPrimary.withAlpha(128), // 0.5 * 255 = 128
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -161,7 +161,7 @@ final ThemeData darkTheme = ThemeData(
   ),
   progressIndicatorTheme: ProgressIndicatorThemeData(
     color: darkAccent,
-    circularTrackColor: darkTertiary.withOpacity(0.3),
+    circularTrackColor: darkTertiary.withAlpha(77), // 0.3 * 255 = 76.5 ≈ 77
   ),
 );
 

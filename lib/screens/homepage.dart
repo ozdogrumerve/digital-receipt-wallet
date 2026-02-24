@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
           color: theme.colorScheme.primary,
           boxShadow: [
             BoxShadow(
-              color: theme.colorScheme.primary.withOpacity(0.4),
+              color: theme.colorScheme.primary.withAlpha(102), // 0.4 * 255 = 102
               blurRadius: 15,
               offset: const Offset(0, 6),
             ),
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _navItem(Icons.home, "Home", 0),
-            _navItem(Icons.receipt_long, "Receipts", 1),
+            _navItem(Icons.receipt_long, "Transaction", 1),
             const SizedBox(width: 50),
             _navItem(Icons.bar_chart, "Reports", 2),
             _navItem(Icons.settings, "Settings", 3),
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
 
     final activeColor = theme.colorScheme.primary;
     final inactiveColor =
-        theme.textTheme.bodyMedium!.color!.withOpacity(0.5);
+        theme.textTheme.bodyMedium!.color!.withAlpha(128); // 0.5 * 255 = 128
 
     return GestureDetector(
       onTap: () {

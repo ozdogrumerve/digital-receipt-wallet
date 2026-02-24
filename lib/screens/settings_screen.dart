@@ -58,7 +58,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       CircleAvatar(
                         radius: 50,
                         backgroundColor:
-                            theme.colorScheme.primary.withOpacity(0.2),
+                            theme.colorScheme.primary.withAlpha(51), // 0.2 * 255 = 51
                         backgroundImage:
                             selectedImage != null
                                 ? FileImage(selectedImage!)
