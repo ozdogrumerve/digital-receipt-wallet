@@ -6,8 +6,6 @@ class ReceiptModel {
   final double totalAmount;
   final DateTime date;
   final String category;
-  final String paymentType; // cash | card
-  final String source; // manual | camera | pdf
   final DateTime createdAt;
 
   ReceiptModel({
@@ -16,8 +14,6 @@ class ReceiptModel {
     required this.totalAmount,
     required this.date,
     required this.category,
-    required this.paymentType,
-    required this.source,
     required this.createdAt,
   });
 
@@ -28,8 +24,6 @@ class ReceiptModel {
       totalAmount: (map['totalAmount'] ?? 0).toDouble(),
       date: (map['date'] as Timestamp).toDate(),
       category: map['category'] ?? '',
-      paymentType: map['paymentType'] ?? 'cash',
-      source: map['source'] ?? 'manual',
       createdAt: (map['createdAt'] as Timestamp).toDate(),
     );
   }
@@ -40,8 +34,6 @@ class ReceiptModel {
       'totalAmount': totalAmount,
       'date': Timestamp.fromDate(date),
       'category': category,
-      'paymentType': paymentType,
-      'source': source,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
