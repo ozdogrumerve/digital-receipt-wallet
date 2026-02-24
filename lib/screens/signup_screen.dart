@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         createdAt: DateTime.now(),
       );
 
-      await FirestoreService().createUserIfNotExists(userModel, Exception("User creation failed"));
+      await FirestoreService().createUserIfNotExists(userModel);
 
       if (!mounted) return;
 
