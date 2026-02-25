@@ -67,6 +67,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               children: [
                 Text("Create Account",
                     style: theme.textTheme.headlineMedium),
+                const SizedBox(height: 12),
+                Text("Sign up to start managing your receipts",
+                    style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 40),
                 TextField(
                   controller: nameController,
