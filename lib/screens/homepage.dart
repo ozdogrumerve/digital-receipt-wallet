@@ -149,20 +149,15 @@ class _HomePageState extends State<HomePage>
 
         Positioned(
           bottom: 30,
-          left: 0,
-          right: 0,
-          child: SizedBox(
-            width: 70,
-            height: 70,
-            child: FloatingActionButton(
-              onPressed: toggleFab,
-              backgroundColor: theme.colorScheme.primary,
-              shape: const CircleBorder(),
-              child: AnimatedRotation(
-                turns: isOpen ? 0.125 : 0,
-                duration: const Duration(milliseconds: 300),
-                child: const Icon(Icons.add, size: 30),
-              ),
+          left: MediaQuery.of(context).size.width / 2 - 30,
+          child: FloatingActionButton(
+            onPressed: toggleFab,
+            backgroundColor: theme.colorScheme.primary,
+            shape: const CircleBorder(),
+            child: AnimatedRotation(
+              turns: isOpen ? 0.125 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: const Icon(Icons.add, size: 30),
             ),
           ),
         ),
