@@ -50,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.receipt_long),
+                            const Icon(Icons.wallet),
                             const SizedBox(width: 8),
                             Text(
                               "Digital Receipt Wallet",
