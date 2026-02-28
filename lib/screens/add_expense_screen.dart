@@ -52,22 +52,23 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   Future<void> save() async {
-    await _service.addTransaction(
-      ReceiptModel(
-        id: '',
-        storeName: storeController.text,
-        totalAmount: total,
-        date: selectedDate,
-        category: category,
-        createdAt: DateTime.now(),
-        source: 'manual',
-        products: products,
-      ),
-    );
+  await _service.addTransaction(
+    receipt: ReceiptModel(
+      id: '',
+      storeName: storeController.text,
+      storeNameLower: storeController.text.toLowerCase(),
+      totalAmount: total,
+      date: selectedDate,
+      category: category,
+      createdAt: DateTime.now(),
+      source: 'manual',
+    ),
+    products: products, // List<ProductModel>
+  );
 
-    if (!mounted) return;
-    Navigator.pop(context);
-  }
+  if (!mounted) return;
+  Navigator.pop(context);
+}
 
   InputDecoration inputStyle(String hint, {IconData? icon}) {
     return InputDecoration(

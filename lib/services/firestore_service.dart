@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:digital_receipt_wallet/models/product_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
 import '../models/user_model.dart';
@@ -57,12 +58,19 @@ class FirestoreService {
           .doc(_uid)
           .collection('transactions');
 
-  Future<String> addTransaction(ReceiptModel receipt) async {
-    final doc = await _transactionsRef.add({
-      ...receipt.toMap(),
-      'storeNameLower': receipt.storeName.toLowerCase(),
-    });
-    return doc.id;
+  Future<void> addTransaction({
+    required ReceiptModel receipt,
+    required List<ProductModel> products,
+  }) async {
+    final doc = await _transactionsRef.add(
+      receipt.toMap(),
+    );
+
+    for (var product in products) {
+      await doc
+          .collection('products')
+          .add(product.toMap());
+    }
   }
 
   Future<void> updateTransaction(ReceiptModel receipt) async {
@@ -76,6 +84,17 @@ class FirestoreService {
     await _transactionsRef.doc(id).delete();
   }
 
+  Stream<List<ProductModel>> getProducts(String transactionId) {
+    return _transactionsRef
+        .doc(transactionId)
+        .collection('products')
+        .snapshots()
+        .map((s) => s.docs
+            .map((d) =>
+                ProductModel.fromMap(d.id, d.data()))
+            .toList());
+  }
+
   /// =====================================================
   /// TRANSACTION STREAM (FILTER + PREFIX SEARCH)
   /// =====================================================
@@ -84,29 +103,40 @@ class FirestoreService {
     DateTime? start,
     DateTime? end,
     String? searchQuery,
+    String? category,
   }) {
     Query<Map<String, dynamic>> query =
-        _transactionsRef.orderBy('date', descending: true);
+        _transactionsRef;
 
-    /// DATE FILTER
-    if (start != null && end != null) {
-      query = query
-          .where('date',
-              isGreaterThanOrEqualTo: Timestamp.fromDate(start))
-          .where('date',
-              isLessThanOrEqualTo: Timestamp.fromDate(end));
-    }
-
-    /// PREFIX SEARCH (CASE INSENSITIVE)
+    /// SEARCH VARSA → farklı query
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final lower = searchQuery.toLowerCase();
 
-      query = _transactionsRef
+      query = query
           .orderBy('storeNameLower')
           .where('storeNameLower',
               isGreaterThanOrEqualTo: lower)
           .where('storeNameLower',
               isLessThanOrEqualTo: '$lower\uf8ff');
+    } else {
+      query = query.orderBy('date', descending: true);
+    }
+
+    /// CATEGORY FILTER
+    if (category != null && category.isNotEmpty) {
+      query =
+          query.where('category', isEqualTo: category);
+    }
+
+    /// DATE FILTER
+    if (start != null && end != null) {
+      query = query
+          .where('date',
+              isGreaterThanOrEqualTo:
+                  Timestamp.fromDate(start))
+          .where('date',
+              isLessThanOrEqualTo:
+                  Timestamp.fromDate(end));
     }
 
     return query.snapshots().map((snapshot) {
@@ -116,7 +146,6 @@ class FirestoreService {
           .toList();
     });
   }
-
   /// =====================================================
   /// ANALYTICS
   /// =====================================================

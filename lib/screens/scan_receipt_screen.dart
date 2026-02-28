@@ -33,16 +33,17 @@ class _ScanReceiptScreenState
 
   Future<void> save() async {
     await _service.addTransaction(
-      ReceiptModel(
+      receipt: ReceiptModel(
         id: '',
         storeName: widget.storeName,
+        storeNameLower: widget.storeName.toLowerCase(),
         totalAmount: total,
         date: DateTime.now(),
         category: widget.category,
         createdAt: DateTime.now(),
         source: 'scan',
-        products: widget.detectedProducts,
       ),
+      products: widget.detectedProducts, // List<ProductModel>
     );
 
     if (!mounted) return;
