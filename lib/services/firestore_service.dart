@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
-import '../models/product_model.dart';
 import '../models/user_model.dart';
 
 class FirestoreService {
@@ -9,28 +8,31 @@ class FirestoreService {
 
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
-  /// ===============================
+  /// =====================================================
   /// USER
-  /// ===============================
+  /// =====================================================
 
   Future<void> createUserIfNotExists(UserModel user) async {
     final doc = await _firestore.collection('users').doc(user.uid).get();
-
     if (!doc.exists) {
       await _firestore.collection('users').doc(user.uid).set(user.toMap());
     }
   }
 
   Future<UserModel?> getUser() async {
-    final doc = await _firestore.collection('users').doc(_uid).get();
+    final doc =
+        await _firestore.collection('users').doc(_uid).get();
     if (!doc.exists) return null;
     return UserModel.fromMap(doc.id, doc.data()!);
   }
 
-  Future<void> updateProfilePhoto(String base64) async {
-    await _firestore.collection('users').doc(_uid).update({
-      'photo': base64,
-    });
+  Stream<UserModel?> getUserStream() {
+    return _firestore
+        .collection('users')
+        .doc(_uid)
+        .snapshots()
+        .map((doc) =>
+            doc.exists ? UserModel.fromMap(doc.id, doc.data()!) : null);
   }
 
   Future<void> updateMonthlyBudget(double budget) async {
@@ -39,101 +41,104 @@ class FirestoreService {
     });
   }
 
-  ///  USER STREAM
-  Stream<UserModel?> getUserStream() {
-    return _firestore
-        .collection('users')
-        .doc(_uid)
-        .snapshots()
-        .map((doc) {
-      if (!doc.exists) return null;
-      return UserModel.fromMap(doc.id, doc.data()!);
+  Future<void> updateProfilePhoto(String base64) async {
+    await _firestore.collection('users').doc(_uid).update({
+      'photo': base64,
     });
   }
 
-  /// ===============================
-  /// RECEIPTS
-  /// ===============================
+  /// =====================================================
+  /// TRANSACTIONS (MAIN DATA STRUCTURE)
+  /// =====================================================
 
-  Stream<List<ReceiptModel>> getReceiptsStream() {
-    return _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .orderBy('date', descending: true)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => ReceiptModel.fromMap(doc.id, doc.data()))
-          .toList();
+  CollectionReference<Map<String, dynamic>> get _transactionsRef =>
+      _firestore
+          .collection('users')
+          .doc(_uid)
+          .collection('transactions');
+
+  Future<String> addTransaction(ReceiptModel receipt) async {
+    final doc = await _transactionsRef.add({
+      ...receipt.toMap(),
+      'storeNameLower': receipt.storeName.toLowerCase(),
     });
-  }
-
-  Future<String> addReceipt(ReceiptModel receipt) async {
-    final doc = await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .add(receipt.toMap());
-
     return doc.id;
   }
 
-  Future<void> deleteReceipt(String receiptId) async {
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .doc(receiptId)
-        .delete();
+  Future<void> updateTransaction(ReceiptModel receipt) async {
+    await _transactionsRef.doc(receipt.id).update({
+      ...receipt.toMap(),
+      'storeNameLower': receipt.storeName.toLowerCase(),
+    });
   }
 
-  Future<void> updateReceipt(ReceiptModel receipt) async {
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .doc(receipt.id)
-        .update(receipt.toMap());
+  Future<void> deleteTransaction(String id) async {
+    await _transactionsRef.doc(id).delete();
   }
 
-  /// ===============================
-  /// PRODUCTS (SUBCOLLECTION)
-  /// ===============================
+  /// =====================================================
+  /// TRANSACTION STREAM (FILTER + PREFIX SEARCH)
+  /// =====================================================
 
-  Stream<List<ProductModel>> getProductsStream(String receiptId) {
-    return _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .doc(receiptId)
-        .collection('products')
-        .snapshots()
-        .map((snapshot) {
+  Stream<List<ReceiptModel>> getTransactions({
+    DateTime? start,
+    DateTime? end,
+    String? searchQuery,
+  }) {
+    Query<Map<String, dynamic>> query =
+        _transactionsRef.orderBy('date', descending: true);
+
+    /// DATE FILTER
+    if (start != null && end != null) {
+      query = query
+          .where('date',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(start))
+          .where('date',
+              isLessThanOrEqualTo: Timestamp.fromDate(end));
+    }
+
+    /// PREFIX SEARCH (CASE INSENSITIVE)
+    if (searchQuery != null && searchQuery.isNotEmpty) {
+      final lower = searchQuery.toLowerCase();
+
+      query = _transactionsRef
+          .orderBy('storeNameLower')
+          .where('storeNameLower',
+              isGreaterThanOrEqualTo: lower)
+          .where('storeNameLower',
+              isLessThanOrEqualTo: '$lower\uf8ff');
+    }
+
+    return query.snapshots().map((snapshot) {
       return snapshot.docs
-          .map((doc) => ProductModel.fromMap(doc.id, doc.data()))
+          .map((doc) =>
+              ReceiptModel.fromMap(doc.id, doc.data()))
           .toList();
     });
   }
 
-  Future<void> addProduct(String receiptId, ProductModel product) async {
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .doc(receiptId)
-        .collection('products')
-        .add(product.toMap());
+  /// =====================================================
+  /// ANALYTICS
+  /// =====================================================
+
+  Stream<double> getMonthlyTotal() {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, 1);
+    final end = DateTime(now.year, now.month + 1, 1);
+
+    return getTransactions(start: start, end: end)
+        .map((list) =>
+            list.fold(0, (sum, e) => sum + e.totalAmount));
   }
 
-  Future<void> deleteProduct(String receiptId, String productId) async {
-    await _firestore
-        .collection('users')
-        .doc(_uid)
-        .collection('receipts')
-        .doc(receiptId)
-        .collection('products')
-        .doc(productId)
-        .delete();
+  Stream<double> getWeeklyTotal() {
+    final now = DateTime.now();
+    final start =
+        now.subtract(Duration(days: now.weekday - 1));
+    final end = start.add(const Duration(days: 7));
+
+    return getTransactions(start: start, end: end)
+        .map((list) =>
+            list.fold(0, (sum, e) => sum + e.totalAmount));
   }
 }

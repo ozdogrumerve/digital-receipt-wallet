@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
           stream: firestoreService.getUserStream(),
           builder: (context, userSnapshot) {
             return StreamBuilder<List<ReceiptModel>>(
-              stream: firestoreService.getReceiptsStream(),
+              stream: firestoreService.getTransactions(),
               builder: (context, receiptSnapshot) {
 
                 final receipts = receiptSnapshot.data ?? [];
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                                     theme.textTheme.bodyMedium),
                             const SizedBox(height: 10),
                             Text(
-                              "\$${totalSpent.toStringAsFixed(2)}",
+                              "\₺${totalSpent.toStringAsFixed(2)}",
                               style:
                                   theme.textTheme.headlineMedium,
                             ),
@@ -152,7 +152,7 @@ class HomeScreen extends StatelessWidget {
                                     subtitle:
                                         Text(receipt.category),
                                     trailing: Text(
-                                      "- \$${receipt.totalAmount.toStringAsFixed(2)}",
+                                      "- \₺${receipt.totalAmount.toStringAsFixed(2)}",
                                       style: TextStyle(
                                         color: theme
                                             .colorScheme.primary,

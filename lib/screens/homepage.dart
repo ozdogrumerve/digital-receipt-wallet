@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:digital_receipt_wallet/screens/home_screen.dart';
-import 'package:digital_receipt_wallet/screens/receipts_screen.dart';
+import 'package:digital_receipt_wallet/screens/transactions_screen.dart';
 import 'package:digital_receipt_wallet/screens/reports_screen.dart';
 import 'package:digital_receipt_wallet/screens/settings_screen.dart';
+import 'package:digital_receipt_wallet/screens/add_expense_screen.dart';
+import 'package:digital_receipt_wallet/screens/scan_receipt_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage>
 
   final List<Widget> pages = const [
     HomeScreen(),
-    ReceiptsScreen(),
+    TransactionsScreen(),
     ReportsScreen(),
     SettingsScreen(),
   ];
@@ -190,9 +192,49 @@ class _HomePageState extends State<HomePage>
               ),
               elevation: 6,
             ),
-            onPressed: () {
+            onPressed: () async {
               toggleFab();
-              // BURAYA NAVIGATION EKLEYEBİLİRSİN
+
+              await Future.delayed(const Duration(milliseconds: 200));
+
+              if (!mounted) return;
+
+              switch (index) {
+                case 1:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ScanReceiptScreen(
+                        detectedProducts: [],
+                        storeName: '',
+                        category: '',
+                      ),
+                    ),
+                  );
+                  break;
+
+                // case 2:
+                //   Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (_) => const ScanReceiptScreen(
+                //         detectedProducts: [],
+                //         storeName: '',
+                //         category: '',
+                //       ),
+                //     ),
+                //   );
+                //   break;
+
+                case 3:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AddExpenseScreen(),
+                    ),
+                  );
+                  break;
+              }
             },
             icon: Icon(icon),
             label: Text(label),
