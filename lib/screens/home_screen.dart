@@ -1,4 +1,3 @@
-import 'package:digital_receipt_wallet/screens/transactions_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:digital_receipt_wallet/services/firestore_service.dart';
