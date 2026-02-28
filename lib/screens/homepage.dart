@@ -18,14 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int selectedIndex = 0;
-
-  final List<Widget> pages = const [
-    HomeScreen(),
-    TransactionsScreen(),
-    ReportsScreen(),
-    SettingsScreen(),
-  ];
-
+  
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -66,6 +59,18 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final List<Widget> pages = [
+      HomeScreen(
+          onSeeHistory: () {
+            setState(() {
+              selectedIndex = 1;
+            });
+          },
+        ),
+        const TransactionsScreen(),
+        const ReportsScreen(),
+        const SettingsScreen(),
+    ];
 
     return Stack(
       children: [
