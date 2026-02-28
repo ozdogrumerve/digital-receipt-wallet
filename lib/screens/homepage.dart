@@ -67,9 +67,9 @@ class _HomePageState extends State<HomePage>
             });
           },
         ),
-        const TransactionsScreen(),
-        const ReportsScreen(),
-        const SettingsScreen(),
+      const TransactionsScreen(),
+      ReportsScreen(),
+      const SettingsScreen(),
     ];
 
     return Stack(

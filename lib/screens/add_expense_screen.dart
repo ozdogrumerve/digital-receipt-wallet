@@ -20,7 +20,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       TextEditingController(text: "1");
 
   DateTime selectedDate = DateTime.now();
-  String category = "General";
+  String category = "Ulaşım";
 
   final List<ProductModel> products = [];
 
