@@ -10,23 +10,18 @@ class HomeScreen extends StatelessWidget {
   IconData _getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'food':
-      case 'food & drinks':
         return Icons.restaurant;
         
       case 'clothing':
-      case 'apparel':
         return Icons.checkroom;
         
-      case 'electronics':
       case 'tech':
-        return Icons.devices; // phone_iphone yerine devices daha kapsayıcıdır
+        return Icons.devices; 
         
       case 'transportation':
-      case 'transport':
-        return Icons.directions_car; // veya Icons.commute
+        return Icons.commute; 
         
       case 'bills':
-      case 'utilities':
         return Icons.receipt;
         
       case 'rent':
@@ -35,7 +30,6 @@ class HomeScreen extends StatelessWidget {
       case 'education':
         return Icons.school;
         
-      case 'health':
       case 'healthcare':
         return Icons.health_and_safety;
         
@@ -43,28 +37,21 @@ class HomeScreen extends StatelessWidget {
         return Icons.spa;
         
       case 'entertainment':
-        return Icons.sports_esports; // oyun/eğlence için (Icons.movie de kullanılabilir)
-        
-      case 'furniture':
-      case 'household':
+        return Icons.sports_esports; 
+       
       case 'household / furniture':
         return Icons.chair;
         
       case 'stationery':
-        return Icons.edit; // veya Icons.design_services
+        return Icons.edit; 
         
-      case 'vacation':
-      case 'travel':
       case 'vacation / travel':
-        return Icons.flight_takeoff; // tatil ve uçuş hissiyatı için
+        return Icons.flight_takeoff; 
         
-      case 'taxes':
-      case 'official payments':
       case 'taxes / official payments':
-        return Icons.account_balance; // devlet ve resmi kurum hissiyatı verir
+        return Icons.account_balance; 
         
       case 'other':
-      case 'shopping': // shopping'i diğer veya ayrı bir case yapabilirsin, şimdilik ayrı tuttum
         return Icons.shopping_bag;
 
       default:
@@ -82,10 +69,12 @@ class HomeScreen extends StatelessWidget {
   }
   
   final VoidCallback onSeeHistory;
+  final VoidCallback onSeeSettings;
 
   const HomeScreen({
     super.key,
     required this.onSeeHistory,
+    required this.onSeeSettings,
   });
   
   @override
@@ -138,13 +127,16 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        CircleAvatar(
-                          backgroundColor: theme.colorScheme.primary,
-                          child: Text(
-                            user?.displayName?.isNotEmpty == true
-                                ? user!.displayName![0].toUpperCase()
-                                : "U",
-                            style: const TextStyle(color: Colors.white),
+                        GestureDetector(
+                          onTap: onSeeSettings,
+                          child: CircleAvatar(
+                            backgroundColor: theme.colorScheme.primary,
+                            child: Text(
+                              user?.displayName?.isNotEmpty == true
+                                  ? user!.displayName![0].toUpperCase()
+                                  : "U",
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
                         )
                       ],
@@ -154,30 +146,107 @@ class HomeScreen extends StatelessWidget {
 
                     /// SUMMARY CARD
                     Card(
+                      elevation: 2, // biraz gölge güzel durur
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       child: Padding(
                         padding: const EdgeInsets.all(24),
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Total Spent",
-                                style:
-                                    theme.textTheme.bodyMedium),
-                            const SizedBox(height: 10),
+                            // Başlık her zaman aynı
                             Text(
-                              "\₺${totalSpent.toStringAsFixed(2)}",
-                              style:
-                                  theme.textTheme.headlineMedium,
+                              "Total Spent",
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
                             ),
-                            const SizedBox(height: 20),
-                            LinearProgressIndicator(
-                              value: progress,
+                            const SizedBox(height: 8),
+                            Text(
+                              "₺${totalSpent.toStringAsFixed(2)}", // para birimini senin projene göre ₺ veya $ yap
+                              style: theme.textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            const SizedBox(height: 24),
+
+                            // ─────────────── Koşullu kısım başlar ───────────────
+                            if (monthlyBudget <= 0) ...[
+                              // Bütçe yoksa → basit hali (mevcut gibi)
+                              Text(
+                                "No monthly budget set yet",
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              LinearProgressIndicator(
+                                value: 0, // boş göster
+                                backgroundColor: theme.colorScheme.primary.withAlpha(51), // 0.2 opacity = 51 alpha (255 * 0.2)
+                                minHeight: 10,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ] else ...[
+                              // Bütçe varsa → detaylı görünüm (resimdeki gibi)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "LIMIT LEFT",
+                                        style: theme.textTheme.bodySmall?.copyWith(
+                                          color: theme.colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        "₺${(monthlyBudget - totalSpent).toStringAsFixed(0)}",
+                                        style: theme.textTheme.titleLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: (monthlyBudget - totalSpent) < 0
+                                              ? Colors.red
+                                              : theme.colorScheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.primary.withAlpha(25),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      "${(progress * 100).toStringAsFixed(0)}% USED",
+                                      style: theme.textTheme.labelMedium?.copyWith(
+                                        color: theme.colorScheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              LinearProgressIndicator(
+                                value: progress.clamp(0.0, 1.0),
+                                backgroundColor: theme.colorScheme.primary.withAlpha(51), // 0.2 opacity = 51 alpha (255 * 0.2)
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  (progress > 1)
+                                      ? Colors.red
+                                      : (progress > 0.8)
+                                          ? Colors.orange
+                                          : theme.colorScheme.primary,
+                                ),
+                                minHeight: 12,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ],
                           ],
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 40),
 
                     Row(
@@ -243,8 +312,8 @@ class HomeScreen extends StatelessWidget {
                               ),
                             )
                           : ListView.builder(
-                              itemCount: receipts.length > 5
-                                  ? 5
+                              itemCount: receipts.length > 3
+                                  ? 3
                                   : receipts.length,
                               itemBuilder: (context, index) {
                                 final receipt = receipts[index];
@@ -261,7 +330,7 @@ class HomeScreen extends StatelessWidget {
                                           width: 48,
                                           height: 48,
                                           decoration: BoxDecoration(
-                                            color: theme.colorScheme.primary.withOpacity(0.1),
+                                            color: theme.colorScheme.primary.withAlpha(25),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Icon(

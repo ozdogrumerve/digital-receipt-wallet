@@ -65,11 +65,16 @@ class _HomePageState extends State<HomePage>
             setState(() {
               selectedIndex = 1;
             });
+          }, 
+          onSeeSettings: () {
+            setState(() {
+              selectedIndex = 3;
+            });
           },
         ),
-      const TransactionsScreen(),
+      TransactionsScreen(),
       ReportsScreen(),
-      const SettingsScreen(),
+      SettingsScreen(),
     ];
 
     return Stack(
