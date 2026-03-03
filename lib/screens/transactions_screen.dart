@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../services/firestore_service.dart';
 import '../models/receipt_model.dart';
 
@@ -22,23 +23,74 @@ class _TransactionsScreenState
 
   final List<String> categories = [
     "All",
-    "General",
-    "Gıda",
-    "Giyim",
-    "Elektronik",
-    "Ulaşım",
-    "Fatura",
-    "Kira",
-    "Eğitim",
-    "Sağlık",
-    "Kişisel Bakım",
-    "Eğlence",
-    "Ev Eşyası / Mobilya",
-    "Kırtasiye",
-    "Tatil / Seyahat",
-    "Vergi / Resmi Ödemeler",
-    "Diğer",
+    "Food",
+    "Clothing",
+    "Tech",
+    "Transportation",
+    "Bills",
+    "Rent",
+    "Education",
+    "Healthcare",
+    "Personal Care",
+    "Entertainment",
+    "Household / Furniture",
+    "Stationery",
+    "Vacation / Travel",
+    "Taxes / Official Payments",
+    "Other",
   ];
+
+  IconData _getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'food':
+        return Icons.restaurant;
+        
+      case 'clothing':
+        return Icons.checkroom;
+        
+      case 'tech':
+        return Icons.devices; 
+        
+      case 'transportation':
+        return Icons.commute; 
+        
+      case 'bills':
+        return Icons.receipt;
+        
+      case 'rent':
+        return Icons.home;
+        
+      case 'education':
+        return Icons.school;
+        
+      case 'healthcare':
+        return Icons.health_and_safety;
+        
+      case 'personal care':
+        return Icons.spa;
+        
+      case 'entertainment':
+        return Icons.sports_esports; 
+       
+      case 'household / furniture':
+        return Icons.chair;
+        
+      case 'stationery':
+        return Icons.edit; 
+        
+      case 'vacation / travel':
+        return Icons.flight_takeoff; 
+        
+      case 'taxes / official payments':
+        return Icons.account_balance; 
+        
+      case 'other':
+        return Icons.shopping_bag;
+
+      default:
+        return Icons.receipt_long;
+    }
+  }
 
   String formatTL(double amount) =>
       "₺${amount.toStringAsFixed(2)}";
@@ -59,13 +111,16 @@ class _TransactionsScreenState
   }
 
   Widget _sourceIcon(String source) {
+    if (source == "manual") {
+      return const Icon(Icons.edit, size: 14, color: Colors.white);
+    }
     if (source == "scan") {
-      return const Icon(Icons.insert_drive_file, size: 18);
+      return const Icon(Icons.camera_alt, size: 14, color: Colors.white);
     }
     if (source == "pdf") {
-      return const Icon(Icons.attach_file, size: 18);
+      return const Icon(Icons.picture_as_pdf, size: 14, color: Colors.white);
     }
-    return const SizedBox();
+    return const SizedBox.shrink();
   }
 
   void _applyWeeklyFilter() {
@@ -119,13 +174,6 @@ class _TransactionsScreenState
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              title: const Text("Clear Filter"),
-              onTap: () {
-                _clearFilter();
-                Navigator.pop(context);
-              },
-            ),
           ],
         );
       },
@@ -176,9 +224,29 @@ class _TransactionsScreenState
       body: Column(
         children: [
           _buildCategoryFilter(),
+          if (startDate != null || endDate != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Wrap(
+                spacing: 8,
+                children: [
+                  Chip(
+                    label: Text(
+                      startDate != null && endDate != null
+                          ? "${DateFormat('d MMM').format(startDate!)} - ${DateFormat('d MMM').format(endDate!)}"
+                          : "Custom Date",
+                    ),
+                    onDeleted: _clearFilter,
+                    deleteIcon: const Icon(Icons.close, size: 18),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: StreamBuilder<List<ReceiptModel>>(
               stream: _service.getTransactions(
+                start: startDate,
+                end: endDate,
                 category: selectedCategory == "All"
                     ? null
                     : selectedCategory,
@@ -322,19 +390,17 @@ class _TransactionsScreenState
     );
   }
 
-  Widget _buildTransactionCard(
-      ReceiptModel tx) {
+  Widget _buildTransactionCard(ReceiptModel tx) {
     final theme = Theme.of(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius:
-            BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, 6),
           ),
@@ -342,38 +408,70 @@ class _TransactionsScreenState
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundColor:
-                theme.colorScheme.primary
-                    .withOpacity(0.2),
-            child: _sourceIcon(tx.source),
+          // ─── Soldaki ikon kısmı ───
+          Stack(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withAlpha(30), // 30 is 12% alpha of 255
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  _getCategoryIcon(tx.category),
+                  color: theme.colorScheme.primary,
+                  size: 28,
+                ),
+              ),
+              if (tx.source == "scan" || tx.source == "pdf" || tx.source == "manual")
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary, // veya Colors.grey[800]
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: theme.colorScheme.surface,
+                        width: 2, // beyaz kenar efekti için
+                      ),
+                    ),
+                    child: _sourceIcon(tx.source),
+                  ),
+                ),
+            ],
           ),
+
           const SizedBox(width: 16),
+
+          // Orta kısım (store + category)
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   tx.storeName,
-                  style: theme
-                      .textTheme.titleMedium,
+                  style: theme.textTheme.titleMedium,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   tx.category,
-                  style: theme
-                      .textTheme.bodySmall,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
           ),
+
+          // Sağdaki tutar
           Text(
             "-${formatTL(tx.totalAmount)}",
-            style: theme.textTheme.titleMedium!
-                .copyWith(
-              fontWeight:
-                  FontWeight.bold,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
             ),
           ),
         ],
