@@ -1,3 +1,4 @@
+import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   DateTime get selectedMonth =>
       DateFormat('yyyy-MM').parse(selectedMonthKey);
 
+  String? _errorMessage;
+
   final List<String> availableMonths = List.generate(
     12,
     (index) {
@@ -44,6 +47,190 @@ class _ReportsScreenState extends State<ReportsScreen> {
     },
   );
 
+  void _showBudgetBottomSheet() {
+    final TextEditingController budgetController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (BuildContext context) {
+        return FutureBuilder<UserModel?>(
+          future: firestoreService.getUser(),
+          builder: (context, snapshot) {
+            double currentBudget = 0.0;
+
+            if (snapshot.hasData && snapshot.data != null) {
+              currentBudget = snapshot.data!.monthlyBudget;
+            }
+
+            // TextField'ı doldur (rebuild döngüsü yaratmadan)
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (budgetController.text.isEmpty && currentBudget > 0) {
+                budgetController.text = currentBudget.toStringAsFixed(0);
+                budgetController.selection = TextSelection.fromPosition(
+                  TextPosition(offset: budgetController.text.length),
+                );
+              }
+            });
+
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                24,
+                32,
+                24,
+                MediaQuery.of(context).viewInsets.bottom + 34,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Başlık
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Aylık Bütçe Ayarla",
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Mevcut bütçe
+                  if (currentBudget > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        "Mevcut: ₺${currentBudget.toStringAsFixed(0)}",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+                    ),
+
+                  TextField(
+                    controller: budgetController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    autofocus: false, 
+                    decoration: InputDecoration(
+                      labelText: "Yeni Bütçe (₺)",
+                      prefixText: "₺ ",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Kaydet butonu
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        
+                        final input = budgetController.text.trim().replaceAll(',', '.');
+                        if (input.isEmpty) {
+                          setState(() => _errorMessage = "Lütfen bir tutar girin");
+                          Future.delayed(const Duration(seconds: 2), () {
+                            if (mounted) {
+                              setState(() => _errorMessage = null);
+                            }
+                          });
+                          return;
+                        }
+
+                        final newBudget = double.tryParse(input);
+                        if (newBudget == null || newBudget <= 0) {
+                          setState(() => _errorMessage = "Lütfen geçerli bir tutar girin");
+                          Future.delayed(const Duration(seconds: 2), () {
+                            if (mounted) {
+                              setState(() => _errorMessage = null);
+                            }
+                          });
+                          return;
+                        }
+
+                        try {
+                          await firestoreService.updateMonthlyBudget(newBudget);
+
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Bütçe ₺${newBudget.toStringAsFixed(0)} olarak güncellendi"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
+                          // Ana ekranı yenile
+                          setState(() {});
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Hata: $e")),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        "Kaydet",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withAlpha(38), // 0.15 * 255 = 38
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.red.shade300),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red, fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,6 +239,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: const Text("Reports"),
+      ),
       body: SafeArea(
         child: StreamBuilder<List<ReceiptModel>>(
           stream: firestoreService.getTransactions(),
@@ -144,61 +334,58 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 24, vertical: 16),
+                  horizontal: 24),
               child: Column(
                 children: [
 
                   /// HEADER
-                  Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(width: 80),
-                      Text(
-                        'Reports',
-                        style: textTheme.titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.calendar_today,
-                              size: 16,
-                              color: colorScheme.primary),
-                          const SizedBox(width: 4),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: selectedMonthKey,
-                              icon: Icon(Icons.arrow_drop_down,
-                                  color: colorScheme.primary),
-                              dropdownColor: theme.scaffoldBackgroundColor,
-                              style: TextStyle(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              items: availableMonths.map((monthKey) {
-                                final parsedDate =
-                                    DateFormat('yyyy-MM').parse(monthKey);
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start, // ← sola yasla
+                      children: [
+                        const Spacer(), // ortadaki boşluğu doldur
+                        Row(
+                          children: [
+                            Icon(Icons.calendar_today,
+                                size: 16,
+                                color: colorScheme.primary),
+                            const SizedBox(width: 4),
+                            DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: selectedMonthKey,
+                                icon: Icon(Icons.arrow_drop_down,
+                                    color: colorScheme.primary),
+                                dropdownColor: theme.scaffoldBackgroundColor,
+                                style: TextStyle(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                items: availableMonths.map((monthKey) {
+                                  final parsedDate =
+                                      DateFormat('yyyy-MM').parse(monthKey);
 
-                                return DropdownMenuItem<String>(
-                                  value: monthKey,
-                                  child: Text(
-                                    DateFormat('MMMM yyyy')
-                                        .format(parsedDate),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newMonth) {
-                                if (newMonth != null) {
-                                  setState(() {
-                                    selectedMonthKey = newMonth;
-                                  });
-                                }
-                              },
+                                  return DropdownMenuItem<String>(
+                                    value: monthKey,
+                                    child: Text(
+                                      DateFormat('MMMM yyyy')
+                                          .format(parsedDate),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newMonth) {
+                                  if (newMonth != null) {
+                                    setState(() {
+                                      selectedMonthKey = newMonth;
+                                    });
+                                  }
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 30),
@@ -216,7 +403,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             sections: expenses.isEmpty || totalAmount == 0
                                 ? [
                                     PieChartSectionData(
-                                      color: Colors.grey.withOpacity(0.2),
+                                      color: Colors.grey.withAlpha(51), // 20% opacity
                                       value: 1,
                                       title: '',
                                       radius: 25,
@@ -297,10 +484,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       )),
 
                   const SizedBox(height: 10),
-                  Divider(
-                      color: colorScheme.surfaceContainerHighest,
-                      thickness: 1.5),
-                  const SizedBox(height: 8),
 
                   /// 🔹 DAILY AVERAGE
                   Text(
@@ -313,8 +496,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   const SizedBox(height: 20),
 
                   Divider(
-                    color: colorScheme.surfaceContainerHighest,
-                    thickness: 4.5,
+                    color: colorScheme.secondary,
+                    thickness: 1.5,
                   ),
 
                   const SizedBox(height: 20),
@@ -332,7 +515,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         elevation: 0,
                       ),
                       onPressed: () {
-                        // later bottom sheet
+                        setState(() {
+                          _errorMessage = null; // Hata mesajını temizle
+                        });
+                        _showBudgetBottomSheet();
                       },
                       icon: Icon(Icons.tune,
                           color: colorScheme.onPrimaryContainer),
