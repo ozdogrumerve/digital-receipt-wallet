@@ -20,7 +20,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       TextEditingController(text: "1");
 
   DateTime selectedDate = DateTime.now();
-  String category = "Ulaşım";
+  String category = "Food";
 
   final List<ProductModel> products = [];
 
@@ -223,7 +223,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withAlpha(13),
                       blurRadius: 10,
                       offset: const Offset(0, 5),
                     )

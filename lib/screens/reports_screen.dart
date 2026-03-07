@@ -15,19 +15,13 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  Color generateColor(String key) {
-    final colors = [
-      const Color(0xFFC6A9D9),
-      const Color(0xFFB28DFF),
-      const Color(0xFFA57AFF),
-      const Color(0xFFD4B5FF),
-      const Color(0xFFE6D6FF),
-      const Color(0xFF9F7AEA),
-      const Color(0xFF805AD5),
-    ];
-
-    return colors[key.hashCode.abs() % colors.length];
-  }
+  final List<Color> chartColors = [
+    const Color(0xFF805AD5), // mor
+    const Color(0xFF9F7AEA),
+    const Color(0xFFB794F4),
+    const Color(0xFFD6BCFA),
+    const Color(0xFF6B46C1),
+  ];
 
   final FirestoreService firestoreService = FirestoreService();
   String selectedMonthKey =
@@ -291,7 +285,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
             final List<ExpenseItem> expenses = [];
 
             // Top 4 kategoriler
-            for (var entry in topCategories) {
+            for (int i = 0; i < topCategories.length; i++) {
+              final entry = topCategories[i];
+
               final percentage = totalAmount == 0
                   ? 0.0
                   : (entry.value / totalAmount) * 100;
@@ -301,7 +297,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   title: entry.key,
                   amount: entry.value,
                   percentage: percentage,
-                  color: generateColor(entry.key),
+                  date: DateTime.now(),
+                  color: chartColors[i % chartColors.length],
                 ),
               );
             }
@@ -317,7 +314,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   title: "Others",
                   amount: othersTotal,
                   percentage: percentage,
-                  color: generateColor("Others"),
+                  date: DateTime.now(),
+                  color: chartColors[expenses.length % chartColors.length],
                 ),
               );
             }

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class ExpenseItem {
   final String title;
   final double amount;
+  final DateTime date;
   final double percentage;
   final Color color;
 
   ExpenseItem({
     required this.title,
     required this.amount,
+    required this.date,
     required this.percentage,
     required this.color,
   });
