@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import '../models/product_model.dart';
 import '../models/receipt_model.dart';
 import '../services/firestore_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ScanReceiptScreen extends StatefulWidget {
   final List<ProductModel> detectedProducts;
@@ -73,13 +75,112 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   Future<void> _pickImage() async {
+
     final picked = await _picker.pickImage(source: ImageSource.camera);
 
-    if (picked != null) {
+    if (picked == null) return;
+
+    final imageFile = File(picked.path);
+
+    setState(() {
+      _image = imageFile;
+    });
+
+    await _scanReceipt(imageFile);
+
+  }
+
+  Future<void> _scanReceipt(File imageFile) async {
+
+    try {
+
+      final bytes = await imageFile.readAsBytes();
+      final base64Data = base64Encode(bytes);
+
+      const prompt = """Bu fiş fotoğrafından SADECE alışveriş ürünleri ve fiyatlarını çıkar. Market adı, adres, tarih, ödeme türü gibi bilgileri ürün olarak alma! Sadece şu yapıda temiz JSON dön, başka hiçbir metin yazma:
+  {
+    "market": "market adı (varsa)",
+    "tarih": "gg.aa.yyyy (varsa)",
+    "toplam": sayı,
+    "urunler": [
+      {"urun": "ürün ismi", "fiyat": sayı, "miktar": "miktar varsa"},
+      ...
+    ]
+  }
+  Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
+
+      final response = await http.post(
+        Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
+        headers: {
+          'Authorization': 'API_KEY',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {"type": "text", "text": prompt},
+                {
+                  "type": "image_url",
+                  "image_url": {"url": "data:image/jpeg;base64,$base64Data"}
+                }
+              ]
+            }
+          ],
+          "temperature": 0.1,
+          "max_tokens": 1024,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("API Error ${response.statusCode}");
+      }
+
+      final decoded = jsonDecode(response.body);
+      final content = decoded['choices'][0]['message']['content'];
+      final cleaned = content
+        .replaceAll("```json", "")
+        .replaceAll("```", "")
+        .trim();
+
+      final data = jsonDecode(cleaned);
+
+      final market = data["market"] ?? "";
+      final total = (data["toplam"] ?? 0).toDouble();
+
+      final List productsJson = data["urunler"];
+
+      final scannedProducts = productsJson.map((e) {
+        return ProductModel(
+          id: '',
+          name: e["urun"],
+          price: (e["fiyat"] ?? 0).toDouble(),
+          quantity: int.tryParse(e["miktar"]?.toString() ?? "1") ?? 1,
+        );
+      }).toList();
+
       setState(() {
-        _image = File(picked.path);
+
+        _products = scannedProducts;
+
+        if (market.isNotEmpty) {
+          _storeController.text = market;
+        }
+
+        _totalController.text = total.toStringAsFixed(2);
+
       });
+
+    } catch (e) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Scan error: $e")),
+      );
+
     }
+
   }
 
   Future<void> _save() async {
@@ -109,11 +210,11 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
     await _service.addTransaction(
       receipt: ReceiptModel(
         id: '',
-        storeName: _storeController.text.toLowerCase(),
+        storeName: _storeController.text,
         storeNameLower: _storeController.text.toLowerCase(),
         totalAmount: double.tryParse(_totalController.text) ?? 0,
         date: _selectedDate,
-        category: _category,
+        category: _category.toLowerCase(),
         createdAt: DateTime.now(),
         source: 'scan',
       ),
