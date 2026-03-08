@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/product_model.dart';
 import '../models/receipt_model.dart';
@@ -112,7 +113,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
       final response = await http.post(
         Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
         headers: {
-          'Authorization': 'API_KEY',
+          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
