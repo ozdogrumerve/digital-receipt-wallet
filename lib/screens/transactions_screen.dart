@@ -41,50 +41,50 @@ class _TransactionsScreenState
   ];
 
   IconData _getCategoryIcon(String category) {
-    switch (category.toLowerCase()) {
-      case 'food':
+    switch (category) {
+      case 'Food':
         return Icons.restaurant;
         
-      case 'clothing':
+      case 'Clothing':
         return Icons.checkroom;
         
-      case 'tech':
+      case 'Tech':
         return Icons.devices; 
         
-      case 'transportation':
+      case 'Transportation':
         return Icons.commute; 
         
-      case 'bills':
+      case 'Bills':
         return Icons.receipt;
         
-      case 'rent':
+      case 'Rent':
         return Icons.home;
         
-      case 'education':
+      case 'Education':
         return Icons.school;
         
-      case 'healthcare':
+      case 'Healthcare':
         return Icons.health_and_safety;
         
-      case 'personal care':
+      case 'Personal Care':
         return Icons.spa;
         
-      case 'entertainment':
+      case 'Entertainment':
         return Icons.sports_esports; 
        
-      case 'household / furniture':
+      case 'Household / Furniture':
         return Icons.chair;
         
-      case 'stationery':
+      case 'Stationery':
         return Icons.edit; 
         
-      case 'vacation / travel':
+      case 'Vacation / Travel':
         return Icons.flight_takeoff; 
         
-      case 'taxes / official payments':
+      case 'Taxes / Official Payments':
         return Icons.account_balance; 
         
-      case 'other':
+      case 'Other':
         return Icons.shopping_bag;
 
       default:
@@ -392,6 +392,8 @@ class _TransactionsScreenState
 
   Widget _buildTransactionCard(ReceiptModel tx) {
     final theme = Theme.of(context);
+    
+    print("CATEGORY FROM FIRESTORE: ${tx.category}");
 
     return Container(
       padding: const EdgeInsets.all(16),

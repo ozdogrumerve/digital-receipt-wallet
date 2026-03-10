@@ -64,7 +64,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
     super.initState();
 
     _products = List.from(widget.detectedProducts);
-    _category = widget.category;
+    _category = _category = categories.contains(widget.category)
+    ? widget.category
+    : "Food";
 
     _storeController = TextEditingController();
 
@@ -89,6 +91,43 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
     await _scanReceipt(imageFile);
 
+  }
+
+  DateTime? parseReceiptDate(String? rawDate) {
+    if (rawDate == null || rawDate.trim().isEmpty) return null;
+
+    try {
+      String cleaned = rawDate.trim();
+
+      // tüm ayraçları noktaya çevir
+      cleaned = cleaned.replaceAll("/", ".");
+      cleaned = cleaned.replaceAll("-", ".");
+
+      final parts = cleaned.split(".");
+
+      if (parts.length != 3) return null;
+
+      int day;
+      int month;
+      int year;
+
+      // yyyy.mm.dd formatı gelirse
+      if (parts[0].length == 4) {
+        year = int.parse(parts[0]);
+        month = int.parse(parts[1]);
+        day = int.parse(parts[2]);
+      } else {
+        // dd.mm.yyyy
+        day = int.parse(parts[0]);
+        month = int.parse(parts[1]);
+        year = int.parse(parts[2]);
+      }
+
+      return DateTime(year, month, day);
+
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> _scanReceipt(File imageFile) async {
@@ -150,6 +189,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
       final market = data["market"] ?? "";
       final total = (data["toplam"] ?? 0).toDouble();
+      final dateString = data["tarih"];
+
+      final parsedDate = parseReceiptDate(dateString);
 
       final List productsJson = data["urunler"];
 
@@ -163,15 +205,17 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
       }).toList();
 
       setState(() {
-
         _products = scannedProducts;
 
         if (market.isNotEmpty) {
           _storeController.text = market;
         }
 
-        _totalController.text = total.toStringAsFixed(2);
+        if (parsedDate != null) {
+          _selectedDate = parsedDate;
+        }
 
+        _totalController.text = total.toStringAsFixed(2);
       });
 
     } catch (e) {
@@ -215,7 +259,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         storeNameLower: _storeController.text.toLowerCase(),
         totalAmount: double.tryParse(_totalController.text) ?? 0,
         date: _selectedDate,
-        category: _category.toLowerCase(),
+        category: _category,
         createdAt: DateTime.now(),
         source: 'scan',
       ),
