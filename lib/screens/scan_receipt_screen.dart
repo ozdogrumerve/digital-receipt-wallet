@@ -38,6 +38,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   late List<ProductModel> _products;
 
   bool _isEditing = false;
+  bool _scanSuccessful = false;
 
   final formKey = GlobalKey<FormState>();
 
@@ -185,6 +186,15 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         .replaceAll("```", "")
         .trim();
 
+      if (!cleaned.trim().startsWith("{")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Invalid receipt scan"),
+          ),
+        );
+        return;
+      }
+
       final data = jsonDecode(cleaned);
 
       final market = data["market"] ?? "";
@@ -193,7 +203,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
       final parsedDate = parseReceiptDate(dateString);
 
-      final List productsJson = data["urunler"];
+      final List productsJson = (data["urunler"] as List?) ?? [];
 
       final scannedProducts = productsJson.map((e) {
         return ProductModel(
@@ -203,6 +213,15 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
           quantity: int.tryParse(e["miktar"]?.toString() ?? "1") ?? 1,
         );
       }).toList();
+
+      if (scannedProducts.isEmpty || total <= 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("This doesn't look like a receipt"),
+          ),
+        );
+        return;
+      }
 
       setState(() {
         _products = scannedProducts;
@@ -216,6 +235,8 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         }
 
         _totalController.text = total.toStringAsFixed(2);
+
+        _scanSuccessful = true;
       });
 
     } catch (e) {
@@ -229,6 +250,15 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   }
 
   Future<void> _save() async {
+    if (!_scanSuccessful) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please scan a receipt first"),
+        ),
+      );
+      return;
+    }
+
     if (_storeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Store name cannot be empty")),
