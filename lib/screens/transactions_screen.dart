@@ -392,8 +392,6 @@ class _TransactionsScreenState
 
   Widget _buildTransactionCard(ReceiptModel tx) {
     final theme = Theme.of(context);
-    
-    print("CATEGORY FROM FIRESTORE: ${tx.category}");
 
     return Container(
       padding: const EdgeInsets.all(16),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:digital_receipt_wallet/screens/upload_receipt_pdf.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt_wallet/screens/home_screen.dart';
 import 'package:digital_receipt_wallet/screens/transactions_screen.dart';
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage>
                 const SizedBox(height: 12),
                 _buildOptionButton(
                   icon: Icons.upload_file,
-                  label: "Upload Receipt",
+                  label: "Upload Receipt / PDF Statement",
                   index: 2,
                 ),
                 const SizedBox(height: 12),
@@ -223,18 +224,15 @@ class _HomePageState extends State<HomePage>
                   );
                   break;
 
-                // case 2:
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (_) => const ScanReceiptScreen(
-                //         detectedProducts: [],
-                //         storeName: '',
-                //         category: '',
-                //       ),
-                //     ),
-                //   );
-                //   break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const UploadReceiptPdf(
+                      ),
+                    ),
+                  );
+                  break;
 
                 case 3:
                   Navigator.push(
