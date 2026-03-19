@@ -284,7 +284,7 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
         date: _selectedDate,
         category: _category,
         createdAt: DateTime.now(),
-        source: 'gallery',
+        source: 'scan',
       ),
       products: _products,
     );
