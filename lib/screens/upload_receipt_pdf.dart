@@ -870,12 +870,6 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Upload Receipt"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          )
-        ],
       ),
       body: Column(
         children: [
