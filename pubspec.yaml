@@ -52,6 +52,8 @@ dependencies:
   http: ^1.6.0
   flutter_dotenv: ^6.0.0
   file_picker: ^10.3.10
+  pdfx: ^2.9.2
+  pdf_image_renderer: ^1.0.1
 
 dev_dependencies:
   flutter_test:

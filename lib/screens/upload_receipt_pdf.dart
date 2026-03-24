@@ -8,6 +8,7 @@ import '../models/receipt_model.dart';
 import '../services/firestore_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pdfx/pdfx.dart'; // PDF'i image'e çevirmek için: pub add pdfx (sayfaları render et)
 
 class UploadReceiptPdf extends StatefulWidget {
   const UploadReceiptPdf({super.key});
@@ -67,6 +68,130 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   double get total => _products.fold(0, (sum, p) => sum + p.total);
 
   String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
+
+  Future<void> _processPdf() async {
+    if (_pdf == null) return;
+
+    setState(() {
+      _isEditing = true;
+    });
+
+    try {
+      String base64Data;
+      final document = await PdfDocument.openFile(_pdf!.path);
+        final page = await document.getPage(1);
+        final pageImage = await page.render(
+          width: page.width * 2, // Yüksek kaliteli render
+          height: page.height * 2,
+          format: PdfPageImageFormat.jpeg,
+          backgroundColor: '#ffffff',
+        );
+        base64Data = base64Encode(pageImage!.bytes);
+        await page.close();
+        await document.close();
+      const prompt = """
+Bu bir banka hesap ekstresi fotoğrafıdır. SADECE hesap hareketlerini çıkar.
+
+Öncelikle, her hareketin açıklamasını analiz et:
+- Kısaltmaları genişlet (örn. 'ATM WD' → 'ATM'den para çekme', 'POS PUR' → 'POS ile alışveriş', 'EFT' → 'EFT havale').
+- Eğer açıklama kodlu veya belirsizse (örn. 'TXN 1234', 'MERCH 5678'), olası anlamını tahmin et (örn. POS numarasıysa 'Kartlı alışveriş - Mağaza bilinmiyor').
+- Eğer mağaza adı kısaltılmışsa (örn. 'MIGROS IST'), tam adını çıkar (örn. 'Migros İstanbul Şubesi').
+- Bilinmeyen kodlar için 'Bilinmeyen işlem' diye belirt, ama mümkünse bağlamdan tahmin et (tutar negatifse çıkış, pozitifse giriş).
+
+Şu temiz JSON formatında dön, başka hiçbir metin yazma:
+
+{
+  "banka": "banka adı (okuyabiliyorsan)",
+  "hesap_turu": "vadesiz / kredi kartı vb.",
+  "hesap_no_son4": "son 4 hane veya IBAN son kısmı",
+  "donem": "başlangıç - bitiş tarihi",
+  "doviz": "TL / USD vb.",
+  "toplam_bakiye": sayı,
+  "hareket_sayisi": sayı,
+  "hareketler": [
+    {
+      "tarih": "gg.aa.yyyy",
+      "aciklama_orijinal": "orijinal metin (kısaltmalı hali)",
+      "aciklama_yorumlu": "genişletilmiş/anlaşılır hali",
+      "tutar": sayı,          // pozitif = giriş, negatif = çıkış
+      "bakiye": sayı
+    },
+    ...
+  ]
+}
+
+Kurallar:
+- Tutarlar her zaman nokta ile ondalık (örn. 1234.56)
+- Sadece gerçek hareket satırlarını ekle
+- Reklam, logo, başlık, dipnot, toplam satırları hareket olarak ekleme
+- Mümkünse açıklamayı tam ve doğru tut
+- Çok fazla hareket varsa son 40 hareketi al
+SADECE GEÇERLİ JSON DÖN. 
+JSON DIŞINDA HİÇBİR KARAKTER YAZMA.
+STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
+""";
+
+      // Groq API çağrısı
+      final response = await http.post(
+        Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}', // SENİN KEY'İN
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {"type": "text", "text": prompt},
+                {
+                  "type": "image_url",
+                  "image_url": {"url": "data:image/jpeg;base64,$base64Data"}
+                }
+              ]
+            }
+          ],
+          "temperature": 0.2, // Ekstre için biraz daha esnek
+          "max_tokens": 4096, // Ekstre daha uzun olabilir
+        }),
+      );
+
+      final decoded = jsonDecode(response.body);
+      final content = decoded['choices'][0]['message']['content']
+          .replaceAll("```json", "")
+          .replaceAll("```", "")
+          .trim();
+
+      final data = jsonDecode(content);
+
+      final List movements = data["hareketler"] ?? [];
+
+      final parsed = movements.map((e) {
+        return ProductModel(
+          id: '',
+          name: e["aciklama_yorumlu"] ?? "Unknown",
+          price: (e["tutar"] ?? 0).abs().toDouble(),
+          quantity: 1,
+        );
+      }).toList();
+
+      setState(() {
+        _products = parsed;
+        _scanSuccessful = true;
+        _isEditing = false;
+      });
+
+    } catch (e) {
+      setState(() {
+        _isEditing = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("PDF error: $e")),
+      );
+    }
+  }
 
   Future<void> _pickImage() async {
     final picked = await _picker.pickImage(source: ImageSource.gallery);
@@ -149,10 +274,11 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   }
   Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
 
+      // Groq API çağrısı
       final response = await http.post(
         Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
         headers: {
-          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}',
+          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}', // SENİN KEY'İN
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
@@ -169,8 +295,8 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
               ]
             }
           ],
-          "temperature": 0.1,
-          "max_tokens": 1024,
+          "temperature": 0.2, // Ekstre için biraz daha esnek
+          "max_tokens": 2048, // Ekstre daha uzun olabilir
         }),
       );
 
@@ -515,32 +641,152 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   }
 
   Widget _buildPdfContent() {
-    return Center(
-      child: GestureDetector(
-        onTap: _pickPDF,
-        child: Container(
-          height: 200,
-          margin: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.grey.shade200,
+    final theme = Theme.of(context);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          /// 📄 PDF CARD
+          GestureDetector(
+            onTap: _pickPDF,
+            child: Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: _pdf == null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.picture_as_pdf,
+                            size: 42,
+                            color: theme.colorScheme.primary),
+                        const SizedBox(height: 12),
+                        Text(
+                          "Upload PDF Statement",
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Tap to select your bank statement",
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.picture_as_pdf,
+                            size: 42, color: Colors.red),
+                        const SizedBox(height: 10),
+                        Text(
+                          _pdf!.path.split('/').last,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Tap to change file",
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
           ),
-          child: Center(
-            child: _pdf == null
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.picture_as_pdf, size: 40),
-                      SizedBox(height: 10),
-                      Text("Upload PDF"),
-                      SizedBox(height: 6),
-                      Text(
-                          "Import a receipt or statement as a digital PDF document"),
-                    ],
-                  )
-                : Text(_pdf!.path.split('/').last),
+
+          const SizedBox(height: 20),
+
+          /// ⚡ ANALYZE BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: 56,
+            child: ElevatedButton.icon(
+              onPressed: _pdf == null ? null : _processPdf,
+              icon: const Icon(Icons.auto_fix_high),
+              label: const Text("Analyze PDF"),
+            ),
           ),
-        ),
+
+          const SizedBox(height: 24),
+
+          /// LOADING
+          if (_isEditing)
+            const Center(child: CircularProgressIndicator()),
+
+          /// RESULTS
+          if (_products.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text("Detected Transactions",
+                    style: theme.textTheme.titleMedium),
+
+                const SizedBox(height: 10),
+
+                Container(
+                  height: 250,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: _products.length,
+                    itemBuilder: (_, i) {
+                      final p = _products[i];
+
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(230),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                p.name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Text(
+                              "₺${p.total.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton.icon(
+                    onPressed: _save,
+                    icon: const Icon(Icons.save),
+                    label: const Text("Save Transactions"),
+                  ),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }
