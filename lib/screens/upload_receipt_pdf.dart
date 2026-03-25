@@ -37,6 +37,8 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
 
   final formKey = GlobalKey<FormState>();
 
+  final Map<ProductModel, String> _selectedCategories = {};
+
   final List<String> categories = [
     "Food",
     "Clothing",
@@ -179,6 +181,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
       setState(() {
         _products = parsed;
         _scanSuccessful = true;
+        _selectedCategories.clear();
         _isEditing = false;
       });
 
@@ -368,6 +371,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
     }
   }
 
+  // Receipt Save
   Future<void> _save() async {
     if (!_scanSuccessful) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -416,6 +420,51 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
     );
 
     if (!mounted) return;
+    Navigator.pop(context);
+  }
+
+  // Ekstre Save
+  Future<void> _savePdf() async {
+    if (_products.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No transactions found")),
+      );
+      return;
+    }
+
+    /// kategori kontrol
+    for (int i = 0; i < _products.length; i++) {
+      final p = _products[i];
+
+      if (!_selectedCategories.containsKey(p)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select all categories")),
+        );
+        return;
+      }
+    }
+
+    /// HER BİRİNİ AYRI KAYDET
+    for (int i = 0; i < _products.length; i++) {
+      final p = _products[i];
+
+      await _service.addTransaction(
+        receipt: ReceiptModel(
+          id: '',
+          storeName: p.name,
+          storeNameLower: p.name.toLowerCase(),
+          totalAmount: p.total,
+          date: DateTime.now(), 
+          category: _selectedCategories[p]!,
+          createdAt: DateTime.now(),
+          source: 'pdf',
+        ),
+        products: [], // PDF'de ürün yok
+      );
+    }
+
+    if (!mounted) return;
+
     Navigator.pop(context);
   }
 
@@ -745,28 +794,85 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                     itemBuilder: (_, i) {
                       final p = _products[i];
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(230),
-                          borderRadius: BorderRadius.circular(14),
+                      return Dismissible(
+                        key: ValueKey(p.name + i.toString()),
+                        direction: DismissDirection.endToStart,
+
+                        background: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          alignment: Alignment.centerRight,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                p.name,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
+
+                        onDismissed: (_) {
+                          setState(() {
+                            _selectedCategories.remove(p);
+                            _products.removeAt(i);
+                          });
+                        },
+
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withAlpha(230),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              /// NAME + PRICE
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      p.name,
+                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                  Text(
+                                    "₺${p.total.toStringAsFixed(2)}",
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                ],
                               ),
-                            ),
-                            Text(
-                              "₺${p.total.toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
+
+                              const SizedBox(height: 8),
+
+                              /// CATEGORY DROPDOWN
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: _selectedCategories[p],
+                                  hint: const Text("Select category"),
+                                  isExpanded: true,
+                                  underline: const SizedBox(),
+                                  items: categories
+                                      .map((e) => DropdownMenuItem(
+                                            value: e,
+                                            child: Text(e),
+                                          ))
+                                      .toList(),
+                                  onChanged: (v) {
+                                    setState(() {
+                                      _selectedCategories[p] = v!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -779,7 +885,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton.icon(
-                    onPressed: _save,
+                    onPressed: _savePdf,
                     icon: const Icon(Icons.save),
                     label: const Text("Save Transactions"),
                   ),
