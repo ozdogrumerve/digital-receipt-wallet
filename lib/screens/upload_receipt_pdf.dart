@@ -791,11 +791,11 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                   child: ListView.builder(
                     padding: const EdgeInsets.all(10),
                     itemCount: _products.length,
-                    itemBuilder: (_, i) {
+                    itemBuilder: (context, i) {
                       final p = _products[i];
 
                       return Dismissible(
-                        key: ValueKey(p.name + i.toString()),
+                        key: ValueKey(p.hashCode), // UniqueKey() da olabilir, ama aynı ürünün yanlışlıkla silinmesini önler
                         direction: DismissDirection.endToStart,
 
                         background: Container(
@@ -809,10 +809,12 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                           child: const Icon(Icons.delete, color: Colors.white),
                         ),
 
-                        onDismissed: (_) {
+                        onDismissed: (direction) {
+                          final removedProduct = p; // referansı tut
+
                           setState(() {
-                            _selectedCategories.remove(p);
-                            _products.removeAt(i);
+                            _selectedCategories.remove(removedProduct);
+                            _products.remove(removedProduct);   // <-- isme göre değil, nesneye göre sil
                           });
                         },
 

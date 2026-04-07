@@ -61,11 +61,20 @@ class HomeScreen extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final now = DateTime.now();
-    final difference = now.difference(date).inDays;
 
-    if (difference == 0) return "Today";
-    if (difference == 1) return "Yesterday";
-    return DateFormat('MMM d').format(date);
+    // Sadece gün, ay, yıl karşılaştırması yapıyoruz (saat ve dakika fark etmesin)
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final transactionDate = DateTime(date.year, date.month, date.day);
+
+    if (transactionDate == today) {
+      return "Today";
+    } else if (transactionDate == yesterday) {
+      return "Yesterday";
+    } else {
+      // Diğer günler için normal format
+      return DateFormat('MMM d').format(date);
+    }
   }
   
   final VoidCallback onSeeHistory;
