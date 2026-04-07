@@ -11,6 +11,7 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -45,3 +46,8 @@ flutter {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+dependencies {
+    // Desugaring için gerekli olan kütüphane
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+}

@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/providers/theme_provider.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,7 +18,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
 
-  bool notificationsEnabled = true;
   File? selectedImage;
 
   final ImagePicker picker = ImagePicker();
@@ -32,9 +34,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _checkSystemPermission();
+  }
+
+  Future<void> _checkSystemPermission() async {
+    final status = await Permission.notification.status;
+
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
+
+    notificationProvider.setNotification(status.isGranted);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final notificationProvider = Provider.of<NotificationProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -140,6 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 12),
 
+            /// NOTIFICATION SWITCH
             Card(
               child: ListTile(
                 leading: const Icon(Icons.notifications_none),
@@ -147,11 +166,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle:
                     const Text("Alerts for large transactions"),
                 trailing: Switch(
-                  value: notificationsEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      notificationsEnabled = value;
-                    });
+                  value: notificationProvider.isEnabled,
+                  onChanged: (value) async {
+
+                    if (value) {
+                      // ---------- TOGGLE AÇILIYOR ----------
+                      try {
+                        final messaging = FirebaseMessaging.instance;
+                        final settings = await messaging.requestPermission(
+                          alert: true,
+                          badge: true,
+                          sound: true,
+                        );
+
+                        final bool granted = settings.authorizationStatus == AuthorizationStatus.authorized ||
+                                            settings.authorizationStatus == AuthorizationStatus.provisional;
+
+                        if (granted) {
+                          notificationProvider.setNotification(true);
+                        } else {
+                          notificationProvider.setNotification(false);
+
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Bildirimlere izin vermelisiniz."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        print("Permission error: $e");
+                      }
+                    } 
+                    else {
+                      // ---------- TOGGLE KAPATILIYOR ----------
+                      notificationProvider.setNotification(false);
+
+                      // Basit ve temiz uyarı
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text("Bildirimler kapatıldı. "
+                            "Tamamen kapatmak isterseniz cihaz ayarlarından kapatabilirsiniz."),
+                            action: SnackBarAction(
+                              label: "Ayarlara Git",
+                              textColor: Colors.white,
+                              onPressed: () async {
+                                await openAppSettings();
+                              },
+                            ),
+                            duration: const Duration(seconds: 4),
+                          ),
+                        );
+                      }
+                    }
                   },
                 ),
               ),

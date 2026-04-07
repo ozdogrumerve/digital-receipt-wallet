@@ -1,4 +1,6 @@
 import 'package:digital_receipt_wallet/models/user_model.dart';
+import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
+import 'package:digital_receipt_wallet/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +8,7 @@ import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:digital_receipt_wallet/models/receipt_model.dart';
 import 'package:digital_receipt_wallet/models/expense_item_model.dart';
 import 'package:digital_receipt_wallet/screens/analytics_screen.dart';
+import 'package:provider/provider.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -24,11 +27,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
   ];
 
   final FirestoreService firestoreService = FirestoreService();
-  String selectedMonthKey =
-    DateFormat('yyyy-MM').format(DateTime.now());
+  String selectedMonthKey = DateFormat('yyyy-MM').format(DateTime.now());
 
-  DateTime get selectedMonth =>
-      DateFormat('yyyy-MM').parse(selectedMonthKey);
+  DateTime get selectedMonth => DateFormat('yyyy-MM').parse(selectedMonthKey);
 
   String? _errorMessage;
 
@@ -40,6 +41,29 @@ class _ReportsScreenState extends State<ReportsScreen> {
       return DateFormat('yyyy-MM').format(date);
     },
   );
+
+  double? alertPercentage;
+  bool alertTriggered = false;
+
+  void checkAlert(double totalAmount, double budget, BuildContext context) {
+    if (budget <= 0 || alertPercentage == null) return;
+
+    final percentage = totalAmount / budget;
+
+    final notificationProvider =
+        Provider.of<NotificationProvider>(context, listen: false);
+
+    if (percentage >= alertPercentage! && !alertTriggered) {
+      if (notificationProvider.isEnabled) {
+        NotificationService.showNotification(
+          "Bütçe Uyarısı",
+          "%${(alertPercentage! * 100).toInt()} harcamaya ulaştınız",
+        );
+      }
+
+      alertTriggered = true;
+    }
+  }
 
   void _showBudgetBottomSheet() {
     final TextEditingController budgetController = TextEditingController();
@@ -89,7 +113,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     children: [
                       Text(
                         "Aylık Bütçe Ayarla",
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -114,12 +141,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                   TextField(
                     controller: budgetController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                    autofocus: false, 
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    autofocus: false,
                     decoration: InputDecoration(
                       labelText: "Yeni Bütçe (₺)",
                       prefixText: "₺ ",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16)),
                     ),
                   ),
 
@@ -132,10 +161,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     child: ElevatedButton(
                       onPressed: () async {
                         FocusScope.of(context).unfocus();
-                        
-                        final input = budgetController.text.trim().replaceAll(',', '.');
+
+                        final input =
+                            budgetController.text.trim().replaceAll(',', '.');
                         if (input.isEmpty) {
-                          setState(() => _errorMessage = "Lütfen bir tutar girin");
+                          setState(
+                              () => _errorMessage = "Lütfen bir tutar girin");
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) {
                               setState(() => _errorMessage = null);
@@ -146,7 +177,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                         final newBudget = double.tryParse(input);
                         if (newBudget == null || newBudget <= 0) {
-                          setState(() => _errorMessage = "Lütfen geçerli bir tutar girin");
+                          setState(() =>
+                              _errorMessage = "Lütfen geçerli bir tutar girin");
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) {
                               setState(() => _errorMessage = null);
@@ -163,7 +195,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text("Bütçe ₺${newBudget.toStringAsFixed(0)} olarak güncellendi"),
+                              content: Text(
+                                  "Bütçe ₺${newBudget.toStringAsFixed(0)} olarak güncellendi"),
                               backgroundColor: Colors.green,
                             ),
                           );
@@ -185,7 +218,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       ),
                       child: const Text(
                         "Kaydet",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -204,18 +238,101 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                            const Icon(Icons.error_outline,
+                                color: Colors.red, size: 20),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 _errorMessage!,
-                                style: const TextStyle(color: Colors.red, fontSize: 14),
+                                style: const TextStyle(
+                                    color: Colors.red, fontSize: 14),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAlertBottomSheet() {
+    double selectedPercentage = 70;
+
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// TITLE
+                  Text(
+                    "Alert Ayarla",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// DESCRIPTION
+                  Text(
+                    "%${selectedPercentage.toInt()} harcamaya ulaştığımda bildir",
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// SLIDER
+                  Slider(
+                    value: selectedPercentage,
+                    min: 10,
+                    max: 100,
+                    divisions: 9,
+                    label: "${selectedPercentage.toInt()}%",
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPercentage = value;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// SAVE BUTTON
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          alertPercentage = selectedPercentage / 100;
+                          alertTriggered = false;
+                        });
+
+                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                "%${selectedPercentage.toInt()} için alert kuruldu"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      },
+                      child: Text("Kaydet"),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
                 ],
               ),
             );
@@ -237,369 +354,380 @@ class _ReportsScreenState extends State<ReportsScreen> {
         title: const Text("Reports"),
       ),
       body: SafeArea(
-        child: StreamBuilder<List<ReceiptModel>>(
-          stream: firestoreService.getTransactions(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        child: StreamBuilder<UserModel?>(
+          stream: firestoreService.getUserStream(),
+          builder: (context, userSnapshot) {
+            return StreamBuilder<List<ReceiptModel>>(
+              stream: firestoreService.getTransactions(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            final receipts = snapshot.data!;
+                final receipts = snapshot.data!;
 
-            /// 🔹 1️⃣ Seçili Aya Göre Filtrele
-            final monthlyReceipts = receipts.where((r) =>
-                r.date.year == selectedMonth.year &&
-                r.date.month == selectedMonth.month).toList();
+                /// 🔹 1️⃣ Seçili Aya Göre Filtrele
+                final monthlyReceipts = receipts
+                    .where((r) =>
+                        r.date.year == selectedMonth.year &&
+                        r.date.month == selectedMonth.month)
+                    .toList();
 
-            /// 🔹 2️⃣ Toplam Harcama
-            double totalAmount = 0;
-            for (var r in monthlyReceipts) {
-              totalAmount += r.totalAmount;
-            }
+                /// 🔹 2️⃣ Toplam Harcama
+                double totalAmount = 0;
+                for (var r in monthlyReceipts) {
+                  totalAmount += r.totalAmount;
+                }
 
-            /// 🔹 3️⃣ Kategoriye Göre Grupla
-            final Map<String, double> categoryTotals = {};
-            for (var r in monthlyReceipts) {
-              categoryTotals[r.category] =
-                  (categoryTotals[r.category] ?? 0) + r.totalAmount;
-            }
+                final monthlyBudget = userSnapshot.data?.monthlyBudget ?? 0;
+                checkAlert(totalAmount, monthlyBudget, context);
 
-            /// 🔹 4️⃣ Top 4 + Others Mantığı Expense Listesi Oluştur
+                /// 🔹 3️⃣ Kategoriye Göre Grupla
+                final Map<String, double> categoryTotals = {};
+                for (var r in monthlyReceipts) {
+                  categoryTotals[r.category] =
+                      (categoryTotals[r.category] ?? 0) + r.totalAmount;
+                }
 
-            // 1. Kategorileri büyükten küçüğe sırala
-            final sortedEntries = categoryTotals.entries.toList()
-              ..sort((a, b) => b.value.compareTo(a.value));
+                /// 🔹 4️⃣ Top 4 + Others Mantığı Expense Listesi Oluştur
 
-            // 2. İlk 4 kategoriyi al
-            final topCategories = sortedEntries.take(4).toList();
+                // 1. Kategorileri büyükten küçüğe sırala
+                final sortedEntries = categoryTotals.entries.toList()
+                  ..sort((a, b) => b.value.compareTo(a.value));
 
-            // 3. Geri kalanları topla
-            double othersTotal = 0;
-            if (sortedEntries.length > 4) {
-              for (var entry in sortedEntries.skip(4)) {
-                othersTotal += entry.value;
-              }
-            }
+                // 2. İlk 4 kategoriyi al
+                final topCategories = sortedEntries.take(4).toList();
 
-            // 4. Expense listesi oluştur
-            final List<ExpenseItem> expenses = [];
+                // 3. Geri kalanları topla
+                double othersTotal = 0;
+                if (sortedEntries.length > 4) {
+                  for (var entry in sortedEntries.skip(4)) {
+                    othersTotal += entry.value;
+                  }
+                }
 
-            // Top 4 kategoriler
-            for (int i = 0; i < topCategories.length; i++) {
-              final entry = topCategories[i];
+                // 4. Expense listesi oluştur
+                final List<ExpenseItem> expenses = [];
 
-              final percentage = totalAmount == 0
-                  ? 0.0
-                  : (entry.value / totalAmount) * 100;
+                // Top 4 kategoriler
+                for (int i = 0; i < topCategories.length; i++) {
+                  final entry = topCategories[i];
 
-              expenses.add(
-                ExpenseItem(
-                  title: entry.key,
-                  amount: entry.value,
-                  percentage: percentage,
-                  date: DateTime.now(),
-                  color: chartColors[i % chartColors.length],
-                ),
-              );
-            }
+                  final percentage = totalAmount == 0
+                      ? 0.0
+                      : (entry.value / totalAmount) * 100;
 
-            // Others ekle (varsa)
-            if (othersTotal > 0) {
-              final percentage = totalAmount == 0
-                  ? 0.0
-                  : (othersTotal / totalAmount) * 100;
-
-              expenses.add(
-                ExpenseItem(
-                  title: "Others",
-                  amount: othersTotal,
-                  percentage: percentage,
-                  date: DateTime.now(),
-                  color: chartColors[expenses.length % chartColors.length],
-                ),
-              );
-            }
-
-            /// 🔹 5️⃣ Daily Average
-            final daysInMonth = DateUtils.getDaysInMonth(
-                selectedMonth.year, selectedMonth.month);
-
-            final dailyAverage =
-                totalAmount == 0 ? 0 : totalAmount / daysInMonth;
-
-            final currentMonth =
-                DateFormat('MMMM yyyy').format(selectedMonth);
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 24),
-              child: Column(
-                children: [
-
-                  /// HEADER
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start, // ← sola yasla
-                      children: [
-                        const Spacer(), // ortadaki boşluğu doldur
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_today,
-                                size: 16,
-                                color: colorScheme.primary),
-                            const SizedBox(width: 4),
-                            DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: selectedMonthKey,
-                                icon: Icon(Icons.arrow_drop_down,
-                                    color: colorScheme.primary),
-                                dropdownColor: theme.scaffoldBackgroundColor,
-                                style: TextStyle(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                items: availableMonths.map((monthKey) {
-                                  final parsedDate =
-                                      DateFormat('yyyy-MM').parse(monthKey);
-
-                                  return DropdownMenuItem<String>(
-                                    value: monthKey,
-                                    child: Text(
-                                      DateFormat('MMMM yyyy')
-                                          .format(parsedDate),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (newMonth) {
-                                  if (newMonth != null) {
-                                    setState(() {
-                                      selectedMonthKey = newMonth;
-                                    });
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                  expenses.add(
+                    ExpenseItem(
+                      title: entry.key,
+                      amount: entry.value,
+                      percentage: percentage,
+                      date: DateTime.now(),
+                      color: chartColors[i % chartColors.length],
                     ),
-                  ),
+                  );
+                }
 
-                  const SizedBox(height: 30),
+                // Others ekle (varsa)
+                if (othersTotal > 0) {
+                  final percentage = totalAmount == 0
+                      ? 0.0
+                      : (othersTotal / totalAmount) * 100;
 
-                  /// 🔹 DONUT CHART
-                  SizedBox(
-                    height: 220,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        PieChart(
-                          PieChartData(
-                            sectionsSpace: 4,
-                            centerSpaceRadius: 80,
-                            sections: expenses.isEmpty || totalAmount == 0
-                                ? [
-                                    PieChartSectionData(
-                                      color: Colors.grey.withAlpha(51), // 20% opacity
-                                      value: 1,
-                                      title: '',
-                                      radius: 25,
-                                    )
-                                  ]
-                                : expenses
-                                    .where((e) => e.percentage > 0)
-                                    .map((e) => PieChartSectionData(
-                                          color: e.color,
-                                          value: e.percentage,
-                                          title: '',
-                                          radius: 25,
-                                        ))
-                                    .toList(),
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '₺${totalAmount.toStringAsFixed(0)}',
-                              style: textTheme.headlineMedium
-                                  ?.copyWith(
-                                      fontWeight:
-                                          FontWeight.bold),
-                            ),
-                            Text(currentMonth,
-                                style: textTheme.bodySmall),
-                          ],
-                        ),
-                      ],
+                  expenses.add(
+                    ExpenseItem(
+                      title: "Others",
+                      amount: othersTotal,
+                      percentage: percentage,
+                      date: DateTime.now(),
+                      color: chartColors[expenses.length % chartColors.length],
                     ),
-                  ),
+                  );
+                }
 
-                  const SizedBox(height: 30),
+                /// 🔹 5️⃣ Daily Average
+                final daysInMonth = DateUtils.getDaysInMonth(
+                    selectedMonth.year, selectedMonth.month);
 
-                  /// 🔹 CATEGORY LIST
-                  ...expenses.map((expense) => Padding(
-                        padding:
-                            const EdgeInsets.symmetric(
-                                vertical: 10),
+                final dailyAverage =
+                    totalAmount == 0 ? 0 : totalAmount / daysInMonth;
+
+                final currentMonth =
+                    DateFormat('MMMM yyyy').format(selectedMonth);
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      /// HEADER
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0),
                         child: Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.start, // ← sola yasla
                           children: [
-                            CircleAvatar(
-                                radius: 6,
-                                backgroundColor:
-                                    expense.color),
-                            const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                            const Spacer(), // ortadaki boşluğu doldur
+                            Row(
                               children: [
-                                Text(expense.title,
-                                    style: textTheme
-                                        .bodyLarge
-                                        ?.copyWith(
-                                            fontWeight:
-                                                FontWeight
-                                                    .bold)),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '%${expense.percentage.toStringAsFixed(0)} of total',
-                                  style:
-                                      textTheme.bodySmall,
+                                Icon(Icons.calendar_today,
+                                    size: 16, color: colorScheme.primary),
+                                const SizedBox(width: 4),
+                                DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: selectedMonthKey,
+                                    icon: Icon(Icons.arrow_drop_down,
+                                        color: colorScheme.primary),
+                                    dropdownColor:
+                                        theme.scaffoldBackgroundColor,
+                                    style: TextStyle(
+                                      color: colorScheme.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    items: availableMonths.map((monthKey) {
+                                      final parsedDate =
+                                          DateFormat('yyyy-MM').parse(monthKey);
+
+                                      return DropdownMenuItem<String>(
+                                        value: monthKey,
+                                        child: Text(
+                                          DateFormat('MMMM yyyy')
+                                              .format(parsedDate),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newMonth) {
+                                      if (newMonth != null) {
+                                        setState(() {
+                                          selectedMonthKey = newMonth;
+                                        });
+                                      }
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
-                            const Spacer(),
-                            Text(
-                              '₺${expense.amount.toStringAsFixed(0)}',
-                              style: textTheme.bodyLarge
-                                  ?.copyWith(
-                                      fontWeight:
-                                          FontWeight.bold),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      /// 🔹 DONUT CHART
+                      SizedBox(
+                        height: 220,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            PieChart(
+                              PieChartData(
+                                sectionsSpace: 4,
+                                centerSpaceRadius: 80,
+                                sections: expenses.isEmpty || totalAmount == 0
+                                    ? [
+                                        PieChartSectionData(
+                                          color: Colors.grey
+                                              .withAlpha(51), // 20% opacity
+                                          value: 1,
+                                          title: '',
+                                          radius: 25,
+                                        )
+                                      ]
+                                    : expenses
+                                        .where((e) => e.percentage > 0)
+                                        .map((e) => PieChartSectionData(
+                                              color: e.color,
+                                              value: e.percentage,
+                                              title: '',
+                                              radius: 25,
+                                            ))
+                                        .toList(),
+                              ),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '₺${totalAmount.toStringAsFixed(0)}',
+                                  style: textTheme.headlineMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                Text(currentMonth, style: textTheme.bodySmall),
+                              ],
                             ),
                           ],
                         ),
-                      )),
-
-                  const SizedBox(height: 10),
-
-                  /// 🔹 DAILY AVERAGE
-                  Text(
-                    'DAILY AVERAGE: ₺${dailyAverage.toStringAsFixed(2)}',
-                    style: textTheme.labelSmall?.copyWith(
-                        letterSpacing: 1.2,
-                        fontWeight: FontWeight.bold),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  Divider(
-                    color: colorScheme.secondary,
-                    thickness: 1.5,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// 🔹 ADJUST BUDGET BUTTON
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primaryContainer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _errorMessage = null; // Hata mesajını temizle
-                        });
-                        _showBudgetBottomSheet();
-                      },
-                      icon: Icon(Icons.tune,
-                          color: colorScheme.onPrimaryContainer),
-                      label: Text(
-                        'Adjust Budget',
-                        style: TextStyle(
-                          color: colorScheme.onPrimaryContainer,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
 
-                  const SizedBox(height: 16),
+                      const SizedBox(height: 30),
 
-                  /// 🔹 SECONDARY BUTTONS ROW
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 55,
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: colorScheme.surface,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 0,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AnalyticsScreen(),
+                      /// 🔹 CATEGORY LIST
+                      ...expenses.map((expense) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                    radius: 6, backgroundColor: expense.color),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(expense.title,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '%${expense.percentage.toStringAsFixed(0)} of total',
+                                      style: textTheme.bodySmall,
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            icon: Icon(Icons.analytics_outlined,
-                                color: colorScheme.onSurface),
-                            label: Text(
-                              'Analytics',
-                              style: TextStyle(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                const Spacer(),
+                                Text(
+                                  '₺${expense.amount.toStringAsFixed(0)}',
+                                  style: textTheme.bodyLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          )),
+
+                      const SizedBox(height: 10),
+
+                      /// 🔹 DAILY AVERAGE
+                      Text(
+                        'DAILY AVERAGE: ₺${dailyAverage.toStringAsFixed(2)}',
+                        style: textTheme.labelSmall?.copyWith(
+                            letterSpacing: 1.2, fontWeight: FontWeight.bold),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Divider(
+                        color: colorScheme.secondary,
+                        thickness: 1.5,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// 🔹 ADJUST BUDGET BUTTON
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorScheme.primaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _errorMessage = null; // Hata mesajını temizle
+                            });
+                            _showBudgetBottomSheet();
+                          },
+                          icon: Icon(Icons.tune,
+                              color: colorScheme.onPrimaryContainer),
+                          label: Text(
+                            'Adjust Budget',
+                            style: TextStyle(
+                              color: colorScheme.onPrimaryContainer,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: SizedBox(
-                          height: 55,
-                          child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: colorScheme.surface,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              elevation: 0,
-                            ),
-                            onPressed: () {
-                              // future alert logic
-                            },
-                            icon: Icon(Icons.notifications_none,
-                                color: colorScheme.onSurface),
-                            label: Text(
-                              'Set Alert',
-                              style: TextStyle(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
+
+                      const SizedBox(height: 16),
+
+                      /// 🔹 SECONDARY BUTTONS ROW
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 55,
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.surface,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AnalyticsScreen(),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(Icons.analytics_outlined,
+                                    color: colorScheme.onSurface),
+                                label: Text(
+                                  'Analytics',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: SizedBox(
+                              height: 55,
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.surface,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: () {
+                                  final notificationProvider =
+                                      Provider.of<NotificationProvider>(context,
+                                          listen: false);
+
+                                  if (!notificationProvider.isEnabled) {
+                                    // ❌ kapalıysa uyar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            "Bildirimler kapalı. Ayarlardan açmalısınız."),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  // ✅ açıksa bottom sheet aç
+                                  _showAlertBottomSheet();
+                                },
+                                icon: Icon(Icons.notifications_none,
+                                    color: colorScheme.onSurface),
+                                label: Text(
+                                  'Set Alert',
+                                  style: TextStyle(
+                                    color: colorScheme.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+
+                      const SizedBox(height: 40),
                     ],
                   ),
-
-                  const SizedBox(height: 40),
-                ],
-              ),
+                );
+              },
             );
           },
         ),

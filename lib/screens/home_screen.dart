@@ -104,9 +104,21 @@ class HomeScreen extends StatelessWidget {
 
                 final receipts = receiptSnapshot.data ?? [];
 
-                double totalSpent = 0;
-                for (var r in receipts) {
-                  totalSpent += r.totalAmount;
+                // double totalSpent = 0;
+                // for (var r in receipts) {
+                //   totalSpent += r.totalAmount;
+                // }
+
+                final now = DateTime.now();
+
+                final monthlyReceipts = receipts.where((r) =>
+                    r.date.year == now.year &&
+                    r.date.month == now.month
+                ).toList();
+
+                double totalAmount = 0;
+                for (var r in monthlyReceipts) {
+                  totalAmount += r.totalAmount;
                 }
 
                 final monthlyBudget =
@@ -114,7 +126,7 @@ class HomeScreen extends StatelessWidget {
 
                 double progress = 0;
                 if (monthlyBudget > 0) {
-                  progress = totalSpent / monthlyBudget;
+                  progress = totalAmount / monthlyBudget;
                   if (progress > 1) progress = 1;
                 }
 
@@ -171,7 +183,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              "₺${totalSpent.toStringAsFixed(2)}", // para birimini senin projene göre ₺ veya $ yap
+                              "₺${totalAmount.toStringAsFixed(2)}", // para birimini senin projene göre ₺ veya $ yap
                               style: theme.textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -195,7 +207,7 @@ class HomeScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ] else ...[
-                              // Bütçe varsa → detaylı görünüm (resimdeki gibi)
+                              // Bütçe varsa → detaylı görünüm 
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -211,10 +223,10 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        "₺${(monthlyBudget - totalSpent).toStringAsFixed(0)}",
+                                        "₺${(monthlyBudget - totalAmount).toStringAsFixed(0)}",
                                         style: theme.textTheme.titleLarge?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color: (monthlyBudget - totalSpent) < 0
+                                          color: (monthlyBudget - totalAmount) < 0
                                               ? Colors.red
                                               : theme.colorScheme.primary,
                                         ),
@@ -321,11 +333,11 @@ class HomeScreen extends StatelessWidget {
                               ),
                             )
                           : ListView.builder(
-                              itemCount: receipts.length > 3
+                              itemCount: monthlyReceipts.length > 3
                                   ? 3
-                                  : receipts.length,
+                                  : monthlyReceipts.length,
                               itemBuilder: (context, index) {
-                                final receipt = receipts[index];
+                                final receipt = monthlyReceipts[index];
 
                                 return Card(
                                   margin: const EdgeInsets.only(bottom: 12),
