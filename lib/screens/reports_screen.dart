@@ -44,6 +44,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   double? alertPercentage;
   bool alertTriggered = false;
+  bool _isAlertSet = false;
 
   void checkAlert(double totalAmount, double budget, BuildContext context) {
     if (budget <= 0 || alertPercentage == null) return;
@@ -53,8 +54,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final notificationProvider =
         Provider.of<NotificationProvider>(context, listen: false);
 
-    if (percentage >= alertPercentage! && !alertTriggered) {
-      if (notificationProvider.isEnabled) {
+    if (percentage >= alertPercentage!) {
+      if (notificationProvider.isEnabled && !alertTriggered) {
         NotificationService.showNotification(
           "Bütçe Uyarısı",
           "%${(alertPercentage! * 100).toInt()} harcamaya ulaştınız",
@@ -262,7 +263,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 
   void _showAlertBottomSheet() {
-    double selectedPercentage = 70;
+    double selectedPercentage = 50;
 
     showModalBottomSheet(
       context: context,
@@ -308,28 +309,57 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                   const SizedBox(height: 20),
 
-                  /// SAVE BUTTON
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          alertPercentage = selectedPercentage / 100;
-                          alertTriggered = false;
-                        });
-
-                        Navigator.pop(context);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                "%${selectedPercentage.toInt()} için alert kuruldu"),
-                            backgroundColor: Colors.green,
+                  // İki buton yan yana
+                  Row(
+                    children: [
+                      // İPTAL BUTONU
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              alertPercentage = null;
+                              alertTriggered = false;
+                              _isAlertSet = false;
+                            });
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Alert kaldırıldı"),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey.shade300,
+                            foregroundColor: Colors.black87,
                           ),
-                        );
-                      },
-                      child: Text("Kaydet"),
-                    ),
+                          child: const Text("İptal Et"),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // KAYDET BUTONU
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              alertPercentage = selectedPercentage / 100;
+                              alertTriggered = false;
+                              _isAlertSet = true;
+                            });
+                            Navigator.pop(context);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "%${selectedPercentage.toInt()} için alert kuruldu"),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          },
+                          child: const Text("Kaydet"),
+                        ),
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 10),
@@ -677,46 +707,69 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             ),
                           ),
                           const SizedBox(width: 16),
+                          // ←←← YENİ SET ALERT BUTONU (Buraya yapıştır)
                           Expanded(
                             child: SizedBox(
                               height: 55,
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: colorScheme.surface,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                onPressed: () {
-                                  final notificationProvider =
-                                      Provider.of<NotificationProvider>(context,
-                                          listen: false);
-
-                                  if (!notificationProvider.isEnabled) {
-                                    // ❌ kapalıysa uyar
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            "Bildirimler kapalı. Ayarlardan açmalısınız."),
-                                        backgroundColor: Colors.red,
+                              child: Stack(
+                                clipBehavior: Clip.none,           // önemli! ikon taşsın
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: colorScheme.surface,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
-                                    );
-                                    return;
-                                  }
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    ),
+                                    onPressed: () {
+                                      final notificationProvider =
+                                          Provider.of<NotificationProvider>(context, listen: false);
 
-                                  // ✅ açıksa bottom sheet aç
-                                  _showAlertBottomSheet();
-                                },
-                                icon: Icon(Icons.notifications_none,
-                                    color: colorScheme.onSurface),
-                                label: Text(
-                                  'Set Alert',
-                                  style: TextStyle(
-                                    color: colorScheme.onSurface,
-                                    fontWeight: FontWeight.bold,
+                                      if (!notificationProvider.isEnabled) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Bildirimler kapalı. Ayarlardan açmalısınız."),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      _showAlertBottomSheet();
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        'Set Alert',
+                                        style: TextStyle(
+                                          color: colorScheme.onSurface,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
+
+                                  // Sağ üst köşeye alarm ikonu
+                                  if (_isAlertSet && alertPercentage != null)
+                                    Positioned(
+                                      top: -6,
+                                      right: -6,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.surface,     // buton rengiyle aynı
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.alarm_on_rounded,
+                                          size: 20,
+                                          color: Colors.yellow,
+                                          weight: 700,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ),
