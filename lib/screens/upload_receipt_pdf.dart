@@ -35,10 +35,17 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   bool isGallery = true;
   File? _pdf;
 
+  // PDF için yeni alanlar
+  List<_Transaction> _transactions = [];
+  double _pdfTotalIn = 0;
+  double _pdfTotalOut = 0;
+  String _pdfBanka = "";
+  String _pdfDonem = "";
+
   final formKey = GlobalKey<FormState>();
 
-  final Map<ProductModel, String> _selectedCategories = {};
-
+  final Map<String, String> _selectedCategories = {};
+  
   final List<String> categories = [
     "Food",
     "Clothing",
@@ -71,28 +78,26 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
 
   String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
+  // ─── _processPdf ──────────────────────────────────────────────────────────────
   Future<void> _processPdf() async {
     if (_pdf == null) return;
-
-    setState(() {
-      _isEditing = true;
-    });
+    setState(() => _isEditing = true);
 
     try {
-      String base64Data;
       final document = await PdfDocument.openFile(_pdf!.path);
-        final page = await document.getPage(1);
-        final pageImage = await page.render(
-          width: page.width * 2, // Yüksek kaliteli render
-          height: page.height * 2,
-          format: PdfPageImageFormat.jpeg,
-          backgroundColor: '#ffffff',
-        );
-        base64Data = base64Encode(pageImage!.bytes);
-        await page.close();
-        await document.close();
+      final page = await document.getPage(1);
+      final pageImage = await page.render(
+        width: page.width * 2,
+        height: page.height * 2,
+        format: PdfPageImageFormat.jpeg,
+        backgroundColor: '#ffffff',
+      );
+      final base64Data = base64Encode(pageImage!.bytes);
+      await page.close();
+      await document.close();
+
       const prompt = """
-Bu bir banka hesap ekstresi fotoğrafıdır. SADECE hesap hareketlerini çıkar.
+  Bu bir banka hesap ekstresi fotoğrafıdır. SADECE hesap hareketlerini çıkar.
 
 Öncelikle, her hareketin açıklamasını analiz et:
 - Kısaltmaları genişlet (örn. 'ATM WD' → 'ATM'den para çekme', 'POS PUR' → 'POS ile alışveriş', 'EFT' → 'EFT havale').
@@ -133,11 +138,10 @@ JSON DIŞINDA HİÇBİR KARAKTER YAZMA.
 STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 """;
 
-      // Groq API çağrısı
       final response = await http.post(
         Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
         headers: {
-          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}', // SENİN KEY'İN
+          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
@@ -154,8 +158,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
               ]
             }
           ],
-          "temperature": 0.2, // Ekstre için biraz daha esnek
-          "max_tokens": 4096, // Ekstre daha uzun olabilir
+          "temperature": 0.2,
+          "max_tokens": 4096,
         }),
       );
 
@@ -167,31 +171,44 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
       final data = jsonDecode(content);
 
+      _pdfBanka = data["banka"] ?? "";
+      _pdfDonem = data["donem"] ?? "";
+
       final List movements = data["hareketler"] ?? [];
 
-      final parsed = movements.map((e) {
-        return ProductModel(
-          id: '',
-          name: e["aciklama_yorumlu"] ?? "Unknown",
-          price: (e["tutar"] ?? 0).abs().toDouble(),
-          quantity: 1,
+      double totalIn = 0;
+      double totalOut = 0;
+
+      final parsed = movements.map<_Transaction>((e) {
+        final amount = (e["tutar"] ?? 0).toDouble();
+        if (amount >= 0) {
+          totalIn += amount;
+        } else {
+          totalOut += amount.abs();
+        }
+
+        return _Transaction(
+          name: e["aciklama_yorumlu"] ?? "Bilinmeyen işlem",
+          amount: amount,
+          date: parseReceiptDate(e["tarih"]?.toString()) ?? DateTime.now(),
         );
       }).toList();
 
+      // Tarihe göre azalan sırayla sırala
+      parsed.sort((a, b) => b.date.compareTo(a.date));
+
       setState(() {
-        _products = parsed;
+        _transactions = parsed;
+        _pdfTotalIn = totalIn;
+        _pdfTotalOut = totalOut;
         _scanSuccessful = true;
         _selectedCategories.clear();
         _isEditing = false;
       });
-
     } catch (e) {
-      setState(() {
-        _isEditing = false;
-      });
-
+      setState(() => _isEditing = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("PDF error: $e")),
+        SnackBar(content: Text("PDF hatası: $e")),
       );
     }
   }
@@ -425,46 +442,39 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
   // Ekstre Save
   Future<void> _savePdf() async {
-    if (_products.isEmpty) {
+    if (_transactions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No transactions found")),
+        const SnackBar(content: Text("İşlem bulunamadı")),
       );
       return;
     }
 
-    /// kategori kontrol
-    for (int i = 0; i < _products.length; i++) {
-      final p = _products[i];
-
-      if (!_selectedCategories.containsKey(p)) {
+    for (final tx in _transactions) {
+      if (!_selectedCategories.containsKey(tx.name)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please select all categories")),
+          const SnackBar(content: Text("Lütfen tüm kategorileri seçin")),
         );
         return;
       }
     }
 
-    /// HER BİRİNİ AYRI KAYDET
-    for (int i = 0; i < _products.length; i++) {
-      final p = _products[i];
-
+    for (final tx in _transactions) {
       await _service.addTransaction(
         receipt: ReceiptModel(
           id: '',
-          storeName: p.name,
-          storeNameLower: p.name.toLowerCase(),
-          totalAmount: p.total,
-          date: DateTime.now(), 
-          category: _selectedCategories[p]!,
+          storeName: tx.name,
+          storeNameLower: tx.name.toLowerCase(),
+          totalAmount: tx.amount.abs(),
+          date: tx.date,
+          category: _selectedCategories[tx.name]!,
           createdAt: DateTime.now(),
           source: 'pdf',
         ),
-        products: [], // PDF'de ürün yok
+        products: [],
       );
     }
 
     if (!mounted) return;
-
     Navigator.pop(context);
   }
 
@@ -692,211 +702,445 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   Widget _buildPdfContent() {
     final theme = Theme.of(context);
 
+    // İşlemleri ay-yıl'a göre grupla
+    final Map<String, List<_Transaction>> grouped = {};
+    for (final tx in _transactions) {
+      final key =
+          '${_monthName(tx.date.month)} ${tx.date.year}';
+      grouped.putIfAbsent(key, () => []).add(tx);
+    }
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          /// 📄 PDF CARD
+          // ── PDF YÜKLEME KARTI ──────────────────────────
           GestureDetector(
             onTap: _pickPDF,
             child: Container(
-              height: 200,
               width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 20),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withAlpha(40),
+                ),
               ),
-              child: _pdf == null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withAlpha(20),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.picture_as_pdf,
+                      color: theme.colorScheme.primary,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.picture_as_pdf,
-                            size: 42,
-                            color: theme.colorScheme.primary),
-                        const SizedBox(height: 12),
                         Text(
-                          "Upload PDF Statement",
-                          style: theme.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Tap to select your bank statement",
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
+                          _pdf == null
+                              ? "Ekstre yükle"
+                              : _pdf!.path.split('/').last,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.picture_as_pdf,
-                            size: 42, color: Colors.red),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 2),
                         Text(
-                          _pdf!.path.split('/').last,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Tap to change file",
+                          _pdf == null
+                              ? "Banka ekstrenizi seçin"
+                              : "Değiştirmek için dokun",
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
+                            color: theme.colorScheme.onSurface.withAlpha(0x80),
                           ),
                         ),
                       ],
                     ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    color: theme.colorScheme.onSurface.withAlpha(0x60),
+                  ),
+                ],
+              ),
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
 
-          /// ⚡ ANALYZE BUTTON
+          // ── ANALİZ BUTONU ──────────────────────────────
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: 52,
             child: ElevatedButton.icon(
-              onPressed: _pdf == null ? null : _processPdf,
-              icon: const Icon(Icons.auto_fix_high),
-              label: const Text("Analyze PDF"),
+              onPressed: (_pdf == null || _isEditing) ? null : _processPdf,
+              icon: _isEditing
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.auto_fix_high, size: 18),
+              label: Text(_isEditing ? "Analiz ediliyor..." : "Analiz et"),
             ),
           ),
 
-          const SizedBox(height: 24),
+          // ── SONUÇLAR ───────────────────────────────────
+          if (_transactions.isNotEmpty) ...[
 
-          /// LOADING
-          if (_isEditing)
-            const Center(child: CircularProgressIndicator()),
+            const SizedBox(height: 24),
 
-          /// RESULTS
-          if (_products.isNotEmpty)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            // Özet kart
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _summaryItem(
+                          context: context,
+                          label: "Toplam gider",
+                          value: "₺${_pdfTotalOut.toStringAsFixed(2)}",
+                          valueColor: const Color(0xFF993C1D),
+                        ),
+                      ),
+                      Expanded(
+                        child: _summaryItem(
+                          context: context,
+                          label: "Toplam gelir",
+                          value: "₺${_pdfTotalIn.toStringAsFixed(2)}",
+                          valueColor: const Color(0xFF3B6D11),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_pdfBanka.isNotEmpty || _pdfDonem.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Divider(height: 1, color: theme.colorScheme.onSurface.withAlpha(0x18)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        if (_pdfBanka.isNotEmpty)
+                          Expanded(
+                            child: _summaryItem(
+                              context: context,
+                              label: "Banka",
+                              value: _pdfBanka,
+                            ),
+                          ),
+                        if (_pdfDonem.isNotEmpty)
+                          Expanded(
+                            child: _summaryItem(
+                              context: context,
+                              label: "Dönem",
+                              value: _pdfDonem,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ]
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // İşlem başlığı
+            Row(
               children: [
-
-                Text("Detected Transactions",
-                    style: theme.textTheme.titleMedium),
-
-                const SizedBox(height: 10),
-
+                Text("İşlemler", style: theme.textTheme.titleMedium),
+                const SizedBox(width: 8),
                 Container(
-                  height: 250,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.onSurface.withAlpha(0x20),
+                    ),
                   ),
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: _products.length,
-                    itemBuilder: (context, i) {
-                      final p = _products[i];
-
-                      return Dismissible(
-                        key: ValueKey(p.hashCode), // UniqueKey() da olabilir, ama aynı ürünün yanlışlıkla silinmesini önler
-                        direction: DismissDirection.endToStart,
-
-                        background: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          alignment: Alignment.centerRight,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(Icons.delete, color: Colors.white),
-                        ),
-
-                        onDismissed: (direction) {
-                          final removedProduct = p; // referansı tut
-
-                          setState(() {
-                            _selectedCategories.remove(removedProduct);
-                            _products.remove(removedProduct);   // <-- isme göre değil, nesneye göre sil
-                          });
-                        },
-
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withAlpha(230),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-
-                              /// NAME + PRICE
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      p.name,
-                                      style: const TextStyle(fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                  Text(
-                                    "₺${p.total.toStringAsFixed(2)}",
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              /// CATEGORY DROPDOWN
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: DropdownButton<String>(
-                                  value: _selectedCategories[p],
-                                  hint: const Text("Select category"),
-                                  isExpanded: true,
-                                  underline: const SizedBox(),
-                                  items: categories
-                                      .map((e) => DropdownMenuItem(
-                                            value: e,
-                                            child: Text(e),
-                                          ))
-                                      .toList(),
-                                  onChanged: (v) {
-                                    setState(() {
-                                      _selectedCategories[p] = v!;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton.icon(
-                    onPressed: _savePdf,
-                    icon: const Icon(Icons.save),
-                    label: const Text("Save Transactions"),
+                  child: Text(
+                    "${_transactions.length} adet",
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(0x80),
+                    ),
                   ),
                 ),
               ],
             ),
+
+            const SizedBox(height: 12),
+
+            // Ay gruplu işlem listesi
+            ...grouped.entries.map((entry) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      entry.key.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withAlpha(0x70),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                  ...entry.value.asMap().entries.map((e) {
+                    final tx = e.value;
+                    final isOut = tx.amount < 0;
+
+                    return Dismissible(
+                      key: ValueKey('${tx.name}_${tx.date}_${e.key}'),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        alignment: Alignment.centerRight,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (_) {
+                        setState(() {
+                          _transactions.remove(tx);
+                          _selectedCategories.remove(tx.name);
+                          _pdfTotalOut = _transactions
+                              .where((t) => t.amount < 0)
+                              .fold(0, (s, t) => s + t.amount.abs());
+                          _pdfTotalIn = _transactions
+                              .where((t) => t.amount >= 0)
+                              .fold(0, (s, t) => s + t.amount);
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Row(
+                              children: [
+                                // İşlem ikonu
+                                Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: isOut
+                                        ? const Color(0xFFFAECE7)
+                                        : const Color(0xFFEAF3DE),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    isOut
+                                        ? Icons.arrow_upward
+                                        : Icons.arrow_downward,
+                                    size: 16,
+                                    color: isOut
+                                        ? const Color(0xFF993C1D)
+                                        : const Color(0xFF3B6D11),
+                                  ),
+                                ),
+
+                                const SizedBox(width: 10),
+
+                                // İsim + tarih
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        tx.name,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        "${tx.date.day} ${_monthName(tx.date.month)} ${tx.date.year}",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: theme.colorScheme.onSurface
+                                              .withAlpha(0x70),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Tutar
+                                Text(
+                                  "${isOut ? '-' : '+'}₺${tx.amount.abs().toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: isOut
+                                        ? const Color(0xFF993C1D)
+                                        : const Color(0xFF3B6D11),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // Kategori seçimi (chip'ler)
+                            SizedBox(
+                              height: 28,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: categories.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: 6),
+                                itemBuilder: (context, ci) {
+                                  final cat = categories[ci];
+                                  final selected =
+                                      _selectedCategories[tx.name] == cat;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedCategories[tx.name] = cat;
+                                      });
+                                    },
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 150),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: selected
+                                            ? theme.colorScheme.primary
+                                                .withAlpha(0x22)
+                                            : Colors.transparent,
+                                        borderRadius:
+                                            BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: selected
+                                              ? theme.colorScheme.primary
+                                              : theme.colorScheme.onSurface
+                                                  .withAlpha(0x28),
+                                          width: selected ? 1.2 : 0.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        cat,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: selected
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                          color: selected
+                                              ? theme.colorScheme.primary
+                                              : theme.colorScheme.onSurface
+                                                  .withAlpha(0xAA),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              );
+            }),
+
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton.icon(
+                onPressed: _savePdf,
+                icon: const Icon(Icons.save, size: 18),
+                label: const Text("İşlemleri kaydet"),
+              ),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  // Özet item widget'ı
+  Widget _summaryItem({
+    required BuildContext context,
+    required String label,
+    required String value,
+    Color? valueColor,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurface.withAlpha(0x80),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: valueColor ?? theme.colorScheme.onSurface,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Ay adı yardımcı fonksiyonu
+  String _monthName(int month) {
+    const names = [
+      '', 'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ];
+    return names[month];
   }
 
   Widget _buildGalleryContent() {
@@ -1283,4 +1527,17 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
       ),
     );
   }
+}
+
+// PDF işlemleri için basit model
+class _Transaction {
+  final String name;
+  final double amount;
+  final DateTime date;
+
+  _Transaction({
+    required this.name,
+    required this.amount,
+    required this.date,
+  });
 }
