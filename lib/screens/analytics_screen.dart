@@ -2,8 +2,8 @@ import 'package:digital_receipt_wallet/models/expense_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
-
+import 'package:firebase_auth/firebase_auth.dart';
+import '../models/receipt_model.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -13,88 +13,154 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  
-  // Dinamik Bütçe Kategorileri Listesi
-  final List<BudgetCategory> budgetCategories = [
-    BudgetCategory(title: 'Food', spentPercentage: 65, icon: Icons.coffee, iconColor: Colors.orangeAccent, bgColor: Colors.orange.shade50),
-    BudgetCategory(title: 'Clothing', spentPercentage: 40, icon: Icons.shopping_bag_outlined, iconColor: Colors.blueAccent, bgColor: Colors.blue.shade50),
-    BudgetCategory(title: 'Tech', spentPercentage: 30, icon: Icons.laptop_outlined, iconColor: Colors.tealAccent, bgColor: Colors.teal.shade50),
-    BudgetCategory(title: 'Transportation', spentPercentage: 20, icon: Icons.directions_car_outlined, iconColor: Colors.greenAccent, bgColor: Colors.green.shade50),
-    BudgetCategory(title: 'Bills', spentPercentage: 50, icon: Icons.account_balance_outlined, iconColor: Colors.grey, bgColor: Colors.grey.shade50),
-    BudgetCategory(title: 'Rent', spentPercentage: 70, icon: Icons.home_outlined, iconColor: Colors.brown, bgColor: Colors.brown.shade50),
-    BudgetCategory(title: 'Education', spentPercentage: 25, icon: Icons.school_outlined, iconColor: Colors.indigoAccent, bgColor: const Color.fromARGB(255, 193, 201, 246)),
-    BudgetCategory(title: 'Healthcare', spentPercentage: 15, icon: Icons.health_and_safety_outlined, iconColor: Colors.redAccent, bgColor: Colors.red.shade50),
-    BudgetCategory(title: 'Personal Care', spentPercentage: 35, icon: Icons.account_circle_outlined, iconColor: Colors.pinkAccent, bgColor: Colors.pink.shade50),
-    BudgetCategory(title: 'Entertainment', spentPercentage: 80, icon: Icons.movie_outlined, iconColor: Colors.purpleAccent, bgColor: Colors.purple.shade50),
-    BudgetCategory(title: 'Household & Furniture', spentPercentage: 45, icon: Icons.home_outlined, iconColor: Colors.brown, bgColor: Colors.brown.shade50),
-    BudgetCategory(title: 'Stationery', spentPercentage: 10, icon: Icons.edit_outlined, iconColor: Colors.grey, bgColor: Colors.grey.shade50),
-    BudgetCategory(title: 'Vacation & Travel', spentPercentage: 25, icon: Icons.airplanemode_active_outlined, iconColor: Colors.deepPurpleAccent, bgColor: const Color.fromARGB(255, 210, 201, 224)),
-    BudgetCategory(title: 'Taxes & Official Payments', spentPercentage: 15, icon: Icons.account_balance_outlined, iconColor: Colors.brown, bgColor: Colors.brown.shade50),
-    BudgetCategory(title: 'Others', spentPercentage: 10, icon: Icons.other_houses_outlined, iconColor: Colors.grey, bgColor: Colors.grey.shade50)
-  ];
 
-  Stream<List<ExpenseItem>>? _expensesStream;
+  // Kategori meta verisi (ikon/renk sabit, yüzde dinamik gelecek)
+  final Map<String, _CategoryMeta> _categoryMeta = {
+    'Food':                     _CategoryMeta(Icons.coffee,                    Colors.orangeAccent,      Colors.orange.shade50),
+    'Clothing':                 _CategoryMeta(Icons.shopping_bag_outlined,     Colors.blueAccent,        Colors.blue.shade50),
+    'Tech':                     _CategoryMeta(Icons.laptop_outlined,           Colors.tealAccent,        Colors.teal.shade50),
+    'Transportation':           _CategoryMeta(Icons.directions_car_outlined,   Colors.greenAccent,       Colors.green.shade50),
+    'Bills':                    _CategoryMeta(Icons.account_balance_outlined,  Colors.grey,              Colors.grey.shade50),
+    'Rent':                     _CategoryMeta(Icons.home_outlined,             Colors.brown,             Colors.brown.shade50),
+    'Education':                _CategoryMeta(Icons.school_outlined,           Colors.indigoAccent,      const Color(0xFFC1C9F6)),
+    'Healthcare':               _CategoryMeta(Icons.health_and_safety_outlined,Colors.redAccent,         Colors.red.shade50),
+    'Personal Care':            _CategoryMeta(Icons.account_circle_outlined,   Colors.pinkAccent,        Colors.pink.shade50),
+    'Entertainment':            _CategoryMeta(Icons.movie_outlined,            Colors.purpleAccent,      Colors.purple.shade50),
+    'Household / Furniture':    _CategoryMeta(Icons.home_outlined,             Colors.brown,             Colors.brown.shade50),
+    'Stationery':               _CategoryMeta(Icons.edit_outlined,             Colors.grey,              Colors.grey.shade50),
+    'Vacation / Travel':        _CategoryMeta(Icons.airplanemode_active_outlined, Colors.deepPurpleAccent, const Color(0xFFD2C9E0)),
+    'Taxes / Official Payments':_CategoryMeta(Icons.account_balance_outlined,  Colors.brown,             Colors.brown.shade50),
+    'Other':                    _CategoryMeta(Icons.other_houses_outlined,     Colors.grey,              Colors.grey.shade50),
+  };
 
-    @override
-    void initState() {
-      super.initState();
+  Stream<List<ExpenseItem>>? _weeklyExpensesStream;
+  Stream<List<ReceiptModel>>? _monthlyTransactionsStream;
 
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        return;
-      }
+  late DateTime _weekStart;
+  late DateTime _monthStart;
+  late DateTime _monthEnd;
 
-      // Bu hafta başı ve sonu hesapla (Pazartesi başlangıç)
-      final now = DateTime.now();
-      final daysToMonday = now.weekday - 1;
-      final weekStart = DateTime(now.year, now.month, now.day - daysToMonday);
-      final weekEnd = weekStart.add(const Duration(days: 7));
+  @override
+  void initState() {
+    super.initState();
 
-      final Timestamp startTs = Timestamp.fromDate(weekStart);
-      final Timestamp endTs = Timestamp.fromDate(weekEnd);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
-      // Stream'i başlatıyoruz – tüm transactions altındaki products'ları filtreliyoruz
-      _expensesStream = FirebaseFirestore.instance
+    final now = DateTime.now();
+
+    // Hafta başı (Pazartesi)
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    _weekStart = DateTime(monday.year, monday.month, monday.day);
+    final weekEnd = _weekStart.add(const Duration(days: 7));
+
+    // Ay başı/sonu
+    _monthStart = DateTime(now.year, now.month, 1);
+    _monthEnd = DateTime(now.year, now.month + 1, 1);
+
+    final ref = FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
-        .collection('transactions')
-        .where('date', isGreaterThanOrEqualTo: startTs)
-        .where('date', isLessThanOrEqualTo: endTs)
+        .collection('transactions');
+
+    // Haftalık stream → çizgi grafik
+    _weeklyExpensesStream = ref
+        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_weekStart))
+        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(weekEnd))
         .snapshots()
-        .asyncMap((transSnapshot) async {
-      List<ExpenseItem> allExpenses = [];
-
-      for (final trans in transSnapshot.docs) {
-        final transData = trans.data();
-        final transDate =
-            (transData['date'] as Timestamp).toDate();
-
-        final productsSnap =
-            await trans.reference.collection('products').get();
-
-        for (final productDoc in productsSnap.docs) {
-          final data = productDoc.data();
-
-          final price = (data['price'] as num?)?.toDouble() ?? 0;
-          final quantity =
-              (data['quantity'] as num?)?.toDouble() ?? 1;
-
-          final amount = price * quantity;
-
-          allExpenses.add(
-            ExpenseItem(
-              title: data['name'] ?? 'Unknown',
-              amount: amount,
-              date: transDate,
-              percentage: 0,
-              color: Colors.grey,
-            ),
-          );
+        .asyncMap((snap) async {
+      final List<ExpenseItem> items = [];
+      for (final doc in snap.docs) {
+        final data = doc.data();
+        final date = (data['date'] as Timestamp).toDate();
+        final products = await doc.reference.collection('products').get();
+        for (final p in products.docs) {
+          final pd = p.data();
+          items.add(ExpenseItem(
+            title: pd['name'] ?? '',
+            amount: ((pd['price'] as num?)?.toDouble() ?? 0) *
+                ((pd['quantity'] as num?)?.toDouble() ?? 1),
+            date: date,
+            percentage: 0,
+            color: Colors.grey,
+          ));
         }
       }
-
-      return allExpenses;
+      return items;
     });
+
+    // Aylık stream → budget kategoriler + insights + top merchant
+    _monthlyTransactionsStream = ref
+        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_monthStart))
+        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(_monthEnd))
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => ReceiptModel.fromMap(d.id, d.data()))
+            .toList());
+  }
+
+  // Aylık veriden türetilen analiz sonuçları
+  _MonthlyAnalytics _computeAnalytics(List<ReceiptModel> transactions) {
+    // Kategori bazlı toplam harcama
+    final Map<String, double> categoryTotals = {};
+    for (final tx in transactions) {
+      categoryTotals[tx.category] =
+          (categoryTotals[tx.category] ?? 0) + tx.totalAmount;
+    }
+
+    // Mağaza bazlı toplam + işlem sayısı
+    final Map<String, double> merchantTotals = {};
+    final Map<String, int> merchantCounts = {};
+    for (final tx in transactions) {
+      merchantTotals[tx.storeName] =
+          (merchantTotals[tx.storeName] ?? 0) + tx.totalAmount;
+      merchantCounts[tx.storeName] =
+          (merchantCounts[tx.storeName] ?? 0) + 1;
+    }
+
+    // En yüksek kategorii
+    String topCategory = '-';
+    double topCategoryAmount = 0;
+    categoryTotals.forEach((cat, amount) {
+      if (amount > topCategoryAmount) {
+        topCategoryAmount = amount;
+        topCategory = cat;
+      }
+    });
+
+    // En yüksek mağaza
+    String topMerchant = '-';
+    double topMerchantAmount = 0;
+    int topMerchantCount = 0;
+    merchantTotals.forEach((name, amount) {
+      if (amount > topMerchantAmount) {
+        topMerchantAmount = amount;
+        topMerchant = name;
+        topMerchantCount = merchantCounts[name] ?? 0;
+      }
+    });
+
+    // Ortalama günlük harcama (bu ayki gün sayısına göre)
+    final now = DateTime.now();
+    final daysInMonth = _monthEnd.difference(_monthStart).inDays;
+    final passedDays = now.day.clamp(1, daysInMonth);
+    final totalSpent = transactions.fold(0.0, (s, t) => s + t.totalAmount);
+    final avgDaily = passedDays > 0 ? totalSpent / passedDays : 0.0;
+
+    // Budget yüzdeleri (sabit bütçe yoksa harcamayı max'a oranlıyoruz)
+    final maxSpend =
+        categoryTotals.values.fold(0.0, (m, v) => v > m ? v : m);
+
+    return _MonthlyAnalytics(
+      categoryTotals: categoryTotals,
+      topCategory: topCategory,
+      topCategoryAmount: topCategoryAmount,
+      topMerchant: topMerchant,
+      topMerchantAmount: topMerchantAmount,
+      topMerchantCount: topMerchantCount,
+      avgDailySpend: avgDaily,
+      maxSpend: maxSpend,
+    );
   }
 
   @override
@@ -112,205 +178,346 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           icon: Icon(Icons.arrow_back_ios_new, size: 20, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Analytics', style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+        title: Text('Analytics',
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Spending Trend', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+        child: StreamBuilder<List<ReceiptModel>>(
+          stream: _monthlyTransactionsStream,
+          builder: (context, monthlySnap) {
+            final monthlyData = monthlySnap.data ?? [];
+            final analytics = _computeAnalytics(monthlyData);
 
-            // --- DİNAMİK ÇİZGİ GRAFİK ---
-            Container(
-              height: 220,
-              padding: const EdgeInsets.only(top: 16, right: 16, left: 16, bottom: 8),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Weekly', style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: StreamBuilder<List<ExpenseItem>>(
-                      stream: _expensesStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
+            // Toplam harcamayı 1 kez hesapla (map dışında)
+            final totalSpent = analytics.categoryTotals.values
+                .fold(0.0, (total, val) => total + val);
 
-                        if (snapshot.hasData) {
-                          print('Ürün sayısı geldi: ${snapshot.data!.length}');
-                          for (final exp in snapshot.data!) {
-                            print('→ amount: ${exp.amount} | date: ${exp.date.toString()}');
-                          }
-                        } else if (snapshot.hasError) {
-                          print('Stream hatası: ${snapshot.error}');
-                        } else {
-                          print('Veri yok veya bekleniyor');
-                        }
+            // Kategori listesini hazırla
+            final budgetCategories = _categoryMeta.entries.map((entry) {
+              final spent = analytics.categoryTotals[entry.key] ?? 0.0;
 
-                        if (snapshot.hasError) {
-                          return Center(child: Text('Hata: ${snapshot.error}'));
-                        }
+              final pct = totalSpent > 0
+                  ? (spent / totalSpent * 100).clamp(0.0, 100.0).toDouble()
+                  : 0.0;
 
-                        final expenses = snapshot.data ?? [];
+              return BudgetCategory(
+                title: entry.key,
+                spentPercentage: pct,
+                icon: entry.value.icon,
+                iconColor: entry.value.iconColor,
+                bgColor: entry.value.bgColor,
+              );
+            }).toList();
 
-                        // Haftanın 7 günü için toplam harcama
-                        final dailyTotals = List<double>.filled(7, 0.0);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
 
-                        final now = DateTime.now();
-                        final monday = now.subtract(Duration(days: now.weekday - 1));
-                        final weekStart = DateTime(monday.year, monday.month, monday.day);
+                // ── Çizgi grafik ────────────────────────────────
+                Text('Spending Trend',
+                    style: textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
 
-                        for (final exp in expenses) {
-                          final diff = exp.date.difference(weekStart).inDays;
-                          if (diff >= 0 && diff < 7) {
-                            dailyTotals[diff] += exp.amount;
-                          }
-                        }
+                Container(
+                  height: 220,
+                  padding: const EdgeInsets.only(
+                      top: 16, right: 16, left: 16, bottom: 8),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Weekly',
+                          style: TextStyle(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12)),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: StreamBuilder<List<ExpenseItem>>(
+                          stream: _weeklyExpensesStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
 
-                        final spots = List.generate(7, (i) => FlSpot(i.toDouble(), dailyTotals[i]));
+                            final expenses = snapshot.data ?? [];
+                            final dailyTotals = List<double>.filled(7, 0.0);
 
-                        return LineChart(
-                          LineChartData(
-                            gridData: const FlGridData(show: false),
-                            titlesData: FlTitlesData(
-                              leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  reservedSize: 22,
-                                  interval: 1,
-                                  getTitlesWidget: (value, meta) {
-                                    const days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
-                                    final index = value.toInt();
-                                    if (index >= 0 && index < days.length) {
-                                      return Text(days[index], style: textTheme.bodySmall);
-                                    }
-                                    return const Text('');
-                                  },
+                            for (final exp in expenses) {
+                              final diff =
+                                  exp.date.difference(_weekStart).inDays;
+                              if (diff >= 0 && diff < 7) {
+                                dailyTotals[diff] += exp.amount;
+                              }
+                            }
+
+                            final spots = List.generate(
+                                7,
+                                (i) => FlSpot(
+                                    i.toDouble(), dailyTotals[i]));
+
+                            return LineChart(LineChartData(
+                              gridData: const FlGridData(show: false),
+                              titlesData: FlTitlesData(
+                                leftTitles: const AxisTitles(
+                                    sideTitles:
+                                        SideTitles(showTitles: false)),
+                                rightTitles: const AxisTitles(
+                                    sideTitles:
+                                        SideTitles(showTitles: false)),
+                                topTitles: const AxisTitles(
+                                    sideTitles:
+                                        SideTitles(showTitles: false)),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 22,
+                                    interval: 1,
+                                    getTitlesWidget: (value, meta) {
+                                      const days = [
+                                        'Mon', 'Tue', 'Wed',
+                                        'Thu', 'Fri', 'Sat', 'Sun'
+                                      ];
+                                      final i = value.toInt();
+                                      return i >= 0 && i < days.length
+                                          ? Text(days[i],
+                                              style: textTheme.bodySmall)
+                                          : const Text('');
+                                    },
+                                  ),
                                 ),
+                              ),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: spots,
+                                  isCurved: true,
+                                  color: colorScheme.primary,
+                                  barWidth: 3,
+                                  isStrokeCapRound: true,
+                                  dotData: const FlDotData(show: false),
+                                  belowBarData: BarAreaData(
+                                    show: true,
+                                    color: colorScheme.primary
+                                        .withAlpha(0x26),
+                                  ),
+                                ),
+                              ],
+                              minY: 0,
+                            ));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // ── Monthly Budgets ──────────────────────────────
+                Text('Monthly Budgets',
+                    style: textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  height: 140,
+                  child: monthlySnap.connectionState ==
+                          ConnectionState.waiting
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: budgetCategories.length,
+                          itemBuilder: (context, index) {
+                            final cat = budgetCategories[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 16.0),
+                              child: Container(
+                                width: 130,
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                    color: colorScheme.surface,
+                                    borderRadius:
+                                        BorderRadius.circular(16)),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                          color: cat.bgColor,
+                                          shape: BoxShape.circle),
+                                      child: Icon(cat.icon,
+                                          color: cat.iconColor),
+                                    ),
+                                    const Spacer(),
+                                    // Overflow düzeltmesi: maxLines + overflow
+                                    Text(
+                                      cat.title,
+                                      style: textTheme.bodyMedium
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "${cat.spentPercentage.toStringAsFixed(1)}%",
+                                      style: textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // ── Monthly Insights ─────────────────────────────
+                Text('MONTHLY INSIGHTS',
+                    style: textTheme.labelSmall?.copyWith(
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+
+                Text('HIGHEST SPENDING CATEGORY',
+                    style: textTheme.bodySmall),
+                const SizedBox(height: 4),
+                Text(
+                  analytics.topCategory == '-'
+                      ? 'No data yet'
+                      : '${analytics.topCategory} (₺${analytics.topCategoryAmount.toStringAsFixed(2)})',
+                  style: textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 16),
+
+                Text('AVERAGE DAILY SPEND (SO FAR THIS MONTH)',
+                    style: textTheme.bodySmall),
+                const SizedBox(height: 4),
+                Text(
+                  '₺${analytics.avgDailySpend.toStringAsFixed(2)} / day',
+                  style: textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 30),
+
+                // ── Top Merchant ─────────────────────────────────
+                Text('Top Merchant',
+                    style: textTheme.labelSmall
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16)),
+                  child: analytics.topMerchant == '-'
+                      ? Center(
+                          child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 8),
+                          child: Text('No data yet',
+                              style: textTheme.bodyMedium),
+                        ))
+                      : Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: colorScheme.primary
+                                      .withAlpha(0x1A),
+                                  borderRadius:
+                                      BorderRadius.circular(12)),
+                              child: Icon(
+                                  Icons.shopping_bag_outlined,
+                                  color: colorScheme.primary),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    analytics.topMerchant,
+                                    style: textTheme.bodyLarge
+                                        ?.copyWith(
+                                            fontWeight:
+                                                FontWeight.bold),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${analytics.topMerchantCount} transactions',
+                                    style: textTheme.bodySmall,
+                                  ),
+                                ],
                               ),
                             ),
-                            borderData: FlBorderData(show: false),
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: spots,
-                                isCurved: true,
-                                color: colorScheme.primary,
-                                barWidth: 3,
-                                isStrokeCapRound: true,
-                                dotData: const FlDotData(show: false),
-                                belowBarData: BarAreaData(
-                                  show: true,
-                                  color: colorScheme.primary.withAlpha(0x26),
-                                ),
-                              ),
-                            ],
-                            minY: 0,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
+                            Text(
+                              '₺${analytics.topMerchantAmount.toStringAsFixed(2)}',
+                              style: textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                ),
 
-            Text('Monthly Budgets', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-
-            // --- DİNAMİK YATAY LİSTE (ListView.builder) ---
-            SizedBox(
-              height: 140,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: budgetCategories.length,
-                itemBuilder: (context, index) {
-                  final cat = budgetCategories[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Container(
-                      width: 130,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(color: colorScheme.surface, borderRadius: BorderRadius.circular(16)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(color: cat.bgColor, shape: BoxShape.circle),
-                            child: Icon(cat.icon, color: cat.iconColor),
-                          ),
-                          const Spacer(),
-                          Text(cat.title, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 4),
-                          Text('%${cat.spentPercentage.toInt()} spent', style: textTheme.bodySmall),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 30),
-
-            Text('MONTHLY INSIGHTS', style: textTheme.labelSmall?.copyWith(letterSpacing: 1.2, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            
-            // Dinamik Insight verileri (Değişkenlere atanabilir)
-            Text('HIGHEST SPENDING CATEGORY', style: textTheme.bodySmall),
-            const SizedBox(height: 4),
-            Text('Groceries & Dining (₺1,450)', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            
-            Text('AVERAGE DAILY SPEND', style: textTheme.bodySmall),
-            const SizedBox(height: 4),
-            Text('₺138.00 / day', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 30),
-
-            Text('Top Merchant', style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            
-            // Top Merchant Container'ı
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: colorScheme.surface, borderRadius: BorderRadius.circular(16)),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: Icon(Icons.shopping_bag_outlined, color: colorScheme.primary),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Whole Foods Market', style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 4),
-                        Text('12 transactions', style: textTheme.bodySmall),
-                      ],
-                    ),
-                  ),
-                  Text('₺580.00', style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-          ],
+                const SizedBox(height: 30),
+              ],
+            );
+          },
         ),
       ),
     );
   }
+}
+
+// ── Yardımcı sınıflar ─────────────────────────────────────────────────────────
+
+class _CategoryMeta {
+  final IconData icon;
+  final Color iconColor;
+  final Color bgColor;
+  const _CategoryMeta(this.icon, this.iconColor, this.bgColor);
+}
+
+class _MonthlyAnalytics {
+  final Map<String, double> categoryTotals;
+  final String topCategory;
+  final double topCategoryAmount;
+  final String topMerchant;
+  final double topMerchantAmount;
+  final int topMerchantCount;
+  final double avgDailySpend;
+  final double maxSpend;
+
+  _MonthlyAnalytics({
+    required this.categoryTotals,
+    required this.topCategory,
+    required this.topCategoryAmount,
+    required this.topMerchant,
+    required this.topMerchantAmount,
+    required this.topMerchantCount,
+    required this.avgDailySpend,
+    required this.maxSpend,
+  });
 }

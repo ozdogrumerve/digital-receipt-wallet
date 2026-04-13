@@ -264,8 +264,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _showAlertBottomSheet() {
     double selectedPercentage = 50;
+    final parentSetState = setState;
 
-    showModalBottomSheet(
+    showModalBottomSheet(  
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -316,7 +317,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
+                            parentSetState(() {
                               alertPercentage = null;
                               alertTriggered = false;
                               _isAlertSet = false;
@@ -341,7 +342,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
+                            parentSetState(() {
                               alertPercentage = selectedPercentage / 100;
                               alertTriggered = false;
                               _isAlertSet = true;
@@ -707,7 +708,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // ←←← YENİ SET ALERT BUTONU (Buraya yapıştır)
+                          // ←←← YENİ SET ALERT BUTONU 
                           Expanded(
                             child: SizedBox(
                               height: 55,
@@ -761,10 +762,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           color: colorScheme.surface,     // buton rengiyle aynı
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.alarm_on_rounded,
                                           size: 20,
-                                          color: Colors.yellow,
+                                          color: theme.colorScheme.primary,
                                           weight: 700,
                                         ),
                                       ),
