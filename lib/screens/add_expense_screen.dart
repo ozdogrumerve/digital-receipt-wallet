@@ -271,26 +271,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  // ─── Readonly preview field (ADD ITEM card içinde) ────────────────────────
-  Widget _previewField({required String hint, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          hint,
-          style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-        ),
-      ),
-    );
-  }
-
   // ─── BUILD ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
