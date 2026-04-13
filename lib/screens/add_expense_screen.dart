@@ -13,6 +13,10 @@ class AddExpenseScreen extends StatefulWidget {
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final FirestoreService _service = FirestoreService();
 
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _qtyController = TextEditingController(text: "1");
+
   final _storeController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _category = "Food";
@@ -188,7 +192,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 height: 50,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9C7BCF),
+                    backgroundColor: theme.colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -407,93 +411,107 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         ],
                       ),
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Product Name",
-                            style: theme.textTheme.labelSmall!
-                                .copyWith(
-                                    color: theme
-                                        .colorScheme.onSurface
-                                        .withAlpha(0x99)),
+                            style: theme.textTheme.labelSmall!.copyWith(
+                              color: theme.colorScheme.onSurface.withAlpha(0x99),
+                            ),
                           ),
                           const SizedBox(height: 6),
-                          _previewField(
-                            hint: "What did you buy?",
-                            onTap: _openProductSheet,
+                          TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              hintText: "What did you buy?",
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
+
                           const SizedBox(height: 14),
+
                           Row(
                             children: [
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Price",
-                                      style: theme.textTheme
-                                          .labelSmall!
-                                          .copyWith(
-                                              color: theme
-                                                  .colorScheme
-                                                  .onSurface
-                                                  .withAlpha(0x99)),
+                                child: TextField(
+                                  controller: _priceController,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  decoration: InputDecoration(
+                                    hintText: "₺ 0.00",
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide.none,
                                     ),
-                                    const SizedBox(height: 6),
-                                    _previewField(
-                                      hint: "₺ 0.00",
-                                      onTap: _openProductSheet,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Qty (Opt)",
-                                      style: theme.textTheme
-                                          .labelSmall!
-                                          .copyWith(
-                                              color: theme
-                                                  .colorScheme
-                                                  .onSurface
-                                                  .withAlpha(0x99)),
+                                child: TextField(
+                                  controller: _qtyController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    hintText: "1",
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide.none,
                                     ),
-                                    const SizedBox(height: 6),
-                                    _previewField(
-                                      hint: "1",
-                                      onTap: _openProductSheet,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
+
                           const SizedBox(height: 18),
+
                           SizedBox(
                             width: double.infinity,
                             height: 48,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color(0xFFB89AD9),
+                                backgroundColor: theme.colorScheme.primary,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                               ),
-                              onPressed: _openProductSheet,
+                              onPressed: () {
+                                final name = _nameController.text.trim();
+                                final price = double.tryParse(_priceController.text) ?? 0;
+                                final qty = int.tryParse(_qtyController.text) ?? 1;
+
+                                if (name.isEmpty || price <= 0) {
+                                  _showSnack("Enter valid product");
+                                  return;
+                                }
+
+                                setState(() {
+                                  _products.add(ProductModel(
+                                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                                    name: name,
+                                    price: price,
+                                    quantity: qty,
+                                  ));
+                                });
+
+                                // temizle
+                                _nameController.clear();
+                                _priceController.clear();
+                                _qtyController.text = "1";
+                              },
                               child: const Text("+ Add to List"),
                             ),
                           ),
                         ],
-                      ),
+                      )
                     ),
 
                     const SizedBox(height: 30),
@@ -512,7 +530,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEDE7F6),
+                            color: theme.colorScheme.surface,
                             borderRadius:
                                 BorderRadius.circular(20),
                           ),
@@ -666,7 +684,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       Container(
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEDE7F6),
+                          color: theme.colorScheme.surface,
                           borderRadius:
                               BorderRadius.circular(20),
                         ),
@@ -708,7 +726,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   height: 56,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9C7BCF),
+                      backgroundColor: theme.colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
