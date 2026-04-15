@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../models/receipt_model.dart';
 import '../services/firestore_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -22,6 +25,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   String _category = "Food";
   final List<ProductModel> _products = [];
   final _formKey = GlobalKey<FormState>();
+
+  bool _isLoadingAI = false;
 
   static const List<String> _categories = [
     "Food",
@@ -271,6 +276,72 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
+  Future<void> predictCategory() async {
+    if (_products.isEmpty) return;
+
+    setState(() => _isLoadingAI = true);
+
+    try {
+      final productNames = _products.map((e) => e.name).join(", ");
+      final store = _storeController.text.trim();
+
+      final prompt = """
+        Bu alışverişe en uygun kategoriyi tahmin et.
+
+        Store: $store
+        Products: $productNames
+
+        Sadece şu kategorilerden birini döndür:
+        Food, Clothing, Tech, Transportation, Bills, Rent, Education, Healthcare, 
+        Personal Care, Entertainment, Household / Furniture, Stationery, 
+        Vacation / Travel, Taxes / Official Payments, Other
+
+        SADECE kategori adını yaz.
+        """;
+
+      final response = await http.post(
+        Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+          "messages": [
+            {
+              "role": "user",
+              "content": prompt,
+            }
+          ],
+          "temperature": 0,
+          "max_tokens": 10,
+        }),
+      );
+
+      final decoded = jsonDecode(response.body);
+      final result = decoded['choices'][0]['message']['content']
+          .toString()
+          .trim();
+
+      // case-insensitive eşleştirme
+      final matched = _categories.firstWhere(
+        (c) => c.toLowerCase() == result.toLowerCase(),
+        orElse: () => "Other",
+      );
+
+      setState(() {
+        _category = matched;
+        _isLoadingAI = false;
+      });
+    } catch (e) {
+      setState(() => _isLoadingAI = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("AI error: $e")),
+      );
+    }
+  }
+
   // ─── BUILD ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
@@ -364,7 +435,42 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         ),
                       ],
                     ),
-
+                    const SizedBox(height: 6),
+                    // AI önerisi butonu
+                    Align(
+                      alignment: Alignment.centerRight, // sağa yasla
+                      child: ElevatedButton(
+                        onPressed: _isLoadingAI ? null : predictCategory,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12, // genişliği kontrol eder
+                            vertical: 8,    // yüksekliği kontrol eder
+                          ),
+                          minimumSize: Size.zero, // default büyük boyutu kaldırır
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap, // daha kompakt
+                        ),
+                        child: _isLoadingAI
+                            ? const SizedBox(
+                                height: 16,
+                                width: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min, 
+                                children: const [
+                                  Icon(Icons.auto_awesome, size: 14),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    "AI Suggest",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
                     const SizedBox(height: 30),
 
                     // ── ADD ITEM section ──────────────────────────────
