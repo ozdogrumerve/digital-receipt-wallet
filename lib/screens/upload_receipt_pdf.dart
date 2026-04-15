@@ -31,6 +31,7 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   late List<ProductModel> _products;
 
   bool _isEditing = false;
+  bool _isCategoryFromAI = false;
   bool _scanSuccessful = false;
   bool isGallery = true;
   File? _pdf;
@@ -99,6 +100,14 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
       const prompt = """
   Bu bir banka hesap ekstresi fotoğrafıdır. SADECE hesap hareketlerini çıkar.
 
+    Ek olarak:
+  - Her işlem için uygun bir kategori tahmini yap.
+  - Kategori şu listeden biri olmalı:
+  Food, Clothing, Tech, Transportation, Bills, Rent, Education, Healthcare, 
+  Personal Care, Entertainment, Household / Furniture, Stationery, 
+  Vacation / Travel, Taxes / Official Payments, Other
+
+
 Öncelikle, her hareketin açıklamasını analiz et:
 - Kısaltmaları genişlet (örn. 'ATM WD' → 'ATM'den para çekme', 'POS PUR' → 'POS ile alışveriş', 'EFT' → 'EFT havale').
 - Eğer açıklama kodlu veya belirsizse (örn. 'TXN 1234', 'MERCH 5678'), olası anlamını tahmin et (örn. POS numarasıysa 'Kartlı alışveriş - Mağaza bilinmiyor').
@@ -122,6 +131,7 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
       "aciklama_yorumlu": "genişletilmiş/anlaşılır hali",
       "tutar": sayı,          // pozitif = giriş, negatif = çıkış
       "bakiye": sayı
+      "kategori": "kategori adı"
     },
     ...
   ]
@@ -181,17 +191,27 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
       final parsed = movements.map<_Transaction>((e) {
         final amount = (e["tutar"] ?? 0).toDouble();
+        
         if (amount >= 0) {
           totalIn += amount;
         } else {
           totalOut += amount.abs();
         }
 
-        return _Transaction(
+        final tx = _Transaction(
           name: e["aciklama_yorumlu"] ?? "Bilinmeyen işlem",
           amount: amount,
           date: parseReceiptDate(e["tarih"]?.toString()) ?? DateTime.now(),
         );
+
+        final categoryFromAI = e["kategori"];
+
+        if (categoryFromAI != null && categories.contains(categoryFromAI)) {
+          _selectedCategories[tx.name] = categoryFromAI;
+        }
+
+        return tx;
+
       }).toList();
 
       // Tarihe göre azalan sırayla sırala
@@ -202,7 +222,6 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
         _pdfTotalIn = totalIn;
         _pdfTotalOut = totalOut;
         _scanSuccessful = true;
-        _selectedCategories.clear();
         _isEditing = false;
       });
     } catch (e) {
@@ -282,17 +301,30 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
       final base64Data = base64Encode(bytes);
 
       const prompt =
-          """Bu fiş fotoğrafından SADECE alışveriş ürünleri ve fiyatlarını çıkar. Market adı, adres, tarih, ödeme türü gibi bilgileri ürün olarak alma! Sadece şu yapıda temiz JSON dön, başka hiçbir metin yazma:
-  {
-    "market": "market adı (varsa)",
-    "tarih": "gg.aa.yyyy (varsa)",
-    "toplam": sayı,
-    "urunler": [
-      {"urun": "ürün ismi", "fiyat": sayı, "miktar": "miktar varsa"},
-      ...
-    ]
-  }
-  Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
+          """Bu fiş fotoğrafından SADECE alışveriş ürünleri ve fiyatlarını çıkar. 
+
+          Ek olarak:
+          - Bu alışverişi en uygun kategoriye ata.
+          - Kategori şu listeden biri olmalı:
+          Food, Clothing, Tech, Transportation, Bills, Rent, Education, Healthcare, 
+          Personal Care, Entertainment, Household / Furniture, Stationery, 
+          Vacation / Travel, Taxes / Official Payments, Other
+
+          Market adı, adres, tarih, ödeme türü gibi bilgileri ürün olarak alma! 
+          Sadece şu yapıda temiz JSON dön, başka hiçbir metin yazma:
+          {
+            "market": "market adı (varsa)",
+            "tarih": "gg.aa.yyyy (varsa)",
+            "toplam": sayı,
+            "kategori": "kategori adı",
+            "urunler": [
+              {"urun": "ürün ismi", "fiyat": sayı, "miktar": "miktar varsa"},
+              ...
+            ]
+          }
+          Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri 
+          tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. 
+          ürün olarak ekleme!""";
 
       // Groq API çağrısı
       final response = await http.post(
@@ -343,6 +375,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
       final market = data["market"] ?? "";
       final total = (data["toplam"] ?? 0).toDouble();
       final dateString = data["tarih"];
+      final categoryFromAI = data["kategori"];
 
       final parsedDate = parseReceiptDate(dateString);
 
@@ -375,6 +408,11 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
         if (parsedDate != null) {
           _selectedDate = parsedDate;
+        }
+
+        if (categoryFromAI != null && categories.contains(categoryFromAI)) {
+          _category = categoryFromAI;
+          _isCategoryFromAI = true;
         }
 
         _totalController.text = total.toStringAsFixed(2);
@@ -1321,11 +1359,25 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                   ? (v) {
                       setState(() {
                         _category = v!;
+                        _isCategoryFromAI = false;
                       });
                     }
                   : null,
             ),
           ),
+          if (_isCategoryFromAI)
+              Padding(
+                padding: const EdgeInsets.only(top: 6, left: 4),
+                child: Text(
+                  "AI suggested ⚡",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+
 
           const SizedBox(height: 30),
 

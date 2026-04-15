@@ -39,6 +39,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
   bool _isEditing = false;
   bool _scanSuccessful = false;
+  bool _isCategoryFromAI = false;
 
   final formKey = GlobalKey<FormState>();
 
@@ -138,17 +139,28 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
       final bytes = await imageFile.readAsBytes();
       final base64Data = base64Encode(bytes);
 
-      const prompt = """Bu fiş fotoğrafından SADECE alışveriş ürünleri ve fiyatlarını çıkar. Market adı, adres, tarih, ödeme türü gibi bilgileri ürün olarak alma! Sadece şu yapıda temiz JSON dön, başka hiçbir metin yazma:
-  {
-    "market": "market adı (varsa)",
-    "tarih": "gg.aa.yyyy (varsa)",
-    "toplam": sayı,
-    "urunler": [
-      {"urun": "ürün ismi", "fiyat": sayı, "miktar": "miktar varsa"},
-      ...
-    ]
-  }
-  Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
+      const prompt = """Bu fiş fotoğrafından SADECE alışveriş ürünleri ve fiyatlarını çıkar. 
+
+        Ek olarak:
+        - Bu alışverişi en uygun kategoriye ata.
+        - Kategori şu listeden biri olmalı:
+        Food, Clothing, Tech, Transportation, Bills, Rent, Education, Healthcare, 
+        Personal Care, Entertainment, Household / Furniture, Stationery, Vacation / Travel, 
+        Taxes / Official Payments, Other
+
+        Market adı, adres, tarih, ödeme türü gibi bilgileri ürün olarak alma! 
+        Sadece şu yapıda temiz JSON dön, başka hiçbir metin yazma:
+        {
+          "market": "market adı (varsa)",
+          "tarih": "gg.aa.yyyy (varsa)",
+          "toplam": sayı,
+          "kategori": "kategori adı",
+          "urunler": [
+            {"urun": "ürün ismi", "fiyat": sayı, "miktar": "miktar varsa"},
+            ...
+          ]
+        }
+        Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
 
       final response = await http.post(
         Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
@@ -200,6 +212,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
       final market = data["market"] ?? "";
       final total = (data["toplam"] ?? 0).toDouble();
       final dateString = data["tarih"];
+      final categoryFromAI = data["kategori"];
 
       final parsedDate = parseReceiptDate(dateString);
 
@@ -232,6 +245,11 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
         if (parsedDate != null) {
           _selectedDate = parsedDate;
+        }
+
+        if (categoryFromAI != null && categories.contains(categoryFromAI)) {
+          _category = categoryFromAI;
+          _isCategoryFromAI = true;
         }
 
         _totalController.text = total.toStringAsFixed(2);
@@ -701,11 +719,24 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                     ? (v) {
                         setState(() {
                           _category = v!;
+                          _isCategoryFromAI = false;
                         });
                       }
                     : null,
               ),
             ),
+            if (_isCategoryFromAI)
+              Padding(
+                padding: const EdgeInsets.only(top: 6, left: 4),
+                child: Text(
+                  "AI suggested ⚡",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
 
             const SizedBox(height: 30),
 
