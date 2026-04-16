@@ -356,13 +356,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-
-    final mutedBg = colorScheme.surface;
-    final mutedFg = colorScheme.onSurface;
-    final primaryBg = colorScheme.primaryContainer;
-    final primaryFg = colorScheme.onPrimaryContainer;
-
-    final btnShape =
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
 
     return Scaffold(
@@ -616,27 +609,30 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       const SizedBox(height: 20),
 
-                      /// 🔹 ADJUST BUDGET BUTTON
+                      /// 🔹 Analytics Screen
                       SizedBox(
                         width: double.infinity,
                         height: 55,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryBg,
-                              shape: btnShape,
-                              elevation: 0
-                              
+                            backgroundColor: colorScheme.primaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
                           ),
                           onPressed: () {
-                            setState(() {
-                              _errorMessage = null; // Hata mesajını temizle
-                            });
-                            _showBudgetBottomSheet();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AnalyticsScreen(),
+                              ),
+                            );
                           },
-                          icon: Icon(Icons.tune,
-                              color: colorScheme.onPrimaryContainer),
+                          icon: Icon(Icons.analytics_outlined,
+                              color: colorScheme.onPrimaryContainer,),
                           label: Text(
-                            'Adjust Budget',
+                            'Analytics',
                             style: TextStyle(
                               color: colorScheme.onPrimaryContainer,
                               fontSize: 16,
@@ -645,11 +641,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ),
                       ),
-
+                      
                       const SizedBox(height: 12),
 
                       /// 🔹 SECONDARY BUTTONS ROW
-                      /// 3) EXPORT STATEMENT — tam genişlik, mor
+                      /// EXPORT STATEMENT — tam genişlik, mor
                       SizedBox(
                         width: double.infinity,
                         height: 55,
@@ -714,7 +710,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       const SizedBox(height: 12),
 
-                      /// 2) BUDGET + ALERT — yan yana, soluk
+                      /// BUDGET + ALERT — yan yana, soluk
                       Row(
                         children: [
                           // ADJUST BUDGET
@@ -818,65 +814,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 12),
-
-                      // // 3) EXPORT STATEMENT
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   height: 55,
-                      //   child: ElevatedButton.icon(
-                      //     style: ElevatedButton.styleFrom(
-                      //         backgroundColor: primaryBg,
-                      //         shape: btnShape,
-                      //         elevation: 0),
-                      //     onPressed: _isGeneratingStatement
-                      //         ? null
-                      //         : () async {
-                      //             setState(
-                      //                 () => _isGeneratingStatement = true);
-                      //             try {
-                      //               await StatementService.generateAndShare(
-                      //                 context: context,
-                      //                 receipts: receipts,
-                      //                 month: selectedMonth,
-                      //                 monthlyBudget: monthlyBudget,
-                      //               );
-                      //             } catch (e) {
-                      //               if (mounted) {
-                      //                 ScaffoldMessenger.of(context)
-                      //                     .showSnackBar(SnackBar(
-                      //                   content: Text(
-                      //                       "Statement olusturulamadi: $e"),
-                      //                   backgroundColor: Colors.red,
-                      //                 ));
-                      //               }
-                      //             } finally {
-                      //               if (mounted) {
-                      //                 setState(() =>
-                      //                     _isGeneratingStatement = false);
-                      //               }
-                      //             }
-                      //           },
-                      //     icon: _isGeneratingStatement
-                      //         ? SizedBox(
-                      //             width: 18,
-                      //             height: 18,
-                      //             child: CircularProgressIndicator(
-                      //                 strokeWidth: 2, color: primaryFg))
-                      //         : Icon(Icons.picture_as_pdf_outlined,
-                      //             color: primaryFg),
-                      //     label: Text(
-                      //       _isGeneratingStatement
-                      //           ? 'Generating...'
-                      //           : 'Export Statement',
-                      //       style: TextStyle(
-                      //           color: primaryFg,
-                      //           fontSize: 16,
-                      //           fontWeight: FontWeight.bold),
-                      //     ),
-                      //   ),
-                      // ),
 
                       const SizedBox(height: 40),
                     ],
