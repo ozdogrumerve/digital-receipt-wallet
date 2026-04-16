@@ -1,6 +1,7 @@
 import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/services/notification_service.dart';
+import 'package:digital_receipt_wallet/services/statement_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -19,7 +20,7 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   final List<Color> chartColors = [
-    const Color(0xFF805AD5), // mor
+    const Color(0xFF805AD5),
     const Color(0xFF9F7AEA),
     const Color(0xFFB794F4),
     const Color(0xFFD6BCFA),
@@ -32,13 +33,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
   DateTime get selectedMonth => DateFormat('yyyy-MM').parse(selectedMonthKey);
 
   String? _errorMessage;
+  bool _isGeneratingStatement = false;
 
-  final List<String> availableMonths = List.generate(
-    12,
-    (index) {
-      final now = DateTime.now();
-      final date = DateTime(now.year, now.month - index);
-      return DateFormat('yyyy-MM').format(date);
+  final List<String> availableMonths = List.generate(12, (index) {
+    final now = DateTime.now();
+    final date = DateTime(now.year, now.month - index);
+    return DateFormat('yyyy-MM').format(date);
     },
   );
 
@@ -57,8 +57,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
     if (percentage >= alertPercentage!) {
       if (notificationProvider.isEnabled && !alertTriggered) {
         NotificationService.showNotification(
-          "Bütçe Uyarısı",
-          "%${(alertPercentage! * 100).toInt()} harcamaya ulaştınız",
+          "Budget Alert",
+          "%${(alertPercentage! * 100).toInt()} harcamaya ulasstiniz",
         );
       }
 
@@ -75,8 +75,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       isDismissible: false,
       enableDrag: false,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
       builder: (BuildContext context) {
         return FutureBuilder<UserModel?>(
           future: firestoreService.getUser(),
@@ -92,51 +91,51 @@ class _ReportsScreenState extends State<ReportsScreen> {
               if (budgetController.text.isEmpty && currentBudget > 0) {
                 budgetController.text = currentBudget.toStringAsFixed(0);
                 budgetController.selection = TextSelection.fromPosition(
-                  TextPosition(offset: budgetController.text.length),
+                    TextPosition(offset: budgetController.text.length)
                 );
               }
             });
 
             return Padding(
               padding: EdgeInsets.fromLTRB(
-                24,
-                32,
-                24,
-                MediaQuery.of(context).viewInsets.bottom + 34,
+                  24,
+                  32,
+                  24, 
+                  MediaQuery.of(context).viewInsets.bottom + 34
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Başlık
+                  // Baslik ve Kapatma Ikonu
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Aylık Bütçe Ayarla",
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
+                      Text("Aylik Butce Ayarla",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold)),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded),
-                        onPressed: () => Navigator.pop(context),
-                      ),
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => Navigator.pop(context)),
                     ],
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Mevcut bütçe
+                  // Mevcut butce bilgisi (varsa)
                   if (currentBudget > 0)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Text(
                         "Mevcut: ₺${currentBudget.toStringAsFixed(0)}",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary
+                        ),
                       ),
                     ),
 
@@ -155,7 +154,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                   const SizedBox(height: 32),
 
-                  // Kaydet butonu
+                  // Kaydet Butonu
                   SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -166,24 +165,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         final input =
                             budgetController.text.trim().replaceAll(',', '.');
                         if (input.isEmpty) {
-                          setState(
-                              () => _errorMessage = "Lütfen bir tutar girin");
+                          setState(() =>
+                              _errorMessage = "Please enter a budget amount");
                           Future.delayed(const Duration(seconds: 2), () {
-                            if (mounted) {
-                              setState(() => _errorMessage = null);
-                            }
+                            if (mounted) setState(() => _errorMessage = null);
+
+
                           });
                           return;
                         }
-
+                        
                         final newBudget = double.tryParse(input);
                         if (newBudget == null || newBudget <= 0) {
-                          setState(() =>
-                              _errorMessage = "Lütfen geçerli bir tutar girin");
+                          setState(() => _errorMessage =
+                              "Please enter a valid amount");
                           Future.delayed(const Duration(seconds: 2), () {
-                            if (mounted) {
-                              setState(() => _errorMessage = null);
-                            }
+                            if (mounted) setState(() => _errorMessage = null);
                           });
                           return;
                         }
@@ -194,34 +191,28 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           if (!context.mounted) return;
                           Navigator.pop(context);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  "Bütçe ₺${newBudget.toStringAsFixed(0)} olarak güncellendi"),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "Budget updated to ₺${newBudget.toStringAsFixed(0)}"),
+                            backgroundColor: Colors.green,
+                          ));
 
-                          // Ana ekranı yenile
+                          // Ana ekranı yenilemek için
                           setState(() {});
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Hata: $e")),
-                          );
+                              SnackBar(content: Text("Hata: $e")));
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                            borderRadius: BorderRadius.circular(16)),
                       ),
-                      child: const Text(
-                        "Kaydet",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                      child: const Text("Kaydet",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
 
@@ -233,7 +224,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.red.withAlpha(38), // 0.15 * 255 = 38
+                          color: Colors.red.withAlpha(38),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.red.shade300),
                         ),
@@ -243,11 +234,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 color: Colors.red, size: 20),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: Text(
-                                _errorMessage!,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14),
-                              ),
+                                child: Text(
+                                  _errorMessage!,
+                                    style: const TextStyle(
+                                        color: Colors.red, fontSize: 14)
+                                )
                             ),
                           ],
                         ),
@@ -266,109 +257,96 @@ class _ReportsScreenState extends State<ReportsScreen> {
     double selectedPercentage = 50;
     final parentSetState = setState;
 
-    showModalBottomSheet(  
+    showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  /// TITLE
-                  Text(
-                    "Alert Ayarla",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+        return StatefulBuilder(builder: (context, setState) {
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// TITLE
+                const Text("Alert Ayarla",
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
 
-                  const SizedBox(height: 20),
+                /// DESCRIPTION
+                Text(
+                    "%${selectedPercentage.toInt()} harcamaya ulastigimda bildir"),
 
-                  /// DESCRIPTION
-                  Text(
-                    "%${selectedPercentage.toInt()} harcamaya ulaştığımda bildir",
-                  ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  /// SLIDER
-                  Slider(
-                    value: selectedPercentage,
-                    min: 10,
-                    max: 100,
-                    divisions: 9,
-                    label: "${selectedPercentage.toInt()}%",
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPercentage = value;
-                      });
-                    },
-                  ),
+                /// PERCENTAGE SLIDER
+                Slider(
+                  value: selectedPercentage,
+                  min: 10,
+                  max: 100,
+                  divisions: 9,
+                  label: "${selectedPercentage.toInt()}%",
+                  onChanged: (value) =>
+                      setState(() => selectedPercentage = value),
+                ),
 
-                  const SizedBox(height: 20),
 
-                  // İki buton yan yana
-                  Row(
-                    children: [
-                      // İPTAL BUTONU
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            parentSetState(() {
-                              alertPercentage = null;
-                              alertTriggered = false;
-                              _isAlertSet = false;
-                            });
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
+                const SizedBox(height: 20),
+
+
+                Row(
+                  children: [
+                    // CANCEL BUTTON
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          parentSetState(() {
+                            alertPercentage = null;
+                            alertTriggered = false;
+                            _isAlertSet = false;
+                          });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Alert kaldırıldı"),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
+                                  content: Text("Alert kaldirildi"),
+                                  backgroundColor: Colors.orange));
+                        },
+                        style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.shade300,
-                            foregroundColor: Colors.black87,
-                          ),
-                          child: const Text("İptal Et"),
-                        ),
+                            foregroundColor: Colors.black87),
+                        child: const Text("Iptal Et"),
                       ),
-                      const SizedBox(width: 12),
-                      // KAYDET BUTONU
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            parentSetState(() {
-                              alertPercentage = selectedPercentage / 100;
-                              alertTriggered = false;
-                              _isAlertSet = true;
-                            });
-                            Navigator.pop(context);
+                    ),
+                    const SizedBox(width: 12),
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    "%${selectedPercentage.toInt()} için alert kuruldu"),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                          },
-                          child: const Text("Kaydet"),
-                        ),
+                    // SAVE BUTTON
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          parentSetState(() {
+                            alertPercentage = selectedPercentage / 100;
+                            alertTriggered = false;
+                            _isAlertSet = true;
+                          });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "%${selectedPercentage.toInt()} icin alert kuruldu"),
+                            backgroundColor: Colors.green,
+                          ));
+                        },
+                        child: const Text("Kaydet"),
                       ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-                ],
-              ),
-            );
-          },
-        );
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          );
+        });
       },
     );
   }
@@ -379,11 +357,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
 
+    final mutedBg = colorScheme.surface;
+    final mutedFg = colorScheme.onSurface;
+    final primaryBg = colorScheme.primaryContainer;
+    final primaryFg = colorScheme.onPrimaryContainer;
+
+    final btnShape =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: const Text("Reports"),
-      ),
+      appBar: AppBar(title: const Text("Reports")),
       body: SafeArea(
         child: StreamBuilder<UserModel?>(
           stream: firestoreService.getUserStream(),
@@ -410,8 +394,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   totalAmount += r.totalAmount;
                 }
 
-                final monthlyBudget = userSnapshot.data?.monthlyBudget ?? 0;
+                final monthlyBudget =
+                    userSnapshot.data?.monthlyBudget ?? 0;
                 checkAlert(totalAmount, monthlyBudget, context);
+
 
                 /// 🔹 3️⃣ Kategoriye Göre Grupla
                 final Map<String, double> categoryTotals = {};
@@ -437,43 +423,37 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   }
                 }
 
+
                 // 4. Expense listesi oluştur
                 final List<ExpenseItem> expenses = [];
 
                 // Top 4 kategoriler
                 for (int i = 0; i < topCategories.length; i++) {
                   final entry = topCategories[i];
-
                   final percentage = totalAmount == 0
                       ? 0.0
                       : (entry.value / totalAmount) * 100;
-
-                  expenses.add(
-                    ExpenseItem(
-                      title: entry.key,
-                      amount: entry.value,
-                      percentage: percentage,
-                      date: DateTime.now(),
-                      color: chartColors[i % chartColors.length],
-                    ),
-                  );
+                  expenses.add(ExpenseItem(
+                    title: entry.key,
+                    amount: entry.value,
+                    percentage: percentage,
+                    date: DateTime.now(),
+                    color: chartColors[i % chartColors.length],
+                  ));
                 }
 
-                // Others ekle (varsa)
+                // Others kategorisi
                 if (othersTotal > 0) {
                   final percentage = totalAmount == 0
                       ? 0.0
                       : (othersTotal / totalAmount) * 100;
-
-                  expenses.add(
-                    ExpenseItem(
-                      title: "Others",
-                      amount: othersTotal,
-                      percentage: percentage,
-                      date: DateTime.now(),
-                      color: chartColors[expenses.length % chartColors.length],
-                    ),
-                  );
+                  expenses.add(ExpenseItem(
+                    title: "Others",
+                    amount: othersTotal,
+                    percentage: percentage,
+                    date: DateTime.now(),
+                    color: chartColors[expenses.length % chartColors.length],
+                  ));
                 }
 
                 /// 🔹 5️⃣ Daily Average
@@ -481,7 +461,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     selectedMonth.year, selectedMonth.month);
 
                 final dailyAverage =
-                    totalAmount == 0 ? 0 : totalAmount / daysInMonth;
+                    totalAmount == 0 ? 0.0 : totalAmount / daysInMonth;
 
                 final currentMonth =
                     DateFormat('MMMM yyyy').format(selectedMonth);
@@ -490,12 +470,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
-                      /// HEADER
+                      // MONTH SELECTOR
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 0),
                         child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.start, // ← sola yasla
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const Spacer(), // ortadaki boşluğu doldur
                             Row(
@@ -511,26 +490,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     dropdownColor:
                                         theme.scaffoldBackgroundColor,
                                     style: TextStyle(
-                                      color: colorScheme.primary,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.w600),
                                     items: availableMonths.map((monthKey) {
                                       final parsedDate =
                                           DateFormat('yyyy-MM').parse(monthKey);
-
                                       return DropdownMenuItem<String>(
                                         value: monthKey,
-                                        child: Text(
-                                          DateFormat('MMMM yyyy')
-                                              .format(parsedDate),
-                                        ),
+                                        child: Text(DateFormat('MMMM yyyy')
+                                            .format(parsedDate)),
                                       );
                                     }).toList(),
                                     onChanged: (newMonth) {
                                       if (newMonth != null) {
-                                        setState(() {
-                                          selectedMonthKey = newMonth;
-                                        });
+                                        setState(() => selectedMonthKey = newMonth);
                                       }
                                     },
                                   ),
@@ -578,11 +551,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  '₺${totalAmount.toStringAsFixed(0)}',
+                                  'TL ${totalAmount.toStringAsFixed(0)}',
                                   style: textTheme.headlineMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                Text(currentMonth, style: textTheme.bodySmall),
+                                Text(currentMonth,
+                                    style: textTheme.bodySmall),
                               ],
                             ),
                           ],
@@ -593,14 +567,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       /// 🔹 CATEGORY LIST
                       ...expenses.map((expense) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 10),
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                    radius: 6, backgroundColor: expense.color),
+                                    radius: 6,
+                                    backgroundColor: expense.color),
                                 const SizedBox(width: 16),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Text(expense.title,
                                         style: textTheme.bodyLarge?.copyWith(
@@ -624,7 +601,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       const SizedBox(height: 10),
 
-                      /// 🔹 DAILY AVERAGE
                       Text(
                         'DAILY AVERAGE: ₺${dailyAverage.toStringAsFixed(2)}',
                         style: textTheme.labelSmall?.copyWith(
@@ -646,11 +622,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         height: 55,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primaryContainer,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 0,
+                              backgroundColor: primaryBg,
+                              shape: btnShape,
+                              elevation: 0
+                              
                           ),
                           onPressed: () {
                             setState(() {
@@ -671,11 +646,78 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
 
                       /// 🔹 SECONDARY BUTTONS ROW
+                      /// 3) EXPORT STATEMENT — tam genişlik, mor
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorScheme.primaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: _isGeneratingStatement
+                              ? null
+                              : () async {
+                                  setState(
+                                      () => _isGeneratingStatement = true);
+                                  try {
+                                    await StatementService.generateAndShare(
+                                      context: context,
+                                      receipts: receipts,
+                                      month: selectedMonth,
+                                      monthlyBudget: monthlyBudget,
+                                    );
+                                  } catch (e) {
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("Statement oluşturulamadı: $e"),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() =>
+                                          _isGeneratingStatement = false);
+                                    }
+                                  }
+                                },
+                          icon: _isGeneratingStatement
+                              ? SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: colorScheme.onPrimaryContainer,
+                                  ),
+                                )
+                              : Icon(Icons.picture_as_pdf_outlined,
+                                  color: colorScheme.onPrimaryContainer),
+                          label: Text(
+                            _isGeneratingStatement
+                                ? 'Generating...'
+                                : 'Export Statement',
+                            style: TextStyle(
+                              color: colorScheme.onPrimaryContainer,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// 2) BUDGET + ALERT — yan yana, soluk
                       Row(
                         children: [
+                          // ADJUST BUDGET
                           Expanded(
                             child: SizedBox(
                               height: 55,
@@ -688,17 +730,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   elevation: 0,
                                 ),
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => AnalyticsScreen(),
-                                    ),
-                                  );
+                                  setState(() => _errorMessage = null);
+                                  _showBudgetBottomSheet();
                                 },
-                                icon: Icon(Icons.analytics_outlined,
-                                    color: colorScheme.onSurface),
+                                icon: Icon(Icons.tune, color: colorScheme.onSurface),
                                 label: Text(
-                                  'Analytics',
+                                  'Budget',
                                   style: TextStyle(
                                     color: colorScheme.onSurface,
                                     fontWeight: FontWeight.bold,
@@ -707,51 +744,56 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          // ←←← YENİ SET ALERT BUTONU 
+
+                          const SizedBox(width: 12),
+
+                          // SET ALERT
                           Expanded(
                             child: SizedBox(
                               height: 55,
                               child: Stack(
-                                clipBehavior: Clip.none,           // önemli! ikon taşsın
+                                clipBehavior: Clip.none,
                                 children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: colorScheme.surface,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 55,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: colorScheme.surface,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        elevation: 0,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
                                       ),
-                                      elevation: 0,
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    ),
-                                    onPressed: () {
-                                      final notificationProvider =
-                                          Provider.of<NotificationProvider>(context, listen: false);
-
-                                      if (!notificationProvider.isEnabled) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Bildirimler kapalı. Ayarlardan açmalısınız."),
+                                      onPressed: () {
+                                        final notifProvider =
+                                            Provider.of<NotificationProvider>(
+                                                context,
+                                                listen: false);
+                                        if (!notifProvider.isEnabled) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content: Text(
+                                                "Bildirimler kapalı. Ayarlardan açmalısınız."),
                                             backgroundColor: Colors.red,
+                                          ));
+                                          return;
+                                        }
+                                        _showAlertBottomSheet();
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          'Set Alert',
+                                          style: TextStyle(
+                                            color: colorScheme.onSurface,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        );
-                                        return;
-                                      }
-
-                                      _showAlertBottomSheet();
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        'Set Alert',
-                                        style: TextStyle(
-                                          color: colorScheme.onSurface,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
-
-                                  // Sağ üst köşeye alarm ikonu
                                   if (_isAlertSet && alertPercentage != null)
                                     Positioned(
                                       top: -6,
@@ -759,13 +801,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       child: Container(
                                         padding: const EdgeInsets.all(4),
                                         decoration: BoxDecoration(
-                                          color: colorScheme.surface,     // buton rengiyle aynı
+                                          color: colorScheme.surface,
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
                                           Icons.alarm_on_rounded,
                                           size: 20,
-                                          color: theme.colorScheme.primary,
+                                          color: colorScheme.primary,
                                           weight: 700,
                                         ),
                                       ),
@@ -776,6 +818,65 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ],
                       ),
+
+                      const SizedBox(height: 12),
+
+                      // // 3) EXPORT STATEMENT
+                      // SizedBox(
+                      //   width: double.infinity,
+                      //   height: 55,
+                      //   child: ElevatedButton.icon(
+                      //     style: ElevatedButton.styleFrom(
+                      //         backgroundColor: primaryBg,
+                      //         shape: btnShape,
+                      //         elevation: 0),
+                      //     onPressed: _isGeneratingStatement
+                      //         ? null
+                      //         : () async {
+                      //             setState(
+                      //                 () => _isGeneratingStatement = true);
+                      //             try {
+                      //               await StatementService.generateAndShare(
+                      //                 context: context,
+                      //                 receipts: receipts,
+                      //                 month: selectedMonth,
+                      //                 monthlyBudget: monthlyBudget,
+                      //               );
+                      //             } catch (e) {
+                      //               if (mounted) {
+                      //                 ScaffoldMessenger.of(context)
+                      //                     .showSnackBar(SnackBar(
+                      //                   content: Text(
+                      //                       "Statement olusturulamadi: $e"),
+                      //                   backgroundColor: Colors.red,
+                      //                 ));
+                      //               }
+                      //             } finally {
+                      //               if (mounted) {
+                      //                 setState(() =>
+                      //                     _isGeneratingStatement = false);
+                      //               }
+                      //             }
+                      //           },
+                      //     icon: _isGeneratingStatement
+                      //         ? SizedBox(
+                      //             width: 18,
+                      //             height: 18,
+                      //             child: CircularProgressIndicator(
+                      //                 strokeWidth: 2, color: primaryFg))
+                      //         : Icon(Icons.picture_as_pdf_outlined,
+                      //             color: primaryFg),
+                      //     label: Text(
+                      //       _isGeneratingStatement
+                      //           ? 'Generating...'
+                      //           : 'Export Statement',
+                      //       style: TextStyle(
+                      //           color: primaryFg,
+                      //           fontSize: 16,
+                      //           fontWeight: FontWeight.bold),
+                      //     ),
+                      //   ),
+                      // ),
 
                       const SizedBox(height: 40),
                     ],
