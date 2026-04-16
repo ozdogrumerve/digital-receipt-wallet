@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/providers/theme_provider.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
+import 'package:digital_receipt_wallet/screens/profile_details_screen.dart';
+import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +25,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   final ImagePicker picker = ImagePicker();
 
+  // Firestore'dan avatar yuklemek icin
+  final FirestoreService _firestoreService = FirestoreService();
+  String? _currentBase64Photo;
+
   Future<void> pickImage() async {
     final XFile? image =
         await picker.pickImage(source: ImageSource.gallery);
@@ -37,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _checkSystemPermission();
+    _loadCurrentPhoto();
   }
 
   Future<void> _checkSystemPermission() async {
@@ -48,12 +56,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
     notificationProvider.setNotification(status.isGranted);
   }
 
+  Future<void> _loadCurrentPhoto() async {
+    final userModel = await _firestoreService.getUser();
+    if (userModel != null &&
+        userModel.photo != null &&
+        userModel.photo!.isNotEmpty) {
+      setState(() => _currentBase64Photo = userModel.photo);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final notificationProvider = Provider.of<NotificationProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
+
+    // Avatar image provider: once secilen local dosyaya bak,
+    // yoksa Firestore'daki base64'e bak
+    ImageProvider? avatarImage;
+    if (selectedImage != null) {
+      avatarImage = FileImage(selectedImage!);
+    } else if (_currentBase64Photo != null &&
+        _currentBase64Photo!.isNotEmpty) {
+      avatarImage = MemoryImage(base64Decode(_currentBase64Photo!));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -70,48 +97,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Column(
                 children: [
 
-                  Stack(
-                    children: [
-
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor:
-                            theme.colorScheme.primary.withAlpha(51), // 0.2 * 255 = 51
-                        backgroundImage:
-                            selectedImage != null
-                                ? FileImage(selectedImage!)
-                                : null,
-                        child: selectedImage == null
-                            ? Text(
-                                user?.displayName?.isNotEmpty == true
-                                    ? user!.displayName![0].toUpperCase()
-                                    : "U",
-                                style: theme.textTheme.headlineMedium,
-                              )
-                            : null,
-                      ),
-
-                      /// KALEM İKONU
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: pickImage,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.edit,
-                              size: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Kalem ikonu kaldirildi — duzenleme Profile Details uzerinden yapiliyor
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor:
+                        theme.colorScheme.primary.withAlpha(51), // 0.2 * 255 = 51
+                    backgroundImage: avatarImage,
+                    child: avatarImage == null
+                        ? Text(
+                            user?.displayName?.isNotEmpty == true
+                                ? user!.displayName![0].toUpperCase()
+                                : "U",
+                            style: theme.textTheme.headlineMedium,
+                          )
+                        : null,
                   ),
 
                   const SizedBox(height: 16),
@@ -146,7 +145,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle:
                     const Text("Change name, email, and avatar"),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ProfileDetailsScreen(),
+                    ),
+                  );
+                  // Profil Details'ten donunce avatar ve adi guncelle
+                  await user?.reload();
+                  _loadCurrentPhoto();
+                  setState(() {});
+                },
               ),
             ),
 

@@ -48,6 +48,15 @@ class FirestoreService {
     });
   }
 
+  Future<void> updateUserEmail(String newEmail) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await _firestore.collection('users').doc(user.uid).update({
+      'email': newEmail,
+    });
+  }
+
   /// =====================================================
   /// TRANSACTIONS (MAIN DATA STRUCTURE)
   /// =====================================================

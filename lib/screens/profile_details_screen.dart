@@ -1,0 +1,361 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:digital_receipt_wallet/services/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:digital_receipt_wallet/screens/login_screen.dart';
+
+class ProfileDetailsScreen extends StatefulWidget {
+  const ProfileDetailsScreen({super.key});
+
+  @override
+  State<ProfileDetailsScreen> createState() => _ProfileDetailsScreenState();
+}
+
+class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
+    with WidgetsBindingObserver {
+  final FirestoreService _firestoreService = FirestoreService();
+  final ImagePicker _picker = ImagePicker();
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  File? _selectedImage;
+  String? _currentBase64Photo;
+  bool _isSaving = false;
+  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
+    final user = FirebaseAuth.instance.currentUser;
+    _nameController.text = user?.displayName ?? '';
+    _emailController.text = user?.email ?? '';
+    _loadCurrentPhoto();
+  }
+
+  Future<void> _loadCurrentPhoto() async {
+    final userModel = await _firestoreService.getUser();
+    if (userModel != null &&
+        userModel.photo != null &&
+        userModel.photo!.isNotEmpty) {
+      setState(() => _currentBase64Photo = userModel.photo);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkEmailVerification();
+    }
+  }
+
+  // Kullanıcı email değişikliği yaptıktan sonra uygulamaya geri döndüğünde
+  // email doğrulamasını kontrol eden fonksiyon
+  Future<void> _checkEmailVerification() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await user.reload();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 512,
+      maxHeight: 512,
+      imageQuality: 75,
+    );
+    if (image != null) {
+      setState(() => _selectedImage = File(image.path));
+    }
+  }
+
+  Future<void> _saveChanges() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final newName = _nameController.text.trim();
+    final newEmail = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (newName.isEmpty) {
+      _showError("Name cannot be empty.");
+      return;
+    }
+
+    final emailChanged = newEmail != user.email;
+    if (emailChanged && password.isEmpty) {
+      _showError("Enter your password to change email.");
+      return;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      // Avatar güncelle
+      if (_selectedImage != null) {
+        final bytes = await _selectedImage!.readAsBytes();
+        final base64Str = base64Encode(bytes);
+        await _firestoreService.updateProfilePhoto(base64Str);
+      }
+
+      // Display name güncelle
+      if (newName != user.displayName) {
+        await user.updateDisplayName(newName);
+      }
+
+      // Email güncelle (re-auth gerektirir)
+      if (emailChanged) {
+        final credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+
+        await user.reauthenticateWithCredential(credential);
+
+        await user.verifyBeforeUpdateEmail(newEmail); // GERÇEK UPDATE
+
+        await _firestoreService.updateUserEmail(newEmail); // DB SYNC
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Verification email sent. Please check your inbox."),
+            backgroundColor: Colors.orange,
+          ),
+        );
+
+        await FirebaseAuth.instance.signOut();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
+
+        return;  // Email değişikliği sonrası kullanıcıyı çıkış yaparak login ekranına yönlendir
+      }
+
+      await user.reload();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Profile updated successfully."),
+          backgroundColor: Colors.green,
+        ));
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      String msg;
+      switch (e.code) {
+        case 'wrong-password':
+          msg = "Incorrect password.";
+          break;
+        case 'invalid-credential':
+          msg = "Incorrect password.";
+          break;
+        case 'email-already-in-use':
+          msg = "This email is already in use.";
+          break;
+        case 'invalid-email':
+          msg = "Invalid email address.";
+          break;
+        default:
+          msg = e.message ?? "An error occurred.";
+      }
+      _showError(msg);
+    } catch (e) {
+      _showError("An error occurred: $e");
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+    ));
+  }
+
+  Widget _buildAvatar(ThemeData theme) {
+    ImageProvider? imageProvider;
+
+    if (_selectedImage != null) {
+      imageProvider = FileImage(_selectedImage!);
+    } else if (_currentBase64Photo != null && _currentBase64Photo!.isNotEmpty) {
+      imageProvider = MemoryImage(base64Decode(_currentBase64Photo!));
+    }
+
+    return Center(
+      child: Stack(
+        children: [
+          CircleAvatar(
+            radius: 54,
+            backgroundColor: theme.colorScheme.primary.withAlpha(51),
+            backgroundImage: imageProvider,
+            child: imageProvider == null
+                ? Text(
+                    _nameController.text.isNotEmpty
+                        ? _nameController.text[0].toUpperCase()
+                        : "U",
+                    style: theme.textTheme.headlineMedium,
+                  )
+                : null,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.edit, size: 18, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final user = FirebaseAuth.instance.currentUser;
+    final emailChanged = _emailController.text.trim() != (user?.email ?? '');
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Profile Details")),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // AVATAR
+            _buildAvatar(theme),
+
+            const SizedBox(height: 32),
+
+            // DISPLAY NAME
+            Text("Display Name", style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _nameController,
+              textCapitalization: TextCapitalization.words,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: "Your name",
+                prefixIcon: const Icon(Icons.person_outline),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // EMAIL
+            Text("Email Address (Requires Re-login)", style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: "your@email.com",
+                prefixIcon: const Icon(Icons.email_outlined),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+
+            // Şifre alanı sadece email değişince görünür
+            if (emailChanged) ...[
+              const SizedBox(height: 20),
+              Text("Current Password", style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _passwordController,
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  hintText: "Required to change email",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscurePassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14)),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.info_outline,
+                      size: 14, color: theme.colorScheme.primary),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      "A verification email will be sent to the new address.",
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.primary),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+
+            const SizedBox(height: 36),
+
+            // SAVE BUTTON
+            SizedBox(
+              width: double.infinity,
+              height: 55,
+              child: ElevatedButton(
+                onPressed: _isSaving ? null : _saveChanges,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                ),
+                child: _isSaving
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text("Save Changes",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
