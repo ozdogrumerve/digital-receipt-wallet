@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:digital_receipt_wallet/models/receipt_model.dart';
 import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class HomeScreen extends StatelessWidget {
 
@@ -59,6 +62,20 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
+  Uint8List? decodeUserPhoto(String? photo) {
+    if (photo == null || photo.trim().isEmpty) return null;
+
+    try {
+      final cleaned = photo.contains(',')
+          ? photo.split(',').last.trim()
+          : photo.trim();
+
+      return base64Decode(cleaned);
+    } catch (_) {
+      return null;
+    }
+  }
+
   String _formatDate(DateTime date) {
     final now = DateTime.now();
 
@@ -89,7 +106,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final user = FirebaseAuth.instance.currentUser;
     final firestoreService = FirestoreService();
 
     return SafeArea(
@@ -148,18 +164,40 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        GestureDetector(
-                          onTap: onSeeSettings,
-                          child: CircleAvatar(
-                            backgroundColor: theme.colorScheme.primary,
-                            child: Text(
-                              user?.displayName?.isNotEmpty == true
-                                  ? user!.displayName![0].toUpperCase()
-                                  : "U",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        )
+                        StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircleAvatar();
+                            }
+
+                            final data = snapshot.data!.data() as Map<String, dynamic>;
+                            final userModel =
+                                UserModel.fromMap(snapshot.data!.id, data);
+
+                            final photoBytes = decodeUserPhoto(userModel.photo);
+
+                            return GestureDetector(
+                              onTap: onSeeSettings,
+                              child: CircleAvatar(
+                                backgroundColor: theme.colorScheme.primary,
+                                backgroundImage:
+                                    photoBytes != null ? MemoryImage(photoBytes) : null,
+                                child: photoBytes == null
+                                    ? Text(
+                                        userModel.name.isNotEmpty
+                                            ? userModel.name[0].toUpperCase()
+                                            : "U",
+                                        style: const TextStyle(color: Colors.white),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          },
+                        ),
                       ],
                     ),
 
