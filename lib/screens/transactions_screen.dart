@@ -114,9 +114,18 @@ class _TransactionsScreenState
 
   void _applyWeeklyFilter() {
     final now = DateTime.now();
-    final start =
+
+    final rawStart =
         now.subtract(Duration(days: now.weekday - 1));
+
+    final start = DateTime(
+      rawStart.year,
+      rawStart.month,
+      rawStart.day,
+    );
+
     final end = start.add(const Duration(days: 7));
+
     setState(() {
       startDate = start;
       endDate = end;
