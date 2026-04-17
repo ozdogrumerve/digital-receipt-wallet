@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import '../models/receipt_model.dart';
 
 class AnalyticsScreen extends StatefulWidget {
@@ -39,6 +40,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   late DateTime _weekStart;
   late DateTime _monthStart;
   late DateTime _monthEnd;
+  DateTimeRange? _selectedRange;
+
 
   @override
   void initState() {
@@ -57,6 +60,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     // Ay başı/sonu
     _monthStart = DateTime(now.year, now.month, 1);
     _monthEnd = DateTime(now.year, now.month + 1, 1);
+
+    _selectedRange = DateTimeRange(
+      start: _monthStart,
+      end: _monthEnd.subtract(const Duration(days: 1)),
+    );
 
     final ref = FirebaseFirestore.instance
         .collection('users')
@@ -97,6 +105,52 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         .map((snap) => snap.docs
             .map((d) => ReceiptModel.fromMap(d.id, d.data()))
             .toList());
+  }
+
+  // Filtreleme için tarih aralığı seçimi
+  Future<void> _pickDateRange() async {
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+      initialDateRange: _selectedRange,
+    );
+
+    if (picked == null) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final start = DateTime(
+      picked.start.year,
+      picked.start.month,
+      picked.start.day,
+    );
+
+    final endExclusive = DateTime(
+      picked.end.year,
+      picked.end.month,
+      picked.end.day + 1,
+    );
+
+    final ref = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('transactions');
+
+    setState(() {
+      _selectedRange = picked;
+      _monthStart = start;
+      _monthEnd = endExclusive;
+
+      _monthlyTransactionsStream = ref
+          .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_monthStart))
+          .where('date', isLessThan: Timestamp.fromDate(_monthEnd))
+          .snapshots()
+          .map((snap) => snap.docs
+              .map((d) => ReceiptModel.fromMap(d.id, d.data()))
+              .toList());
+    });
   }
 
   // Aylık veriden türetilen analiz sonuçları
@@ -323,9 +377,45 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 30),
 
                 // ── Monthly Budgets ──────────────────────────────
-                Text('Monthly Budgets',
-                    style: textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Category Budgets',
+                      style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    InkWell(
+                      onTap: _pickDateRange,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: colorScheme.outline.withAlpha(80)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.date_range_outlined,
+                              size: 18,
+                              color: colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _selectedRange == null
+                                  ? 'Select range'
+                                  : '${DateFormat('dd MMM').format(_selectedRange!.start)} - ${DateFormat('dd MMM').format(_selectedRange!.end)}',
+                              style: textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 16),
 
                 SizedBox(
