@@ -86,10 +86,6 @@ class TransactionDetailScreen extends StatelessWidget {
             ),
             leading: Padding(
               padding: const EdgeInsets.all(8),
-              child: CircleAvatar(
-                backgroundColor:
-                    theme.colorScheme.surface.withAlpha(230), // 0.9 * 255 ≈ 230
-              ),
             ),
           ),
 
