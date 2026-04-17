@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/firestore_service.dart';
 import '../models/receipt_model.dart';
+import 'products_screen.dart'; // ← yeni ekran
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -44,49 +45,34 @@ class _TransactionsScreenState
     switch (category) {
       case 'Food':
         return Icons.restaurant;
-        
       case 'Clothing':
         return Icons.checkroom;
-        
       case 'Tech':
-        return Icons.devices; 
-        
+        return Icons.devices;
       case 'Transportation':
-        return Icons.commute; 
-        
+        return Icons.commute;
       case 'Bills':
         return Icons.receipt;
-        
       case 'Rent':
         return Icons.home;
-        
       case 'Education':
         return Icons.school;
-        
       case 'Healthcare':
         return Icons.health_and_safety;
-        
       case 'Personal Care':
         return Icons.spa;
-        
       case 'Entertainment':
-        return Icons.sports_esports; 
-       
+        return Icons.sports_esports;
       case 'Household / Furniture':
         return Icons.chair;
-        
       case 'Stationery':
-        return Icons.edit; 
-        
+        return Icons.edit;
       case 'Vacation / Travel':
-        return Icons.flight_takeoff; 
-        
+        return Icons.flight_takeoff;
       case 'Taxes / Official Payments':
-        return Icons.account_balance; 
-        
+        return Icons.account_balance;
       case 'Other':
         return Icons.shopping_bag;
-
       default:
         return Icons.receipt_long;
     }
@@ -112,13 +98,16 @@ class _TransactionsScreenState
 
   Widget _sourceIcon(String source) {
     if (source == "manual") {
-      return const Icon(Icons.edit, size: 14, color: Colors.white);
+      return const Icon(Icons.edit,
+          size: 14, color: Colors.white);
     }
     if (source == "scan") {
-      return const Icon(Icons.camera_alt, size: 14, color: Colors.white);
+      return const Icon(Icons.camera_alt,
+          size: 14, color: Colors.white);
     }
     if (source == "pdf") {
-      return const Icon(Icons.picture_as_pdf, size: 14, color: Colors.white);
+      return const Icon(Icons.picture_as_pdf,
+          size: 14, color: Colors.white);
     }
     return const SizedBox.shrink();
   }
@@ -128,7 +117,6 @@ class _TransactionsScreenState
     final start =
         now.subtract(Duration(days: now.weekday - 1));
     final end = start.add(const Duration(days: 7));
-
     setState(() {
       startDate = start;
       endDate = end;
@@ -139,7 +127,6 @@ class _TransactionsScreenState
     final now = DateTime.now();
     final start = DateTime(now.year, now.month, 1);
     final end = DateTime(now.year, now.month + 1, 1);
-
     setState(() {
       startDate = start;
       endDate = end;
@@ -177,6 +164,16 @@ class _TransactionsScreenState
           ],
         );
       },
+    );
+  }
+
+  // ── Detay ekranına geçiş ───────────────────────────
+  void _openDetail(ReceiptModel tx) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TransactionDetailScreen(transaction: tx),
+      ),
     );
   }
 
@@ -226,7 +223,8 @@ class _TransactionsScreenState
           _buildCategoryFilter(),
           if (startDate != null || endDate != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 8),
               child: Wrap(
                 spacing: 8,
                 children: [
@@ -237,7 +235,8 @@ class _TransactionsScreenState
                           : "Custom Date",
                     ),
                     onDeleted: _clearFilter,
-                    deleteIcon: const Icon(Icons.close, size: 18),
+                    deleteIcon:
+                        const Icon(Icons.close, size: 18),
                   ),
                 ],
               ),
@@ -257,39 +256,39 @@ class _TransactionsScreenState
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(
-                      child:
-                          CircularProgressIndicator());
+                      child: CircularProgressIndicator());
                 }
 
                 final transactions = snapshot.data!;
 
                 if (transactions.isEmpty) {
                   return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.receipt_long_sharp,
-                            size: 60,
-                            color: theme
-                                .colorScheme.primary
-                                .withAlpha(40),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "No transactions yet",
-                            style:
-                                theme.textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Your transactions will appear here",
-                            style:
-                                theme.textTheme.bodyMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                        ]
-                      ));
+                    child: Column(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.receipt_long_sharp,
+                          size: 60,
+                          color: theme.colorScheme.primary
+                              .withAlpha(40),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          "No transactions yet",
+                          style:
+                              theme.textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Your transactions will appear here",
+                          style:
+                              theme.textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
                 return ListView.builder(
@@ -321,7 +320,11 @@ class _TransactionsScreenState
                                   .textTheme.labelMedium,
                             ),
                           ),
-                        _buildTransactionCard(tx),
+                        // ── Karta tıklanabilirlik ──
+                        GestureDetector(
+                          onTap: () => _openDetail(tx),
+                          child: _buildTransactionCard(tx),
+                        ),
                         const SizedBox(height: 16),
                       ],
                     );
@@ -357,12 +360,9 @@ class _TransactionsScreenState
               });
             },
             child: Container(
-              margin:
-                  const EdgeInsets.only(right: 12),
-              padding:
-                  const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 4),
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 32, vertical: 4),
               decoration: BoxDecoration(
                 color: isSelected
                     ? theme.colorScheme.primary
@@ -378,8 +378,7 @@ class _TransactionsScreenState
                         ? Colors.white
                         : theme.textTheme.bodyMedium!
                             .color,
-                    fontWeight:
-                        FontWeight.w500,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -408,15 +407,16 @@ class _TransactionsScreenState
       ),
       child: Row(
         children: [
-          // ─── Soldaki ikon kısmı ───
           Stack(
             children: [
               Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withAlpha(30), // 30 is 12% alpha of 255
-                  borderRadius: BorderRadius.circular(14),
+                  color: theme.colorScheme.primary
+                      .withAlpha(30),
+                  borderRadius:
+                      BorderRadius.circular(14),
                 ),
                 child: Icon(
                   _getCategoryIcon(tx.category),
@@ -424,18 +424,21 @@ class _TransactionsScreenState
                   size: 28,
                 ),
               ),
-              if (tx.source == "scan" || tx.source == "pdf" || tx.source == "manual")
+              if (tx.source == "scan" ||
+                  tx.source == "pdf" ||
+                  tx.source == "manual")
                 Positioned(
                   right: 0,
                   bottom: 0,
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.primary, // veya Colors.grey[800]
+                      color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: theme.colorScheme.surface,
-                        width: 2, // beyaz kenar efekti için
+                        color:
+                            theme.colorScheme.surface,
+                        width: 2,
                       ),
                     ),
                     child: _sourceIcon(tx.source),
@@ -443,13 +446,11 @@ class _TransactionsScreenState
                 ),
             ],
           ),
-
           const SizedBox(width: 16),
-
-          // Orta kısım (store + category)
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
                 Text(
                   tx.storeName,
@@ -458,29 +459,40 @@ class _TransactionsScreenState
                 const SizedBox(height: 4),
                 Text(
                   tx.category,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(
+                    color: theme
+                        .colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
             ),
           ),
-
-          // Sağdaki tutar
-          Text(
-            "-${formatTL(tx.totalAmount)}",
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
+          // Sağ ok + fiyat
+          Row(
+            children: [
+              Text(
+                "-${formatTL(tx.totalAmount)}",
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  bool _isSameDay(
-      DateTime a, DateTime b) {
+  bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year &&
         a.month == b.month &&
         a.day == b.day;
