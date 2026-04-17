@@ -22,10 +22,19 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  bool _obscureCurrentPassword = true;
+  bool _obscureNewPassword = true;
+  bool _obscureConfirmPassword = true;
+
+  bool _obscurePassword = true;
+
   File? _selectedImage;
   String? _currentBase64Photo;
   bool _isSaving = false;
-  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -55,6 +64,11 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+  
     super.dispose();
   }
 
@@ -93,6 +107,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     final newName = _nameController.text.trim();
     final newEmail = _emailController.text.trim();
     final password = _passwordController.text;
+    final newPass = _newPasswordController.text;
 
     if (newName.isEmpty) {
       _showError("Name cannot be empty.");
@@ -100,7 +115,26 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     }
 
     final emailChanged = newEmail != user.email;
-    if (emailChanged && password.isEmpty) {
+    final passwordChanging = newPass.isNotEmpty;
+
+    // Şifre değiştirilecekse kontrol et
+    if (passwordChanging) {
+      if (newPass.length < 6) {
+        _showError("New password must be at least 6 characters");
+        return;
+      }
+      if (newPass != _confirmPasswordController.text) {
+        _showError("Passwords don't match");
+        return;
+      }
+      if (_currentPasswordController.text.isEmpty) {
+        _showError("Enter current password");
+        return;
+      }
+    }
+
+    // Email değişecekse şifre gerekli
+    if (emailChanged && password.isEmpty && !passwordChanging) {
       _showError("Enter your password to change email.");
       return;
     }
@@ -120,18 +154,26 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
         await user.updateDisplayName(newName);
       }
 
-      // Email güncelle (re-auth gerektirir)
-      if (emailChanged) {
-        final credential = EmailAuthProvider.credential(
+      // Re-auth için credential hazırla
+      final needReauth = emailChanged || passwordChanging;
+      if (needReauth) {
+        final cred = EmailAuthProvider.credential(
           email: user.email!,
-          password: password,
+          // Email değişiyorsa _passwordController, yoksa _currentPasswordController
+          password: emailChanged ? password : _currentPasswordController.text,
         );
+        await user.reauthenticateWithCredential(cred);
 
-        await user.reauthenticateWithCredential(credential);
+        // Şifre güncelle
+        if (passwordChanging) {
+          await user.updatePassword(newPass);
+        }
+      }
 
-        await user.verifyBeforeUpdateEmail(newEmail); // GERÇEK UPDATE
-
-        await _firestoreService.updateUserEmail(newEmail); // DB SYNC
+      // Email güncelle
+      if (emailChanged) {
+        await user.verifyBeforeUpdateEmail(newEmail);
+        await _firestoreService.updateUserEmail(newEmail);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -148,7 +190,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
           (route) => false,
         );
 
-        return;  // Email değişikliği sonrası kullanıcıyı çıkış yaparak login ekranına yönlendir
+        return;
       }
 
       await user.reload();
@@ -288,6 +330,8 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
               ),
             ),
 
+            const SizedBox(height: 8),
+
             // Şifre alanı sadece email değişince görünür
             if (emailChanged) ...[
               const SizedBox(height: 20),
@@ -327,7 +371,58 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
               ),
             ],
 
-            const SizedBox(height: 36),
+            const SizedBox(height: 20),
+
+            // CHANGE PASSWORD SECTION
+            Text("Change Password", style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _currentPasswordController,
+              obscureText: _obscureCurrentPassword,
+              decoration: InputDecoration(
+                hintText: "Current password",
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(_obscureCurrentPassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
+                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: _newPasswordController,
+              obscureText: _obscureNewPassword,
+              decoration: InputDecoration(
+                hintText: "New password",
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(_obscureNewPassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _obscureNewPassword = !_obscureNewPassword),
+                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: _obscureConfirmPassword,
+              decoration: InputDecoration(
+                hintText: "Confirm new password",
+                prefixIcon: const Icon(Icons.lock_outline),
+                suffixIcon: IconButton(
+                  icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+              ),
+            ),
+            
+            const SizedBox(height: 16),
 
             // SAVE BUTTON
             SizedBox(

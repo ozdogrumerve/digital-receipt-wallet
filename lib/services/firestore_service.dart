@@ -43,18 +43,20 @@ class FirestoreService {
   }
 
   Future<void> updateProfilePhoto(String base64) async {
-    await _firestore.collection('users').doc(_uid).update({
-      'photo': base64,
-    });
+    await _firestore.collection('users').doc(_uid).set(
+      {'photo': base64},
+      SetOptions(merge: true),
+    );
   }
 
   Future<void> updateUserEmail(String newEmail) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    await _firestore.collection('users').doc(user.uid).update({
-      'email': newEmail,
-    });
+    await _firestore.collection('users').doc(user.uid).set(
+      {'email': newEmail},
+      SetOptions(merge: true),
+    );
   }
 
   /// =====================================================
