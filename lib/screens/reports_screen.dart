@@ -35,10 +35,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
   String? _errorMessage;
   bool _isGeneratingStatement = false;
 
-  final List<String> availableMonths = List.generate(12, (index) {
-    final now = DateTime.now();
-    final date = DateTime(now.year, now.month - index);
-    return DateFormat('yyyy-MM').format(date);
+  final List<String> availableMonths = List.generate(
+    12,
+    (index) {
+      final now = DateTime.now();
+      final date = DateTime(now.year, now.month - index);
+      return DateFormat('yyyy-MM').format(date);
     },
   );
 
@@ -91,15 +93,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
               if (budgetController.text.isEmpty && currentBudget > 0) {
                 budgetController.text = currentBudget.toStringAsFixed(0);
                 budgetController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: budgetController.text.length)
-                );
+                    TextPosition(offset: budgetController.text.length));
               }
             });
 
             return Padding(
               padding: EdgeInsets.fromLTRB(
                   24,
-                  32,
+                  32, 
                   24, 
                   MediaQuery.of(context).viewInsets.bottom + 34
               ),
@@ -131,10 +132,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       child: Text(
                         "Mevcut: ₺${currentBudget.toStringAsFixed(0)}",
                         style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                                color: Theme.of(context).colorScheme.primary
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.primary
                         ),
                       ),
                     ),
@@ -169,16 +170,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               _errorMessage = "Please enter a budget amount");
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) setState(() => _errorMessage = null);
-
-
                           });
                           return;
                         }
-                        
+
                         final newBudget = double.tryParse(input);
                         if (newBudget == null || newBudget <= 0) {
-                          setState(() => _errorMessage =
-                              "Please enter a valid amount");
+                          setState(() =>
+                              _errorMessage = "Please enter a valid amount");
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) setState(() => _errorMessage = null);
                           });
@@ -238,7 +237,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   _errorMessage!,
                                     style: const TextStyle(
                                         color: Colors.red, fontSize: 14)
-                                )
+                                  )
                             ),
                           ],
                         ),
@@ -278,7 +277,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 Text(
                     "%${selectedPercentage.toInt()} harcamaya ulastigimda bildir"),
 
-
                 const SizedBox(height: 20),
 
                 /// PERCENTAGE SLIDER
@@ -292,9 +290,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       setState(() => selectedPercentage = value),
                 ),
 
-
                 const SizedBox(height: 20),
-
 
                 Row(
                   children: [
@@ -356,7 +352,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -387,8 +383,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   totalAmount += r.totalAmount;
                 }
 
-                final monthlyBudget =
-                    userSnapshot.data?.monthlyBudget ?? 0;
+                final monthlyBudget = userSnapshot.data?.monthlyBudget ?? 0;
                 checkAlert(totalAmount, monthlyBudget, context);
 
 
@@ -415,7 +410,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     othersTotal += entry.value;
                   }
                 }
-
 
                 // 4. Expense listesi oluştur
                 final List<ExpenseItem> expenses = [];
@@ -459,6 +453,45 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 final currentMonth =
                     DateFormat('MMMM yyyy').format(selectedMonth);
 
+                final currentMonthExpenses = receipts
+                    .where(
+                      (e) =>
+                          e.date.year == selectedMonth.year &&
+                          e.date.month == selectedMonth.month,
+                    )
+                    .toList();
+
+                final previousMonthDate = DateTime(selectedMonth.year, selectedMonth.month - 1);
+
+                final previousMonthExpenses = receipts
+                    .where(
+                      (e) =>
+                          e.date.year == previousMonthDate.year &&
+                          e.date.month == previousMonthDate.month,
+                    )
+                    .toList();
+
+                final double currentMonthTotal =
+                    currentMonthExpenses.fold<double>(
+                  0,
+                  (sum, item) => sum + item.totalAmount,
+                );
+
+                final double previousMonthTotal =
+                    previousMonthExpenses.fold<double>(
+                  0,
+                  (sum, item) => sum + item.totalAmount,
+                );
+
+                final double changePercent = previousMonthTotal == 0
+                    ? 0
+                    : ((currentMonthTotal - previousMonthTotal) /
+                            previousMonthTotal) *
+                        100;
+
+                final bool isIncrease = changePercent > 0;
+                final bool isDecrease = changePercent < 0;
+
                 return SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
@@ -496,7 +529,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     }).toList(),
                                     onChanged: (newMonth) {
                                       if (newMonth != null) {
-                                        setState(() => selectedMonthKey = newMonth);
+                                        setState(
+                                            () => selectedMonthKey = newMonth);
                                       }
                                     },
                                   ),
@@ -548,9 +582,50 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   style: textTheme.headlineMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                Text(currentMonth,
+                                Text(currentMonth, 
                                     style: textTheme.bodySmall),
                               ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              isIncrease
+                                  ? Icons.trending_up
+                                  : isDecrease
+                                      ? Icons.trending_down
+                                      : Icons.remove,
+                              color: isIncrease
+                                  ? Colors.red
+                                  : isDecrease
+                                      ? Colors.green
+                                      : Colors.grey,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              previousMonthTotal == 0
+                                  ? 'No data for previous month'
+                                  : isIncrease
+                                      ? '%${changePercent.abs().toStringAsFixed(1)} increase'
+                                      : isDecrease
+                                          ? '%${changePercent.abs().toStringAsFixed(1)} decrease'
+                                          : 'No change',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: isIncrease
+                                    ? Colors.red
+                                    : isDecrease
+                                        ? Colors.green
+                                        : Colors.grey,
+                              ),
                             ),
                           ],
                         ),
@@ -641,7 +716,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 12),
 
                       /// 🔹 SECONDARY BUTTONS ROW
@@ -661,7 +736,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               ? null
                               : () async {
                                   setState(
-                                      () => _isGeneratingStatement = true);
+                                    () => _isGeneratingStatement = true);
                                   try {
                                     await StatementService.generateAndShare(
                                       context: context,
@@ -673,14 +748,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     if (mounted) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                        content: Text("Statement oluşturulamadı: $e"),
+                                        content: Text(
+                                            "Statement oluşturulamadı: $e"),
                                         backgroundColor: Colors.red,
                                       ));
                                     }
                                   } finally {
                                     if (mounted) {
-                                      setState(() =>
-                                          _isGeneratingStatement = false);
+                                      setState(
+                                          () => _isGeneratingStatement = false);
                                     }
                                   }
                                 },
@@ -729,7 +805,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   setState(() => _errorMessage = null);
                                   _showBudgetBottomSheet();
                                 },
-                                icon: Icon(Icons.tune, color: colorScheme.onSurface),
+                                icon: Icon(Icons.tune,
+                                    color: colorScheme.onSurface),
                                 label: Text(
                                   'Budget',
                                   style: TextStyle(
@@ -757,7 +834,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: colorScheme.surface,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
                                         ),
                                         elevation: 0,
                                         padding: const EdgeInsets.symmetric(
