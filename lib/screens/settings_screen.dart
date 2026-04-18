@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:digital_receipt_wallet/providers/locale_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -65,11 +66,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  // Language option
+  void _openLanguageSheet(LocaleProvider localeProvider) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          ListTile(
+            leading: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
+            title: const Text('English'),
+            trailing: localeProvider.locale.languageCode == 'en'
+                ? const Icon(Icons.check_circle, color: Colors.green)
+                : null,
+            onTap: () {
+              localeProvider.setLocale(const Locale('en'));
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Text('🇹🇷', style: TextStyle(fontSize: 24)),
+            title: const Text('Türkçe'),
+            trailing: localeProvider.locale.languageCode == 'tr'
+                ? const Icon(Icons.check_circle, color: Colors.green)
+                : null,
+            onTap: () {
+              localeProvider.setLocale(const Locale('tr'));
+              Navigator.pop(context);
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final notificationProvider = Provider.of<NotificationProvider>(context);
+    final localeProvider = Provider.of<LocaleProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
 
     // Avatar image provider: once secilen local dosyaya bak,
@@ -257,21 +295,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 30),
 
-            /// CONNECTIONS
-            Text("CONNECTIONS",
+            // YENİ
+            /// LANGUAGE
+            Text("LANGUAGE",
                 style: theme.textTheme.bodyMedium),
 
             const SizedBox(height: 12),
 
             Card(
               child: ListTile(
-                leading:
-                    const Icon(Icons.account_balance_outlined),
-                title: const Text("Bank Sync"),
-                subtitle: const Text(
-                    "Auto-import your transactions"),
+                leading: const Icon(Icons.language_outlined),
+                title: const Text("Language"),
+                subtitle: Text(
+                  localeProvider.locale.languageCode == 'tr'
+                      ? 'Türkçe'
+                      : 'English',
+                ),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () => _openLanguageSheet(localeProvider),
               ),
             ),
 

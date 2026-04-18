@@ -1,0 +1,133 @@
+{
+  "@@locale": "en",
+
+  "transactions": "Transactions",
+  "@transactions": {
+    "description": "Title of the Transactions screen"
+  },
+
+  "search": "Search...",
+  "@search": {
+    "description": "Placeholder text for the search field"
+  },
+
+  "recurringTransactions": "Recurring Transactions",
+  "@recurringTransactions": {
+    "description": "Menu item in the more options menu for navigating to recurring transactions"
+  },
+
+  "noTransactionsYet": "No transactions yet",
+  "@noTransactionsYet": {
+    "description": "Empty state title shown when there are no transactions"
+  },
+
+  "yourTransactionsWillAppearHere": "Your transactions will appear here",
+  "@yourTransactionsWillAppearHere": {
+    "description": "Empty state subtitle shown when there are no transactions"
+  },
+
+  "all": "All",
+  "@all": {
+    "description": "Category filter option - shows all transactions"
+  },
+
+  "food": "Food",
+  "@food": {
+    "description": "Transaction category name"
+  },
+
+  "clothing": "Clothing",
+  "@clothing": {
+    "description": "Transaction category name"
+  },
+
+  "tech": "Tech",
+  "@tech": {
+    "description": "Transaction category name"
+  },
+
+  "transportation": "Transportation",
+  "@transportation": {
+    "description": "Transaction category name"
+  },
+
+  "bills": "Bills",
+  "@bills": {
+    "description": "Transaction category name"
+  },
+
+  "rent": "Rent",
+  "@rent": {
+    "description": "Transaction category name"
+  },
+
+  "education": "Education",
+  "@education": {
+    "description": "Transaction category name"
+  },
+
+  "healthcare": "Healthcare",
+  "@healthcare": {
+    "description": "Transaction category name"
+  },
+
+  "personalCare": "Personal Care",
+  "@personalCare": {
+    "description": "Transaction category name"
+  },
+
+  "entertainment": "Entertainment",
+  "@entertainment": {
+    "description": "Transaction category name"
+  },
+
+  "householdFurniture": "Household / Furniture",
+  "@householdFurniture": {
+    "description": "Transaction category name"
+  },
+
+  "stationery": "Stationery",
+  "@stationery": {
+    "description": "Transaction category name"
+  },
+
+  "vacationTravel": "Vacation / Travel",
+  "@vacationTravel": {
+    "description": "Transaction category name"
+  },
+
+  "taxesOfficialPayments": "Taxes / Official Payments",
+  "@taxesOfficialPayments": {
+    "description": "Transaction category name"
+  },
+
+  "other": "Other",
+  "@other": {
+    "description": "Transaction category name - fallback category"
+  },
+
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "Filter option in date filter bottom sheet"
+  },
+
+  "thisMonth": "This Month",
+  "@thisMonth": {
+    "description": "Filter option in date filter bottom sheet"
+  },
+
+  "customDate": "Custom Date",
+  "@customDate": {
+    "description": "Fallback text for date filter chip when custom dates are selected"
+  },
+
+  "today": "TODAY",
+  "@today": {
+    "description": "Header text shown above transactions of the current day"
+  },
+
+  "yesterday": "YESTERDAY",
+  "@yesterday": {
+    "description": "Header text shown above transactions of the previous day"
+  }
+}

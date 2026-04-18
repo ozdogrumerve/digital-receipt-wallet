@@ -1,3 +1,4 @@
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/firestore_service.dart';
@@ -14,7 +15,7 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen> {
   final FirestoreService _service = FirestoreService();
-
+  
   bool isSearching = false;
   String searchQuery = "";
   String selectedCategory = "All";
@@ -74,6 +75,28 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         return Icons.shopping_bag;
       default:
         return Icons.receipt_long;
+    }
+  }
+
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'All': return loc.all;
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
     }
   }
 
@@ -143,6 +166,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   void _openFilterSheet() {
+    final loc = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (_) {
@@ -150,14 +174,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text("This Week"),
+              title: Text(loc.thisWeek),
               onTap: () {
                 _applyWeeklyFilter();
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: const Text("This Month"),
+              title: Text(loc.thisMonth),
               onTap: () {
                 _applyMonthlyFilter();
                 Navigator.pop(context);
@@ -182,6 +206,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -192,7 +217,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   autofocus: true,
                   onChanged: (val) => setState(() => searchQuery = val),
                   decoration: InputDecoration(
-                    hintText: "Search...",
+                    hintText: loc.search,
                     border: InputBorder.none,
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.close),
@@ -205,7 +230,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     ),
                   ),
                 )
-              : const Text("Transactions"),
+              : Text(loc.transactions),
         ),
         actions: [
           IconButton(
@@ -228,14 +253,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 );
               }
             },
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem(
                 value: 'recurring',
                 child: Row(
                   children: [
                     Icon(Icons.repeat),
                     SizedBox(width: 12),
-                    Text('Recurring Transactions'),
+                    Text(loc.recurringTransactions),
                   ],
                 ),
               ),
@@ -256,7 +281,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     label: Text(
                       startDate != null && endDate != null
                           ? "${DateFormat('d MMM').format(startDate!)} - ${DateFormat('d MMM').format(endDate!)}"
-                          : "Custom Date",
+                          : loc.customDate,
                     ),
                     onDeleted: _clearFilter,
                     deleteIcon: const Icon(Icons.close, size: 18),
@@ -291,12 +316,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          "No transactions yet",
+                          loc.noTransactionsYet,
                           style: theme.textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Your transactions will appear here",
+                          loc.yourTransactionsWillAppearHere,
                           style: theme.textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
@@ -320,9 +345,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Text(
                               isToday(tx.date)
-                                  ? "TODAY"
+                                  ? loc.today
                                   : isYesterday(tx.date)
-                                      ? "YESTERDAY"
+                                      ? loc.yesterday
                                       : "${tx.date.day}/${tx.date.month}/${tx.date.year}",
                               style: theme.textTheme.labelMedium,
                             ),
@@ -347,6 +372,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Widget _buildCategoryFilter() {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return SizedBox(
       height: 40,
@@ -375,7 +401,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
               child: Center(
                 child: Text(
-                  category,
+                  _localizeCategory(category, loc),
                   style: TextStyle(
                     color: isSelected
                         ? Colors.white
@@ -393,6 +419,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Widget _buildTransactionCard(ReceiptModel tx) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -456,7 +483,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  tx.category,
+                  _localizeCategory(tx.category, loc),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

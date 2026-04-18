@@ -1,0 +1,133 @@
+{
+  "@@locale": "tr",
+
+  "transactions": "İşlemler",
+  "@transactions": {
+    "description": "Transactions screen başlığı"
+  },
+
+  "search": "Ara...",
+  "@search": {
+    "description": "Arama alanı placeholder metni"
+  },
+
+  "recurringTransactions": "Tekrarlayan İşlemler",
+  "@recurringTransactions": {
+    "description": "Daha fazla menüsünde yer alan 'Tekrarlayan İşlemler' seçeneği"
+  },
+
+  "noTransactionsYet": "Henüz işlem yok",
+  "@noTransactionsYet": {
+    "description": "Hiç işlem olmadığında gösterilen boş durum başlığı"
+  },
+
+  "yourTransactionsWillAppearHere": "İşlemleriniz burada görünecek",
+  "@yourTransactionsWillAppearHere": {
+    "description": "Hiç işlem olmadığında gösterilen boş durum alt metni"
+  },
+
+  "all": "Tümü",
+  "@all": {
+    "description": "Kategori filtresinde 'Tüm işlemler' seçeneği"
+  },
+
+  "food": "Yemek",
+  "@food": {
+    "description": "İşlem kategorisi"
+  },
+
+  "clothing": "Giyim",
+  "@clothing": {
+    "description": "İşlem kategorisi"
+  },
+
+  "tech": "Teknoloji",
+  "@tech": {
+    "description": "İşlem kategorisi"
+  },
+
+  "transportation": "Ulaşım",
+  "@transportation": {
+    "description": "İşlem kategorisi"
+  },
+
+  "bills": "Faturalar",
+  "@bills": {
+    "description": "İşlem kategorisi"
+  },
+
+  "rent": "Kira",
+  "@rent": {
+    "description": "İşlem kategorisi"
+  },
+
+  "education": "Eğitim",
+  "@education": {
+    "description": "İşlem kategorisi"
+  },
+
+  "healthcare": "Sağlık",
+  "@healthcare": {
+    "description": "İşlem kategorisi"
+  },
+
+  "personalCare": "Kişisel Bakım",
+  "@personalCare": {
+    "description": "İşlem kategorisi"
+  },
+
+  "entertainment": "Eğlence",
+  "@entertainment": {
+    "description": "İşlem kategorisi"
+  },
+
+  "householdFurniture": "Ev / Mobilya",
+  "@householdFurniture": {
+    "description": "İşlem kategorisi"
+  },
+
+  "stationery": "Kırtasiye",
+  "@stationery": {
+    "description": "İşlem kategorisi"
+  },
+
+  "vacationTravel": "Tatil / Seyahat",
+  "@vacationTravel": {
+    "description": "İşlem kategorisi"
+  },
+
+  "taxesOfficialPayments": "Vergi / Resmi Ödemeler",
+  "@taxesOfficialPayments": {
+    "description": "İşlem kategorisi"
+  },
+
+  "other": "Diğer",
+  "@other": {
+    "description": "Diğer işlem kategorisi"
+  },
+
+  "thisWeek": "Bu Hafta",
+  "@thisWeek": {
+    "description": "Tarih filtresi - Bu Hafta seçeneği"
+  },
+
+  "thisMonth": "Bu Ay",
+  "@thisMonth": {
+    "description": "Tarih filtresi - Bu Ay seçeneği"
+  },
+
+  "customDate": "Özel Tarih",
+  "@customDate": {
+    "description": "Tarih filtresi çipinde özel tarih seçildiğinde gösterilen metin"
+  },
+
+  "today": "BUGÜN",
+  "@today": {
+    "description": "İşlemlerin üstünde gösterilen 'Bugün' başlığı"
+  },
+
+  "yesterday": "DÜN",
+  "@yesterday": {
+    "description": "İşlemlerin üstünde gösterilen 'Dün' başlığı"
+  }
+}
