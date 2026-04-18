@@ -4,10 +4,10 @@ import '../models/receipt_model.dart';
 import '../models/product_model.dart';
 import '../services/firestore_service.dart';
 
-class TransactionDetailScreen extends StatelessWidget {
+class ProductsScreen extends StatelessWidget {
   final ReceiptModel transaction;
 
-  const TransactionDetailScreen({
+  const ProductsScreen({
     super.key,
     required this.transaction,
   });

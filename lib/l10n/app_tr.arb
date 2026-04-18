@@ -1,9 +1,880 @@
 {
   "@@locale": "tr",
 
+  "addExpense": "Manuel Gider Ekle",
+  "@addExpense": {
+    "description": "AppBar başlığı - Manuel gider ekleme ekranı & FAB menüsünde - Manuel gider ekleme"
+  },
+
+  "storeName": "Mağaza Adı",
+  "@storeName": {
+    "description": "Mağaza adı giriş alanı etiketi"
+  },
+
+  "storeNameHint": "Örn. Migros, A101",
+  "@storeNameHint": {
+    "description": "Mağaza adı alanı için ipucu metni"
+  },
+
+  "date": "Tarih",
+  "@date": {
+    "description": "Tarih seçim alanı etiketi"
+  },
+
+  "category": "Kategori",
+  "@category": {
+    "description": "Kategori dropdown ve seçme etiketi"
+  },
+
+  "aiSuggest": "AI Öner",
+  "@aiSuggest": {
+    "description": "AI kategori önerisi buton metni"
+  },
+
+  "addItem": "ÜRÜN EKLE",
+  "@addItem": {
+    "description": "Ürün ekleme bölümü başlığı & Manuel ürün ekleme bottom sheet başlığı"
+  },
+
+  "productName": "Ürün Adı",
+  "@productName": {
+    "description": "Ürün adı giriş alanı etiketi"
+  },
+
+  "productNameHint": "Ne aldınız?",
+  "@productNameHint": {
+    "description": "Ürün adı alanı ipucu metni"
+  },
+
+  "price": "Fiyat (₺)",
+  "@price": {
+    "description": "Fiyat giriş alanı ipucu metni"
+  },
+
+  "quantity": "Adet",
+  "@quantity": {
+    "description": "Miktar giriş alanı ipucu metni"
+  },
+
+  "addToList": "+ Listeye Ekle",
+  "@addToList": {
+    "description": "Listeye ürün ekleme butonu metni"
+  },
+
+  "purchaseList": "ALIŞVERİŞ LİSTESİ",
+  "@purchaseList": {
+    "description": "Eklenen ürünler listesi başlığı"
+  },
+
+  "itemsCount": "ÜRÜN",
+  "@itemsCount": {
+    "description": "Ürün sayısı yanında gösterilen metin"
+  },
+
+  "tapToEditSwipeToDelete": "Düzenlemek için dokun  •  Silmek için sola kaydır",
+  "@tapToEditSwipeToDelete": {
+    "description": "Alışveriş listesi altındaki ve ürünler listelendiğinde yardımcı metin"
+  },
+
+  "noItemsYet": "Henüz ürün yok",
+  "@noItemsYet": {
+    "description": "Henüz ürün eklenmediğinde gösterilen boş durum metni"
+  },
+
+  "totalAmount": "Toplam Tutar",
+  "@totalAmount": {
+    "description": "Toplam tutar bölümü etiketi"
+  },
+
+  "saveTransaction": "İşlemi Kaydet",
+  "@saveTransaction": {
+    "description": "En alttaki kaydet butonu metni"
+  },
+
+  "addItemTitle": "Ürün Ekle",
+  "@addItemTitle": {
+    "description": "Ürün ekleme bottom sheet başlığı"
+  },
+
+  "editItemTitle": "Ürünü Düzenle",
+  "@editItemTitle": {
+    "description": "Ürün düzenleme bottom sheet başlığı"
+  },
+
+  "nameRequired": "İsim gerekli",
+  "@nameRequired": {
+    "description": "Ürün adı boş bırakıldığında validasyon hatası"
+  },
+
+  "priceMustBeGreaterThanZero": "Fiyat 0'dan büyük olmalı",
+  "@priceMustBeGreaterThanZero": {
+    "description": "Fiyat 0 veya negatif olduğunda hata mesajı"
+  },
+
+  "qtyMustBeGreaterThanZero": "Adet 0'dan büyük olmalı",
+  "@qtyMustBeGreaterThanZero": {
+    "description": "Adet 0 veya negatif olduğunda hata mesajı"
+  },
+
+  "storeNameCannotBeEmpty": "Mağaza adı boş olamaz",
+  "@storeNameCannotBeEmpty": {
+    "description": "Mağaza adı girilmeden kaydetmeye çalışıldığında hata"
+  },
+
+  "addAtLeastOneProduct": "En az bir ürün ekleyin",
+  "@addAtLeastOneProduct": {
+    "description": "Hiç ürün eklenmeden kaydetmeye çalışıldığında hata"
+  },
+
+  "enterValidProduct": "Geçerli bir ürün girin",
+  "@enterValidProduct": {
+    "description": "Geçersiz ürün bilgisiyle ekleme yapmaya çalışıldığında"
+  },
+
+  "aiError": "AI hatası: ",
+  "@aiError": {
+    "description": "AI kategori tahmini sırasında oluşan hata mesajı öneki"
+  },
+
+  "analytics": "Analiz",
+  "@analytics": {
+    "description": "Analytics ekranı AppBar başlığı & Detaylı analiz ekranına gitme butonu metni"
+  },
+
+  "spendingTrend": "Harcama Trendi",
+  "@spendingTrend": {
+    "description": "Haftalık harcama çizgi grafiği bölümü başlığı"
+  },
+
+  "weekly": "Haftalık",
+  "@weekly": {
+    "description": "Çizgi grafiğin üstündeki 'Haftalık' etiketi"
+  },
+
+  "categoryBudgets": "Kategori Bütçeleri",
+  "@categoryBudgets": {
+    "description": "Yatay kategori kartları bölümü başlığı"
+  },
+
+  "selectRange": "Tarih aralığı seç",
+  "@selectRange": {
+    "description": "Tarih aralığı seçilmediğinde gösterilen metin"
+  },
+
+  "monthlyInsights": "AYLIK İSTATİSTİKLER",
+  "@monthlyInsights": {
+    "description": "Aylık insights bölümü başlığı"
+  },
+
+  "highestSpendingCategory": "EN YÜKSEK HARCAMA KATEGORİSİ",
+  "@highestSpendingCategory": {
+    "description": "En çok harcama yapılan kategori etiketi"
+  },
+
+  "averageDailySpend": "GÜNLÜK ORTALAMA HARCAMA (BU AY İTİBARİYLE)",
+  "@averageDailySpend": {
+    "description": "Bu ayki günlük ortalama harcama etiketi"
+  },
+
+  "topMerchant": "En Çok Harcama Yapılan Mağaza",
+  "@topMerchant": {
+    "description": "En çok harcama yapılan mağaza kartı başlığı"
+  },
+
+  "noDataYet": "Henüz veri yok",
+  "@noDataYet": {
+    "description": "Veri olmadığında gösterilen placeholder metni"
+  },
+
+  "transactionsCount": "işlem",
+  "@transactionsCount": {
+    "description": "En çok harcama yapılan mağaza için işlem sayısı yanında yazan metin"
+  },
+
+  "perDay": " / gün",
+  "@perDay": {
+    "description": "Günlük ortalama harcama son eki (örn: ₺XX.XX / gün)"
+  },
+
+  "mon": "Pzt",
+  "tue": "Sal",
+  "wed": "Çar",
+  "thu": "Per",
+  "fri": "Cum",
+  "sat": "Cmt",
+  "sun": "Paz",
+  "@mon": { "description": "Grafik için kısaltılmış gün adı - Pazartesi" },
+  "@tue": { "description": "Grafik için kısaltılmış gün adı - Salı" },
+  "@wed": { "description": "Grafik için kısaltılmış gün adı - Çarşamba" },
+  "@thu": { "description": "Grafik için kısaltılmış gün adı - Perşembe" },
+  "@fri": { "description": "Grafik için kısaltılmış gün adı - Cuma" },
+  "@sat": { "description": "Grafik için kısaltılmış gün adı - Cumartesi" },
+  "@sun": { "description": "Grafik için kısaltılmış gün adı - Pazar" },
+
+  "digitalReceiptWallet": "Dijital Fiş Cüzdanı",
+  "@digitalReceiptWallet": {
+    "description": "Ana sayfada üstte görünen uygulama başlığı"
+  },
+
+  "totalSpent": "Toplam Harcama",
+  "@totalSpent": {
+    "description": "Özet kartındaki bu ayki toplam harcama etiketi"
+  },
+
+  "noMonthlyBudgetSetYet": "Henüz aylık bütçe ayarlanmadı",
+  "@noMonthlyBudgetSetYet": {
+    "description": "Kullanıcı aylık bütçe belirlemediğinde gösterilen metin"
+  },
+
+  "limitLeft": "KALAN LİMİT",
+  "@limitLeft": {
+    "description": "Kalan bütçe miktarının etiketi"
+  },
+
+  "percentUsed": "% KULLANILDI",
+  "@percentUsed": {
+    "description": "Bütçe kullanım yüzdesi çipinde gösterilen metin (örn: %65 KULLANILDI)"
+  },
+
+  "recentActivity": "Son İşlemler",
+  "@recentActivity": {
+    "description": "Son işlemler bölümü başlığı"
+  },
+
+  "seeHistory": "Geçmişi Gör",
+  "@seeHistory": {
+    "description": "Tüm işlemleri görmek için buton metni"
+  },
+
+  "noReceiptsYet": "Henüz fiş yok",
+  "@noReceiptsYet": {
+    "description": "Ana sayfada hiç fiş olmadığında başlık"
+  },
+
+  "yourScannedReceiptsWillAppearHere": "Taranan fişleriniz burada görünecek",
+  "@yourScannedReceiptsWillAppearHere": {
+    "description": "Ana sayfadaki boş durum alt metni"
+  },
+
+  "home": "Ana Sayfa",
+  "@home": {
+    "description": "Alt navigasyon çubuğu - Ana Sayfa sekmesi"
+  },
+
+  "reports": "Raporlar",
+  "@reports": {
+    "description": "Alt navigasyon çubuğu - Raporlar sekmesi & Raporlar ekranı AppBar başlığı"
+  },
+
+  "settings": "Ayarlar",
+  "@settings": {
+    "description": "Alt navigasyon çubuğu - Ayarlar sekmesi & Ayarlar ekranı başlığı"
+  },
+
+  "scanReceipt": "Fiş Tara",
+  "@scanReceipt": {
+    "description": "FAB menüsünde - Kamera ile fiş tarama & Fiş tarama ekranı AppBar başlığı"
+  },
+
+  "uploadReceiptPdf": "Fiş / PDF Yükle",
+  "@uploadReceiptPdf": {
+    "description": "FAB menüsünde - Fiş veya PDF dosya yükleme"
+  },
+
+  "welcomeBack": "Tekrar Hoş Geldiniz",
+  "@welcomeBack": {
+    "description": "Giriş ekranındaki ana hoş geldin başlığı"
+  },
+
+  "signInToManageYourReceipts": "Fişlerinizi yönetmek için giriş yapın",
+  "@signInToManageYourReceipts": {
+    "description": "Hoş geldin mesajının altındaki açıklama"
+  },
+
+  "email": "E-posta",
+  "@email": {
+    "description": "E-posta giriş alanı etiketi"
+  },
+
+  "password": "Şifre",
+  "@password": {
+    "description": "Şifre giriş alanı etiketi"
+  },
+
+  "signIn": "Giriş Yap",
+  "@signIn": {
+    "description": "Ana giriş butonu metni"
+  },
+
+  "dontHaveAnAccount": "Hesabınız yok mu? Kayıt olun",
+  "@dontHaveAnAccount": {
+    "description": "Kayıt olma ekranına yönlendiren buton metni"
+  },
+
+  "loginError": "Giriş hatası",
+  "@loginError": {
+    "description": "Giriş başarısız olduğunda gösterilen genel hata mesajı"
+  },
+
+  "productDetails": "Ürün Detayları",
+  "@productDetails": {
+    "description": "İşlem detay ekranı AppBar başlığı"
+  },
+
+  "items": "Ürünler",
+  "@items": {
+    "description": "Satın alınan ürünlerin listesi bölümü başlığı"
+  },
+
+  "noItemsRecorded": "Kayıtlı ürün yok",
+  "@noItemsRecorded": {
+    "description": "İşlemde hiç ürün bulunmadığında gösterilen boş durum mesajı"
+  },
+
+  "scanned": "Taranmış",
+  "@scanned": {
+    "description": "İşlem kamera ile taranarak oluşturulduğunda kaynak etiketi"
+  },
+
+  "pdf": "PDF",
+  "@pdf": {
+    "description": "İşlem PDF'den oluşturulduğunda kaynak etiketi & Banka ekstresi PDF yükleme sekmesi"
+  },
+
+  "manual": "Manuel",
+  "@manual": {
+    "description": "İşlem manuel olarak eklendiğinde kaynak etiketi"
+  },
+
+  "total": "Toplam",
+  "@total": {
+    "description": "En alttaki toplam tutar satırındaki etiket"
+  },
+
+  "profileDetails": "Profil Detayları",
+  "@profileDetails": {
+    "description": "Profil detayları ekranı AppBar başlığı & Profil detaylarına gitme ListTile başlığı"
+  },
+
+  "displayName": "Görünen Ad",
+  "@displayName": {
+    "description": "Kullanıcının görünen adı alanı etiketi"
+  },
+
+  "yourNameHint": "Adınız",
+  "@yourNameHint": {
+    "description": "Görünen ad giriş alanı ipucu metni"
+  },
+
+  "emailAddress": "E-posta Adresi (Tekrar Giriş Gerektirir)",
+  "@emailAddress": {
+    "description": "E-posta adresi alanı etiketi - yeniden giriş gerektiği uyarısı ile"
+  },
+
+  "yourEmailHint": "ornek@email.com",
+  "@yourEmailHint": {
+    "description": "E-posta giriş alanı ipucu metni"
+  },
+
+  "currentPassword": "Mevcut Şifre",
+  "@currentPassword": {
+    "description": "Mevcut şifre alanı etiketi (email veya şifre değiştirirken)"
+  },
+
+  "requiredToChangeEmail": "E-posta değiştirmek için gerekli",
+  "@requiredToChangeEmail": {
+    "description": "E-posta değiştirirken mevcut şifre alanı ipucu metni"
+  },
+
+  "changePassword": "Şifre Değiştir",
+  "@changePassword": {
+    "description": "Şifre değiştirme bölümü başlığı"
+  },
+
+  "currentPasswordHint": "Mevcut şifre",
+  "@currentPasswordHint": {
+    "description": "Şifre değiştirme bölümünde mevcut şifre ipucu metni"
+  },
+
+  "newPasswordHint": "Yeni şifre",
+  "@newPasswordHint": {
+    "description": "Yeni şifre giriş alanı ipucu metni"
+  },
+
+  "confirmNewPasswordHint": "Yeni şifreyi onaylayın",
+  "@confirmNewPasswordHint": {
+    "description": "Yeni şifre onaylama alanı ipucu metni"
+  },
+
+  "verificationEmailSent": "Doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin.",
+  "@verificationEmailSent": {
+    "description": "E-posta değiştirme doğrulama maili gönderildiğinde başarı mesajı"
+  },
+
+  "profileUpdatedSuccessfully": "Profil başarıyla güncellendi.",
+  "@profileUpdatedSuccessfully": {
+    "description": "Profil güncellendikten sonra başarı mesajı"
+  },
+
+  "nameCannotBeEmpty": "Ad boş olamaz.",
+  "@nameCannotBeEmpty": {
+    "description": "Görünen ad boş bırakıldığında hata mesajı"
+  },
+
+  "newPasswordMustBeAtLeast6": "Yeni şifre en az 6 karakter olmalıdır",
+  "@newPasswordMustBeAtLeast6": {
+    "description": "Yeni şifre çok kısa olduğunda hata mesajı"
+  },
+
+  "passwordsDontMatch": "Şifreler eşleşmiyor",
+  "@passwordsDontMatch": {
+    "description": "Yeni şifre ile onay şifresi eşleşmediğinde hata"
+  },
+
+  "enterCurrentPassword": "Mevcut şifrenizi girin",
+  "@enterCurrentPassword": {
+    "description": "Mevcut şifre boş bırakıldığında hata mesajı"
+  },
+
+  "enterPasswordToChangeEmail": "E-posta değiştirmek için şifrenizi girin.",
+  "@enterPasswordToChangeEmail": {
+    "description": "E-posta değiştirirken şifre girilmediğinde hata"
+  },
+
+  "incorrectPassword": "Şifre yanlış.",
+  "@incorrectPassword": {
+    "description": "Yanlış şifre girildiğinde hata mesajı"
+  },
+
+  "emailAlreadyInUse": "Bu e-posta adresi zaten kullanımda.",
+  "@emailAlreadyInUse": {
+    "description": "Yeni e-posta zaten başka biri tarafından kullanılıyorsa"
+  },
+
+  "invalidEmail": "Geçersiz e-posta adresi.",
+  "@invalidEmail": {
+    "description": "E-posta formatı hatalıysa"
+  },
+
+  "anErrorOccurred": "Bir hata oluştu.",
+  "@anErrorOccurred": {
+    "description": "Genel hata mesajı"
+  },
+
+  "aVerificationEmailWillBeSent": "Yeni adrese bir doğrulama e-postası gönderilecektir.",
+  "@aVerificationEmailWillBeSent": {
+    "description": "E-posta değiştirilirken gösterilen bilgi metni"
+  },
+
+  "addRecurring": "Tekrarlayan Ekle",
+  "@addRecurring": {
+    "description": "Floating action button metni"
+  },
+
+  "noRecurringTransactions": "Tekrarlayan işlem yok",
+  "@noRecurringTransactions": {
+    "description": "Tekrarlayan işlem bulunmadığında gösterilen başlık"
+  },
+
+  "tapToAddSubscriptionsRentEtc": "Abonelik, kira vb. eklemek için +'ya dokunun",
+  "@tapToAddSubscriptionsRentEtc": {
+    "description": "Boş durum alt metni"
+  },
+
+  "paused": "DURAKLATILDI",
+  "@paused": {
+    "description": "Duraklatılmış tekrarlayan işlemler bölüm başlığı"
+  },
+
+  "dueSoon": "Ödemesi yaklaşıyor",
+  "@dueSoon": {
+    "description": "3 gün içinde ödemesi olan işlemler için rozet metni"
+  },
+
+  "next": "Sonraki:",
+  "@next": {
+    "description": "Bir sonraki ödeme tarihinden önceki etiket"
+  },
+
+  "deleteRecurring": "Tekrarlayanı Sil",
+  "@deleteRecurring": {
+    "description": "Silme onay diyaloğu başlığı"
+  },
+
+  "removeFromRecurring": "\"{{storeName}}\" harcamasını tekrarlayanlardan kaldırılsın mı?",
+  "@removeFromRecurring": {
+    "description": "Silme onay diyaloğu içeriği",
+    "placeholders": {
+      "storeName": {}
+    }
+  },
+
+  "cancel": "İptal",
+  "@cancel": {
+    "description": "Diyaloglardaki iptal butonu"
+  },
+
+  "delete": "Sil",
+  "@delete": {
+    "description": "Diyaloglardaki sil butonu"
+  },
+
+  "newRecurring": "Yeni Tekrarlayan",
+  "@newRecurring": {
+    "description": "Yeni tekrarlayan işlem formu başlığı"
+  },
+
+  "editRecurring": "Tekrarlayanı Düzenle",
+  "@editRecurring": {
+    "description": "Tekrarlayan işlem düzenleme formu başlığı"
+  },
+
+  "nameOrStore": "Ad / Mağaza",
+  "@nameOrStore": {
+    "description": "Tekrarlayan formunda mağaza adı etiketi"
+  },
+
+  "amountTL": "Tutar (₺)",
+  "@amountTL": {
+    "description": "Tekrarlayan formunda tutar etiketi"
+  },
+
+  "frequency": "Sıklık",
+  "@frequency": {
+    "description": "Sıklık seçim etiketleri başlığı"
+  },
+
+  "startDate": "Başlangıç Tarihi",
+  "@startDate": {
+    "description": "Başlangıç tarihi seçici etiketi"
+  },
+
+  "noteOptional": "Not (isteğe bağlı)",
+  "@noteOptional": {
+    "description": "Not alanı etiketi"
+  },
+
+  "add": "Ekle",
+  "@add": {
+    "description": "Yeni ekleme butonu metni"
+  },
+
+  "saveChanges": "Değişiklikleri Kaydet",
+  "@saveChanges": {
+    "description": "Düzenleme sonrası kaydet butonu"
+  },
+
+  "resume": "Devam Et",
+  "@resume": {
+    "description": "Duraklatılmış işlemi başlatma butonu ipucu"
+  },
+
+  "pause": "Duraklat",
+  "@pause": {
+    "description": "Aktif işlemi duraklatma butonu ipucu"
+  },
+
+  "monthlyBudget": "Aylık Bütçe",
+  "@monthlyBudget": {
+    "description": "Aylık bütçe ayarlama butonu etiketi"
+  },
+
+  "setAlert": "Alarm Ayarla",
+  "@setAlert": {
+    "description": "Bütçe alarmı ayarlama butonu etiketi"
+  },
+
+  "adjustBudget": "Bütçe",
+  "@adjustBudget": {
+    "description": "Bütçe butonunda kullanılan kısa etiket"
+  },
+
+  "alertAyari": "Alarm Ayarla",
+  "@alertAyari": {
+    "description": "Bütçe alarmı bottom sheet başlığı"
+  },
+
+  "alertDescription": "%{percentage} harcamaya ulaştığımda bildir",
+  "@alertDescription": {
+    "description": "Alarm bottom sheet açıklama metni. {percentage} placeholder kullanılır",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "cancelAlert": "Alarmı Kaldır",
+  "@cancelAlert": {
+    "description": "Alarmı iptal etme butonu"
+  },
+
+  "save": "Kaydet",
+  "@save": {
+    "description": "Genel kaydet butonu metni"
+  },
+
+  "alertRemoved": "Alarm kaldırıldı",
+  "@alertRemoved": {
+    "description": "Alarm iptal edildiğinde gösterilen snackbar mesajı"
+  },
+
+  "alertSetFor": "Bütçenin %{percentage}%'i için alarm ayarlandı",
+  "@alertSetFor": {
+    "description": "Alarm ayarlandığında başarı mesajı. {percentage} placeholder kullanılır",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "budgetUpdatedTo": "Bütçe ₺{amount} olarak güncellendi",
+  "@budgetUpdatedTo": {
+    "description": "Aylık bütçe güncellendiğinde başarı mesajı",
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "pleaseEnterBudgetAmount": "Lütfen bütçe tutarı girin",
+  "@pleaseEnterBudgetAmount": {
+    "description": "Bütçe alanı boş bırakıldığında hata mesajı"
+  },
+
+  "pleaseEnterValidAmount": "Lütfen geçerli bir tutar girin",
+  "@pleaseEnterValidAmount": {
+    "description": "Geçersiz bütçe tutarı girildiğinde hata mesajı"
+  },
+
+  "generating": "Oluşturuluyor...",
+  "@generating": {
+    "description": "PDF raporu oluşturulurken gösterilen yükleme metni"
+  },
+
+  "exportStatement": "Raporu Dışa Aktar",
+  "@exportStatement": {
+    "description": "Aylık PDF raporu dışa aktarma butonu metni"
+  },
+
+  "statementCouldNotBeGenerated": "Rapor oluşturulamadı: {error}",
+  "@statementCouldNotBeGenerated": {
+    "description": "PDF oluşturma başarısız olduğunda hata mesajı",
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "noDataForPreviousMonth": "Önceki aya ait veri yok",
+  "@noDataForPreviousMonth": {
+    "description": "Önceki ay karşılaştırması için veri olmadığında gösterilen metin"
+  },
+
+  "increase": "artış",
+  "@increase": {
+    "description": "'%X artış' ifadesinde kullanılan kelime"
+  },
+
+  "decrease": "azalış",
+  "@decrease": {
+    "description": "'%X azalış' ifadesinde kullanılan kelime"
+  },
+
+  "noChange": "Değişim yok",
+  "@noChange": {
+    "description": "Önceki aya göre değişim olmadığında gösterilen metin"
+  },
+
+  "dailyAverage": "GÜNLÜK ORTALAMA",
+  "@dailyAverage": {
+    "description": "Günlük ortalama harcama etiketi"
+  },
+
+  "notificationsAreDisabled": "Bildirimler kapalı. Ayarlardan açmalısınız.",
+  "@notificationsAreDisabled": {
+    "description": "Alarm ayarlamaya çalışırken bildirimler kapalıysa uyarı"
+  },
+
+  "noImageCaptured": "Fotoğraf Çekilmedi",
+  "@noImageCaptured": {
+    "description": "Henüz fiş fotoğrafı çekilmediğinde gösterilen metin"
+  },
+
+  "takePhoto": "Fotoğraf Çek",
+  "@takePhoto": {
+    "description": "Fiş fotoğrafı çekme butonu"
+  },
+
+  "retake": "Yeniden Çek",
+  "@retake": {
+    "description": "Fotoğrafı yeniden çekme butonu"
+  },
+
+  "extractionResults": "Çıkarma Sonuçları",
+  "@extractionResults": {
+    "description": "Tarama sonuçları bölümü başlığı"
+  },
+
+  "edit": "Düzenle",
+  "@edit": {
+    "description": "Düzenleme modunu açma butonu"
+  },
+
+  "done": "Tamam",
+  "@done": {
+    "description": "Düzenleme modundan çıkma butonu"
+  },
+
+
+  "aiSuggested": "AI önerdi ⚡",
+  "@aiSuggested": {
+    "description": "AI tarafından kategori önerildiğinde gösterilen küçük metin"
+  },
+
+  "detectedProducts": "Tespit Edilen Ürünler",
+  "@detectedProducts": {
+    "description": "Taranan ürünler listesi başlığı"
+  },
+
+  "noProductsDetected": "Ürün tespit edilemedi",
+  "@noProductsDetected": {
+    "description": "Hiç ürün çıkmadığında gösterilen boş durum metni"
+  },
+
+  "addItemManually": "+ Manuel Ürün Ekle",
+  "@addItemManually": {
+    "description": "Manuel ürün ekleme butonu"
+  },
+
+  "saveReceipt": "Fişi Kaydet",
+  "@saveReceipt": {
+    "description": "Ana kaydet butonu metni"
+  },
+
+  "pleaseScanReceiptFirst": "Lütfen önce bir fiş tarayın",
+  "@pleaseScanReceiptFirst": {
+    "description": "Tarama yapılmadan kaydetmeye çalışıldığında hata"
+  },
+
+  "totalMustBeGreaterThanZero": "Toplam tutar 0'dan büyük olmalıdır",
+  "@totalMustBeGreaterThanZero": {
+    "description": "Toplam tutar sıfır veya negatifse hata"
+  },
+
+  "editItem": "Ürünü Düzenle",
+  "@editItem": {
+    "description": "Ürün düzenleme bottom sheet başlığı"
+  },
+
+  "invalidReceiptScan": "Geçersiz fiş taraması",
+  "@invalidReceiptScan": {
+    "description": "AI'dan geçerli JSON gelmediğinde hata"
+  },
+
+  "thisDoesntLookLikeAReceipt": "Bu bir fişe benzemiyor",
+  "@thisDoesntLookLikeAReceipt": {
+    "description": "Ürün veya toplam bulunamadığında hata"
+  },
+
+  "scanError": "Tarama hatası: ",
+  "@scanError": {
+    "description": "Genel tarama hataları için önek"
+  },
+
+  "personalAccount": "KİŞİSEL HESAP",
+  "@personalAccount": {
+    "description": "Kişisel hesap bölümü başlığı"
+  },
+
+  "changeNameEmailAndAvatar": "Ad, e-posta ve avatar değiştir",
+  "@changeNameEmailAndAvatar": {
+    "description": "Profil Detayları seçeneğinin alt metni"
+  },
+
+  "appPreferences": "UYGULAMA TERCIHLERİ",
+  "@appPreferences": {
+    "description": "Uygulama tercihleri bölümü başlığı"
+  },
+
+  "pushNotifications": "Bildirimler",
+  "@pushNotifications": {
+    "description": "Bildirim ayarları başlığı"
+  },
+
+  "alertsForLargeTransactions": "Büyük harcamalar için uyarılar",
+  "@alertsForLargeTransactions": {
+    "description": "Bildirimler için alt açıklama"
+  },
+
+  "visualTheme": "Görsel Tema",
+  "@visualTheme": {
+    "description": "Açık/koyu tema ayarı başlığı"
+  },
+
+  "switchBetweenLightAndDark": "Açık ve koyu tema arasında geçiş yap",
+  "@switchBetweenLightAndDark": {
+    "description": "Tema değiştirme alt metni"
+  },
+
+  "language": "Dil",
+  "@language": {
+    "description": "Dil seçimi başlığı"
+  },
+
+  "signOut": "Çıkış Yap",
+  "@signOut": {
+    "description": "Çıkış yap butonu metni"
+  },
+
+  "notificationsDisabledPermission": "Bildirimlere izin vermelisiniz.",
+  "@notificationsDisabledPermission": {
+    "description": "Bildirim izni reddedildiğinde gösterilen hata mesajı"
+  },
+
+  "notificationsTurnedOff": "Bildirimler kapatıldı. Tamamen kapatmak isterseniz cihaz ayarlarından kapatabilirsiniz.",
+  "@notificationsTurnedOff": {
+    "description": "Bildirimler kapatıldığında gösterilen mesaj"
+  },
+
+  "goToSettings": "Ayarlara Git",
+  "@goToSettings": {
+    "description": "Cihaz ayarlarına gitmek için snackbar buton metni"
+  },
+
+  "createAccount": "Hesap Oluştur",
+  "@createAccount": {
+    "description": "Kayıt olma ekranı ana başlığı"
+  },
+
+  "signUpToStartManagingYourReceipts": "Fişlerinizi yönetmeye başlamak için kayıt olun",
+  "@signUpToStartManagingYourReceipts": {
+    "description": "Hesap oluştur başlığının altındaki açıklama"
+  },
+
+  "fullName": "Ad Soyad",
+  "@fullName": {
+    "description": "Ad soyad giriş alanı etiketi"
+  },
+
+  "createAccountButton": "Hesap Oluştur",
+  "@createAccountButton": {
+    "description": "Ana kayıt ol butonu metni"
+  },
+
+  "alreadyHaveAnAccount": "Zaten hesabınız var mı? Giriş yapın",
+  "@alreadyHaveAnAccount": {
+    "description": "Giriş ekranına yönlendiren buton metni"
+  },
+
+  "error": "Hata",
+  "@error": {
+    "description": "Kayıt sırasında genel hata mesajı"
+  },
+
+  "splashSlogan": "DAHA AKILLI TAKİP ET. DAHA İYİ HARCAMA YAP.",
+  "@splashSlogan": {
+    "description": "Splash ekranında gösterilen ana slogan"
+  },
+
   "transactions": "İşlemler",
   "@transactions": {
-    "description": "Transactions screen başlığı"
+    "description": "Transactions screen başlığı & Alt navigasyon çubuğu - İşlemler sekmesi"
   },
 
   "search": "Ara...",
@@ -123,11 +994,107 @@
 
   "today": "BUGÜN",
   "@today": {
-    "description": "İşlemlerin üstünde gösterilen 'Bugün' başlığı"
+    "description": "İşlemler listesinde bugün yapılan işlemlerin üstünde gösterilen başlık"
   },
 
   "yesterday": "DÜN",
   "@yesterday": {
-    "description": "İşlemlerin üstünde gösterilen 'Dün' başlığı"
+    "description": "İşlemler listesinde dün yapılan işlemlerin üstünde gösterilen başlık"
+  },
+
+  "uploadReceipt": "Fiş / PDF Yükle",
+  "@uploadReceipt": {
+    "description": "Ekranın AppBar başlığı"
+  },
+
+  "gallery": "Galeri",
+  "@gallery": {
+    "description": "Fiş fotoğrafı yükleme sekmesi"
+  },
+
+  "noImageSelected": "Fotoğraf Seçilmedi",
+  "@noImageSelected": {
+    "description": "Galeri'den henüz fotoğraf seçilmediğinde gösterilen metin"
+  },
+
+  "selectFromGallery": "Galeriden Seç",
+  "@selectFromGallery": {
+    "description": "Galeri'den fotoğraf seçme butonu"
+  },
+
+  "changeImage": "Fotoğrafı Değiştir",
+  "@changeImage": {
+    "description": "Zaten seçili fotoğrafı değiştirme butonu"
+  },
+
+  "uploadEkstre": "Ekstre Yükle",
+  "@uploadEkstre": {
+    "description": "PDF yükleme kartı başlığı"
+  },
+
+  "selectBankStatement": "Banka ekstrenizi seçin",
+  "@selectBankStatement": {
+    "description": "Henüz PDF seçilmediğinde ipucu metni"
+  },
+
+  "changePdf": "Değiştirmek için dokun",
+  "@changePdf": {
+    "description": "PDF seçildiğinde değiştirme ipucu"
+  },
+
+  "analyze": "Analiz Et",
+  "@analyze": {
+    "description": "PDF'i AI ile analiz etme butonu"
+  },
+
+  "analyzing": "Analiz ediliyor...",
+  "@analyzing": {
+    "description": "PDF işlenirken gösterilen yükleme metni"
+  },
+
+  "totalExpense": "Toplam Gider",
+  "@totalExpense": {
+    "description": "Toplam çıkış tutarı etiketi"
+  },
+
+  "totalIncome": "Toplam Gelir",
+  "@totalIncome": {
+    "description": "Toplam giriş tutarı etiketi"
+  },
+
+  "bank": "Banka",
+  "@bank": {
+    "description": "PDF özetinde banka adı etiketi"
+  },
+
+  "period": "Dönem",
+  "@period": {
+    "description": "PDF özetinde dönem etiketi"
+  },
+
+  "saveTransactions": "İşlemleri Kaydet",
+  "@saveTransactions": {
+    "description": "PDF işlemlerini kaydetme butonu"
+  },
+
+  "pleaseSelectAllCategories": "Lütfen tüm işlemler için kategori seçin",
+  "@pleaseSelectAllCategories": {
+    "description": "Tüm işlemler için kategori seçilmediğinde hata"
+  },
+
+  "noTransactionsFound": "Hiç işlem bulunamadı",
+  "@noTransactionsFound": {
+    "description": "PDF analizinden hareket çıkmadığında hata"
+  },
+
+  "pdfError": "PDF hatası: ",
+  "@pdfError": {
+    "description": "PDF işleme hataları için önek"
+  },
+
+  "uploadError": "Yükleme hatası: ",
+  "@uploadError": {
+    "description": "Genel yükleme hataları için önek"
   }
+  
 }

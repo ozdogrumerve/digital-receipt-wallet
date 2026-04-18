@@ -198,7 +198,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => TransactionDetailScreen(transaction: tx),
+        builder: (_) => ProductsScreen(transaction: tx),
       ),
     );
   }

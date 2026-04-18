@@ -1,9 +1,879 @@
 {
   "@@locale": "en",
 
+  "addExpense": "Add Expense Manually",
+  "@addExpense": {
+    "description": "AppBar title for manual expense entry screen & Floating action button option - Manual expense entry"
+  },
+
+  "storeName": "Store Name",
+  "@storeName": {
+    "description": "Label for store name input field"
+  },
+
+  "storeNameHint": "e.g. Migros, A101",
+  "@storeNameHint": {
+    "description": "Hint text for store name field"
+  },
+
+  "date": "Date",
+  "@date": {
+    "description": "Label for date selection field"
+  },
+
+  "category": "Category",
+  "@category": {
+    "description": "Label for category dropdown & selection"
+  },
+
+  "aiSuggest": "AI Suggest",
+  "@aiSuggest": {
+    "description": "Text on the AI category suggestion button"
+  },
+
+  "addItem": "ADD ITEM",
+  "@addItem": {
+    "description": "Section header for adding a new product/item & Section header for adding a new product/item"
+  },
+
+  "productName": "Product Name",
+  "@productName": {
+    "description": "Label above product name input & Hint text for product name in manual add/edit sheet"
+  },
+
+  "productNameHint": "What did you buy?",
+  "@productNameHint": {
+    "description": "Hint text in product name field"
+  },
+
+  "price": "Price (₺)",
+  "@price": {
+    "description": "Hint text for price input field"
+  },
+
+  "quantity": "Quantity",
+  "@quantity": {
+    "description": "Hint text for quantity input field"
+  },
+
+  "addToList": "+ Add to List",
+  "@addToList": {
+    "description": "Button text to add product to the list"
+  },
+
+  "purchaseList": "PURCHASE LIST",
+  "@purchaseList": {
+    "description": "Header for the list of added products"
+  },
+
+  "itemsCount": "ITEMS",
+  "@itemsCount": {
+    "description": "Text next to the number of items in purchase list"
+  },
+
+  "tapToEditSwipeToDelete": "Tap item to edit  •  Swipe left to delete",
+  "@tapToEditSwipeToDelete": {
+    "description": "Helper text below purchase list header & detected products header"
+  },
+
+  "noItemsYet": "No items yet",
+  "@noItemsYet": {
+    "description": "Empty state text when no products added yet"
+  },
+
+  "totalAmount": "Total Amount",
+  "@totalAmount": {
+    "description": "Label for the total amount section"
+  },
+
+  "saveTransaction": "Save Transaction",
+  "@saveTransaction": {
+    "description": "Text on the main save button at the bottom"
+  },
+
+  "addItemTitle": "Add Item",
+  "@addItemTitle": {
+    "description": "Title of bottom sheet when adding a new item"
+  },
+
+  "editItemTitle": "Edit Item",
+  "@editItemTitle": {
+    "description": "Title of bottom sheet when editing an existing item & Button to enable editing mode"
+  },
+
+  "priceMustBeGreaterThanZero": "Price must be > 0",
+  "@priceMustBeGreaterThanZero": {
+    "description": "Validation error for price <= 0"
+  },
+
+  "qtyMustBeGreaterThanZero": "Qty must be > 0",
+  "@qtyMustBeGreaterThanZero": {
+    "description": "Validation error for quantity <= 0"
+  },
+
+  "storeNameCannotBeEmpty": "Store name cannot be empty",
+  "@storeNameCannotBeEmpty": {
+    "description": "Error message when trying to save without store name"
+  },
+
+  "addAtLeastOneProduct": "Add at least one product",
+  "@addAtLeastOneProduct": {
+    "description": "Error message when trying to save with no products"
+  },
+
+  "enterValidProduct": "Enter valid product",
+  "@enterValidProduct": {
+    "description": "Error message when adding product with invalid data"
+  },
+
+  "aiError": "AI error: ",
+  "@aiError": {
+    "description": "Prefix for AI category prediction error snackbar"
+  },
+
+  "analytics": "Analytics",
+  "@analytics": {
+    "description": "AppBar title for Analytics screen & Button text to navigate to detailed Analytics screen"
+  },
+
+  "spendingTrend": "Spending Trend",
+  "@spendingTrend": {
+    "description": "Header for the weekly spending line chart section"
+  },
+
+  "weekly": "Weekly",
+  "@weekly": {
+    "description": "Label above the weekly line chart"
+  },
+
+  "categoryBudgets": "Category Budgets",
+  "@categoryBudgets": {
+    "description": "Header for the horizontal category budget cards"
+  },
+
+  "selectRange": "Select range",
+  "@selectRange": {
+    "description": "Placeholder text when no date range is selected"
+  },
+
+  "monthlyInsights": "MONTHLY INSIGHTS",
+  "@monthlyInsights": {
+    "description": "Section header for monthly insights"
+  },
+
+  "highestSpendingCategory": "HIGHEST SPENDING CATEGORY",
+  "@highestSpendingCategory": {
+    "description": "Label for the top spending category"
+  },
+
+  "averageDailySpend": "AVERAGE DAILY SPEND (SO FAR THIS MONTH)",
+  "@averageDailySpend": {
+    "description": "Label for average daily spending this month"
+  },
+
+  "topMerchant": "Top Merchant",
+  "@topMerchant": {
+    "description": "Header for the top spending merchant card"
+  },
+
+  "noDataYet": "No data yet",
+  "@noDataYet": {
+    "description": "Placeholder text shown when there is no data"
+  },
+
+  "transactionsCount": "transactions",
+  "@transactionsCount": {
+    "description": "Text after the number of transactions for top merchant"
+  },
+
+  "perDay": "/ day",
+  "@perDay": {
+    "description": "Suffix for average daily spend (e.g. ₺XX.XX / day)"
+  },
+
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "sun": "Sun",
+  "@mon": { "description": "Abbreviated day name for chart - Monday" },
+  "@tue": { "description": "Abbreviated day name for chart - Tuesday" },
+  "@wed": { "description": "Abbreviated day name for chart - Wednesday" },
+  "@thu": { "description": "Abbreviated day name for chart - Thursday" },
+  "@fri": { "description": "Abbreviated day name for chart - Friday" },
+  "@sat": { "description": "Abbreviated day name for chart - Saturday" },
+  "@sun": { "description": "Abbreviated day name for chart - Sunday" },
+
+  "digitalReceiptWallet": "Dijital Fiş Cüzdanı",
+  "@digitalReceiptWallet": {
+    "description": "Ana sayfada üstte görünen uygulama başlığı"
+  },
+
+  "totalSpent": "Toplam Harcama",
+  "@totalSpent": {
+    "description": "Özet kartındaki bu ayki toplam harcama etiketi"
+  },
+
+  "noMonthlyBudgetSetYet": "Henüz aylık bütçe ayarlanmadı",
+  "@noMonthlyBudgetSetYet": {
+    "description": "Kullanıcı aylık bütçe belirlemediğinde gösterilen metin"
+  },
+
+  "limitLeft": "KALAN LİMİT",
+  "@limitLeft": {
+    "description": "Kalan bütçe miktarının etiketi"
+  },
+
+  "percentUsed": "% KULLANILDI",
+  "@percentUsed": {
+    "description": "Bütçe kullanım yüzdesi çipinde gösterilen metin (örn: %65 KULLANILDI)"
+  },
+
+  "recentActivity": "Son İşlemler",
+  "@recentActivity": {
+    "description": "Son işlemler bölümü başlığı"
+  },
+
+  "seeHistory": "Geçmişi Gör",
+  "@seeHistory": {
+    "description": "Tüm işlemleri görmek için buton metni"
+  },
+
+  "noReceiptsYet": "Henüz fiş yok",
+  "@noReceiptsYet": {
+    "description": "Ana sayfada hiç fiş olmadığında başlık"
+  },
+
+  "yourScannedReceiptsWillAppearHere": "Taranan fişleriniz burada görünecek",
+  "@yourScannedReceiptsWillAppearHere": {
+    "description": "Ana sayfadaki boş durum alt metni"
+  },
+
+  "home": "Home",
+  "@home": {
+    "description": "Bottom navigation bar - Home tab label"
+  },
+
+  "reports": "Reports",
+  "@reports": {
+    "description": "Bottom navigation bar - Reports tab label & AppBar title for Reports screen"
+  },
+
+  "settings": "Settings",
+  "@settings": {
+    "description": "Bottom navigation bar - Settings tab label & AppBar title for Settings screen"
+  },
+
+  "scanReceipt": "Scan Receipt",
+  "@scanReceipt": {
+    "description": "Floating action button option - Scan receipt with camera & AppBar title for receipt scanning screen"
+  },
+
+  "uploadReceiptPdf": "Upload Receipt / PDF Statement",
+  "@uploadReceiptPdf": {
+    "description": "Floating action button option - Upload PDF or receipt image"
+  },
+
+  "welcomeBack": "Welcome Back",
+  "@welcomeBack": {
+    "description": "Main greeting title on the login screen"
+  },
+
+  "signInToManageYourReceipts": "Sign in to manage your receipts",
+  "@signInToManageYourReceipts": {
+    "description": "Subtitle below the welcome message on login screen"
+  },
+
+  "email": "Email",
+  "@email": {
+    "description": "Label for email input field"
+  },
+
+  "password": "Password",
+  "@password": {
+    "description": "Label for password input field"
+  },
+
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Text on the main login button"
+  },
+
+  "dontHaveAnAccount": "Don't have an account? Sign up",
+  "@dontHaveAnAccount": {
+    "description": "Text on the button that navigates to sign up screen"
+  },
+
+  "loginError": "Login error",
+  "@loginError": {
+    "description": "Generic fallback error message when login fails"
+  },
+
+  "productDetails": "Product Details",
+  "@productDetails": {
+    "description": "AppBar title for transaction detail screen"
+  },
+
+  "items": "Items",
+  "@items": {
+    "description": "Section header for the list of purchased items"
+  },
+
+  "noItemsRecorded": "No items recorded",
+  "@noItemsRecorded": {
+    "description": "Empty state message when no products are found in the transaction"
+  },
+
+  "scanned": "Scanned",
+  "@scanned": {
+    "description": "Source label when transaction was created by scanning"
+  },
+
+  "pdf": "PDF",
+  "@pdf": {
+    "description": "Source label when transaction was created from PDF & Tab label for bank statement PDF upload"
+  },
+
+  "manual": "Manual",
+  "@manual": {
+    "description": "Source label when transaction was added manually"
+  },
+
+  "total": "Total",
+  "@total": {
+    "description": "Label for the final total amount row"
+  },
+
+  "profileDetails": "Profile Details",
+  "@profileDetails": {
+    "description": "AppBar title for profile details screen & ListTile title for navigating to profile details"
+  },
+
+  "displayName": "Display Name",
+  "@displayName": {
+    "description": "Label for the user's display name field"
+  },
+
+  "yourNameHint": "Your name",
+  "@yourNameHint": {
+    "description": "Hint text for display name input field"
+  },
+
+  "emailAddress": "Email Address (Requires Re-login)",
+  "@emailAddress": {
+    "description": "Label for email address field with note about re-login"
+  },
+
+  "yourEmailHint": "your@email.com",
+  "@yourEmailHint": {
+    "description": "Hint text for email input field"
+  },
+
+  "currentPassword": "Current Password",
+  "@currentPassword": {
+    "description": "Label for current password field (when changing email or password)"
+  },
+
+  "requiredToChangeEmail": "Required to change email",
+  "@requiredToChangeEmail": {
+    "description": "Hint text for current password when changing email"
+  },
+
+  "changePassword": "Change Password",
+  "@changePassword": {
+    "description": "Section header for password change"
+  },
+
+  "currentPasswordHint": "Current password",
+  "@currentPasswordHint": {
+    "description": "Hint text for current password field in change password section"
+  },
+
+  "newPasswordHint": "New password",
+  "@newPasswordHint": {
+    "description": "Hint text for new password field"
+  },
+
+  "confirmNewPasswordHint": "Confirm new password",
+  "@confirmNewPasswordHint": {
+    "description": "Hint text for confirm new password field"
+  },
+
+  "verificationEmailSent": "Verification email sent. Please check your inbox.",
+  "@verificationEmailSent": {
+    "description": "Success message when email change verification is sent"
+  },
+
+  "profileUpdatedSuccessfully": "Profile updated successfully.",
+  "@profileUpdatedSuccessfully": {
+    "description": "Success message after profile is updated"
+  },
+
+  "nameCannotBeEmpty": "Name cannot be empty.",
+  "@nameCannotBeEmpty": {
+    "description": "Error message when display name is empty"
+  },
+
+  "newPasswordMustBeAtLeast6": "New password must be at least 6 characters",
+  "@newPasswordMustBeAtLeast6": {
+    "description": "Error message when new password is too short"
+  },
+
+  "passwordsDontMatch": "Passwords don't match",
+  "@passwordsDontMatch": {
+    "description": "Error message when new password and confirmation do not match"
+  },
+
+  "enterCurrentPassword": "Enter current password",
+  "@enterCurrentPassword": {
+    "description": "Error message when current password is required but empty"
+  },
+
+  "enterPasswordToChangeEmail": "Enter your password to change email.",
+  "@enterPasswordToChangeEmail": {
+    "description": "Error message when trying to change email without entering password"
+  },
+
+  "incorrectPassword": "Incorrect password.",
+  "@incorrectPassword": {
+    "description": "Error message for wrong password"
+  },
+
+  "emailAlreadyInUse": "This email is already in use.",
+  "@emailAlreadyInUse": {
+    "description": "Error message when new email is already taken"
+  },
+
+  "invalidEmail": "Invalid email address.",
+  "@invalidEmail": {
+    "description": "Error message for invalid email format"
+  },
+
+  "anErrorOccurred": "An error occurred.",
+  "@anErrorOccurred": {
+    "description": "Generic fallback error message"
+  },
+
+  "aVerificationEmailWillBeSent": "A verification email will be sent to the new address.",
+  "@aVerificationEmailWillBeSent": {
+    "description": "Info text shown when user changes email"
+  },
+
+  "addRecurring": "Add Recurring",
+  "@addRecurring": {
+    "description": "Text on the floating action button"
+  },
+
+  "noRecurringTransactions": "No recurring transactions",
+  "@noRecurringTransactions": {
+    "description": "Empty state title when there are no recurring transactions"
+  },
+
+  "tapToAddSubscriptionsRentEtc": "Tap + to add subscriptions, rent, etc.",
+  "@tapToAddSubscriptionsRentEtc": {
+    "description": "Empty state subtitle"
+  },
+
+  "paused": "PAUSED",
+  "@paused": {
+    "description": "Section header for paused recurring transactions"
+  },
+
+  "dueSoon": "Due soon",
+  "@dueSoon": {
+    "description": "Badge text shown when a recurring payment is due within 3 days"
+  },
+
+  "next": "Next:",
+  "@next": {
+    "description": "Label before the next due date (Next: 15 Apr 2026)"
+  },
+
+  "deleteRecurring": "Delete Recurring",
+  "@deleteRecurring": {
+    "description": "Title of the delete confirmation dialog"
+  },
+
+  "removeFromRecurring": "Remove \"{{storeName}}\" from recurring transactions?",
+  "@removeFromRecurring": {
+    "description": "Content of delete confirmation dialog. Use {{storeName}} as placeholder",
+    "placeholders": {
+      "storeName": {}
+    }
+  },
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button in delete dialog"
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button in confirmation dialog"
+  },
+
+  "newRecurring": "New Recurring",
+  "@newRecurring": {
+    "description": "Title of the form sheet when adding a new recurring transaction"
+  },
+
+  "editRecurring": "Edit Recurring",
+  "@editRecurring": {
+    "description": "Title of the form sheet when editing an existing recurring transaction"
+  },
+
+  "nameOrStore": "Name / Store",
+  "@nameOrStore": {
+    "description": "Label for store name field in recurring form"
+  },
+
+  "amountTL": "Amount (₺)",
+  "@amountTL": {
+    "description": "Label for amount field in recurring form"
+  },
+
+  "frequency": "Frequency",
+  "@frequency": {
+    "description": "Label above frequency selection chips"
+  },
+
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "Label for start date picker in recurring form"
+  },
+
+  "noteOptional": "Note (optional)",
+  "@noteOptional": {
+    "description": "Label for optional note field"
+  },
+
+  "add": "Add",
+  "@add": {
+    "description": "Text on save button when creating new recurring"
+  },
+
+  "saveChanges": "Save Changes",
+  "@saveChanges": {
+    "description": "Text on save button when editing recurring"
+  },
+
+  "resume": "Resume",
+  "@resume": {
+    "description": "Tooltip for resume button on paused recurring card"
+  },
+
+  "pause": "Pause",
+  "@pause": {
+    "description": "Tooltip for pause button on active recurring card"
+  },
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "Tooltip for edit button"
+  },
+
+  "monthlyBudget": "Monthly Budget",
+  "@monthlyBudget": {
+    "description": "Button label for adjusting monthly budget"
+  },
+
+  "setAlert": "Set Alert",
+  "@setAlert": {
+    "description": "Button label for setting budget alert"
+  },
+
+  "adjustBudget": "Budget",
+  "@adjustBudget": {
+    "description": "Shorter label used on the budget button"
+  },
+
+  "alertAyari": "Alert Ayarla",
+  "@alertAyari": {
+    "description": "Title of the budget alert bottom sheet (Turkish mixed for now, can be changed)"
+  },
+
+  "alertDescription": "%{percentage} harcamaya ulaştığımda bildir",
+  "@alertDescription": {
+    "description": "Description text in alert bottom sheet. Use {percentage} as placeholder",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "cancelAlert": "Cancel Alert",
+  "@cancelAlert": {
+    "description": "Button to disable/remove budget alert"
+  },
+
+  "save": "Save",
+  "@save": {
+    "description": "General save button text"
+  },
+
+  "alertRemoved": "Alert removed",
+  "@alertRemoved": {
+    "description": "Snackbar message when alert is cancelled"
+  },
+
+  "alertSetFor": "Alert set for %{percentage}% of budget",
+  "@alertSetFor": {
+    "description": "Success message when alert is set. Use {percentage} as placeholder",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "budgetUpdatedTo": "Budget updated to ₺{amount}",
+  "@budgetUpdatedTo": {
+    "description": "Success message after updating monthly budget",
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "pleaseEnterBudgetAmount": "Please enter a budget amount",
+  "@pleaseEnterBudgetAmount": {
+    "description": "Error message when budget field is empty"
+  },
+
+  "pleaseEnterValidAmount": "Please enter a valid amount",
+  "@pleaseEnterValidAmount": {
+    "description": "Error message when budget amount is invalid"
+  },
+
+  "generating": "Generating...",
+  "@generating": {
+    "description": "Loading text while generating statement"
+  },
+
+  "exportStatement": "Export Statement",
+  "@exportStatement": {
+    "description": "Button text for exporting monthly statement as PDF"
+  },
+
+  "statementCouldNotBeGenerated": "Statement could not be generated: {error}",
+  "@statementCouldNotBeGenerated": {
+    "description": "Error message when PDF generation fails",
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "noDataForPreviousMonth": "No data for previous month",
+  "@noDataForPreviousMonth": {
+    "description": "Text shown when there is no previous month data for comparison"
+  },
+
+  "increase": "increase",
+  "@increase": {
+    "description": "Word used in 'X% increase'"
+  },
+
+  "decrease": "decrease",
+  "@decrease": {
+    "description": "Word used in 'X% decrease'"
+  },
+
+  "noChange": "No change",
+  "@noChange": {
+    "description": "Text shown when there is no change compared to previous month"
+  },
+
+  "dailyAverage": "DAILY AVERAGE",
+  "@dailyAverage": {
+    "description": "Label for daily average spending"
+  },
+
+  "notificationsAreDisabled": "Notifications are disabled. Please enable them from settings.",
+  "@notificationsAreDisabled": {
+    "description": "Warning when user tries to set alert but notifications are off"
+  },
+
+  "noImageCaptured": "No Image Captured",
+  "@noImageCaptured": {
+    "description": "Placeholder text when no receipt photo is taken yet"
+  },
+
+  "takePhoto": "Take Photo",
+  "@takePhoto": {
+    "description": "Button text to capture a new receipt photo"
+  },
+
+  "retake": "Retake",
+  "@retake": {
+    "description": "Button text to retake the receipt photo"
+  },
+
+  "extractionResults": "Extraction Results",
+  "@extractionResults": {
+    "description": "Header for the section showing scanned data"
+  },
+
+  "done": "Done",
+  "@done": {
+    "description": "Button to exit editing mode"
+  },
+
+  "aiSuggested": "AI suggested ⚡",
+  "@aiSuggested": {
+    "description": "Small text shown when category is suggested by AI"
+  },
+
+  "detectedProducts": "Detected Products",
+  "@detectedProducts": {
+    "description": "Header for the list of scanned products"
+  },
+
+  "noProductsDetected": "No products detected",
+  "@noProductsDetected": {
+    "description": "Empty state when no products were extracted from the receipt"
+  },
+
+  "addItemManually": "+ Add Item Manually",
+  "@addItemManually": {
+    "description": "Button to manually add a product"
+  },
+
+  "saveReceipt": "Save Receipt",
+  "@saveReceipt": {
+    "description": "Main button to save the scanned receipt"
+  },
+
+  "pleaseScanReceiptFirst": "Please scan a receipt first",
+  "@pleaseScanReceiptFirst": {
+    "description": "Error message when trying to save without scanning"
+  },
+
+  "totalMustBeGreaterThanZero": "Total amount must be greater than 0",
+  "@totalMustBeGreaterThanZero": {
+    "description": "Error when total amount is zero or negative"
+  },
+
+  "editItem": "Edit Item",
+  "@editItem": {
+    "description": "Title of bottom sheet when editing an existing product"
+  },
+
+  "nameRequired": "Name required",
+  "@nameRequired": {
+    "description": "Validation error for empty product name"
+  },
+
+  "invalidReceiptScan": "Invalid receipt scan",
+  "@invalidReceiptScan": {
+    "description": "Error when AI response is not valid JSON"
+  },
+
+  "thisDoesntLookLikeAReceipt": "This doesn't look like a receipt",
+  "@thisDoesntLookLikeAReceipt": {
+    "description": "Error when no products or total found in scan"
+  },
+
+  "scanError": "Scan error: ",
+  "@scanError": {
+    "description": "Prefix for general scan errors"
+  },
+
+  "personalAccount": "PERSONAL ACCOUNT",
+  "@personalAccount": {
+    "description": "Section header for personal account settings"
+  },
+
+  "changeNameEmailAndAvatar": "Change name, email, and avatar",
+  "@changeNameEmailAndAvatar": {
+    "description": "Subtitle for Profile Details option"
+  },
+
+  "appPreferences": "APP PREFERENCES",
+  "@appPreferences": {
+    "description": "Section header for app preferences"
+  },
+
+  "pushNotifications": "Push Notifications",
+  "@pushNotifications": {
+    "description": "Title for notification settings"
+  },
+
+  "alertsForLargeTransactions": "Alerts for large transactions",
+  "@alertsForLargeTransactions": {
+    "description": "Subtitle for push notifications"
+  },
+
+  "visualTheme": "Visual Theme",
+  "@visualTheme": {
+    "description": "Title for theme (light/dark) settings"
+  },
+
+  "switchBetweenLightAndDark": "Switch between light and dark",
+  "@switchBetweenLightAndDark": {
+    "description": "Subtitle for theme switch"
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Title for language selection"
+  },
+
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+
+  "notificationsDisabledPermission": "You must allow notifications.",
+  "@notificationsDisabledPermission": {
+    "description": "Error message when user denies notification permission"
+  },
+
+  "notificationsTurnedOff": "Notifications turned off. You can fully disable them from device settings.",
+  "@notificationsTurnedOff": {
+    "description": "Message shown when user turns off notifications"
+  },
+
+  "goToSettings": "Go to Settings",
+  "@goToSettings": {
+    "description": "Action button text in snackbar for opening app settings"
+  },
+
+  "createAccount": "Create Account",
+  "@createAccount": {
+    "description": "Main title on the sign up screen"
+  },
+
+  "signUpToStartManagingYourReceipts": "Sign up to start managing your receipts",
+  "@signUpToStartManagingYourReceipts": {
+    "description": "Subtitle below the create account title"
+  },
+
+  "fullName": "Full Name",
+  "@fullName": {
+    "description": "Label for full name input field"
+  },
+
+  "createAccountButton": "Create Account",
+  "@createAccountButton": {
+    "description": "Text on the main sign up button"
+  },
+
+  "alreadyHaveAnAccount": "Already have an account? Sign in",
+  "@alreadyHaveAnAccount": {
+    "description": "Text on the button that navigates to login screen"
+  },
+
+  "error": "Error",
+  "@error": {
+    "description": "Generic fallback error message for sign up failures"
+  },
+
+  "splashSlogan": "TRACK SMARTER. SPEND BETTER.",
+  "@splashSlogan": {
+    "description": "Main slogan displayed on the splash screen"
+  },
+
   "transactions": "Transactions",
   "@transactions": {
-    "description": "Title of the Transactions screen"
+    "description": "Title of the Transactions screen & Bottom navigation bar - Transactions tab label"
   },
 
   "search": "Search...",
@@ -13,7 +883,7 @@
 
   "recurringTransactions": "Recurring Transactions",
   "@recurringTransactions": {
-    "description": "Menu item in the more options menu for navigating to recurring transactions"
+    "description": "Menu item in the more options menu for navigating to recurring transactions & AppBar title and main screen title for recurring transactions"
   },
 
   "noTransactionsYet": "No transactions yet",
@@ -123,11 +993,107 @@
 
   "today": "TODAY",
   "@today": {
-    "description": "Header text shown above transactions of the current day"
+    "description": "Header shown above transactions that occurred today (used in Transactions and Home screens)"
   },
 
   "yesterday": "YESTERDAY",
   "@yesterday": {
-    "description": "Header text shown above transactions of the previous day"
+    "description": "Header shown above transactions that occurred yesterday (used in Transactions and Home screens)"
+  },
+
+  "uploadReceipt": "Upload Receipt",
+  "@uploadReceipt": {
+    "description": "AppBar title for Upload Receipt / PDF screen"
+  },
+
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Tab label for image/receipt upload"
+  },
+
+  "noImageSelected": "No Image Selected",
+  "@noImageSelected": {
+    "description": "Placeholder when no image is selected from gallery"
+  },
+
+  "selectFromGallery": "Select from Gallery",
+  "@selectFromGallery": {
+    "description": "Button text to pick image from gallery"
+  },
+
+  "changeImage": "Change Image",
+  "@changeImage": {
+    "description": "Button text to change already selected image"
+  },
+
+  "uploadEkstre": "Upload Bank Statement",
+  "@uploadEkstre": {
+    "description": "Header for PDF upload card"
+  },
+
+  "selectBankStatement": "Select your bank statement",
+  "@selectBankStatement": {
+    "description": "Hint text when no PDF is selected"
+  },
+
+  "changePdf": "Tap to change",
+  "@changePdf": {
+    "description": "Hint when PDF is already selected"
+  },
+
+  "analyze": "Analyze",
+  "@analyze": {
+    "description": "Button to start AI analysis of the PDF"
+  },
+
+  "analyzing": "Analyzing...",
+  "@analyzing": {
+    "description": "Loading text while processing PDF"
+  },
+
+  "totalExpense": "Total Expense",
+  "@totalExpense": {
+    "description": "Label for total outgoing amount"
+  },
+
+  "totalIncome": "Total Income",
+  "@totalIncome": {
+    "description": "Label for total incoming amount"
+  },
+
+  "bank": "Bank",
+  "@bank": {
+    "description": "Label for bank name in PDF summary"
+  },
+
+  "period": "Period",
+  "@period": {
+    "description": "Label for statement period in PDF summary"
+  },
+
+  "saveTransactions": "Save Transactions",
+  "@saveTransactions": {
+    "description": "Button to save all parsed PDF transactions"
+  },
+
+  "pleaseSelectAllCategories": "Please select a category for all transactions",
+  "@pleaseSelectAllCategories": {
+    "description": "Error when trying to save without selecting categories"
+  },
+
+  "noTransactionsFound": "No transactions found",
+  "@noTransactionsFound": {
+    "description": "Error when PDF analysis returns no movements"
+  },
+
+  "pdfError": "PDF Error: ",
+  "@pdfError": {
+    "description": "Prefix for PDF processing errors"
+  },
+
+  "uploadError": "Upload error: ",
+  "@uploadError": {
+    "description": "Prefix for general upload errors"
   }
+  
 }
