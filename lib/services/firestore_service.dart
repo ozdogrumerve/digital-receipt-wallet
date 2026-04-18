@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digital_receipt_wallet/models/product_model.dart';
 import 'package:digital_receipt_wallet/models/recurring_transaction_model.dart';
+import 'package:digital_receipt_wallet/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
 import '../models/user_model.dart';
@@ -200,7 +201,7 @@ class FirestoreService {
     await _recurringRef.doc(model.id).update({'status': newStatus.name});
   }
 
-  Future<void> processRecurring() async {
+  Future<void> processRecurring({bool notify = true}) async {
     final now = DateTime.now();
     final snapshot = await _recurringRef.get();
 
@@ -211,7 +212,6 @@ class FirestoreService {
       if (r.nextDueDate == null) continue;
       if (r.nextDueDate!.isAfter(now)) continue;
 
-      // nextDueDate geçmiş → kaç tur atladıysa hepsini ekle
       DateTime due = r.nextDueDate!;
 
       while (!due.isAfter(now)) {
@@ -227,11 +227,17 @@ class FirestoreService {
         );
         await addTransaction(receipt: receipt, products: []);
 
-        // Bir sonraki turu hesapla
+        if (notify) {
+          await NotificationService.showRecurringNotification(
+            storeName: r.storeName,
+            amount: r.amount,
+            category: r.category,
+          );
+        }
+
         due = r.computeNextDueDate(due);
       }
 
-      // nextDueDate'i güncelle
       await _recurringRef.doc(r.id).update({
         'nextDueDate': Timestamp.fromDate(due),
       });

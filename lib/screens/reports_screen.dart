@@ -47,24 +47,31 @@ class _ReportsScreenState extends State<ReportsScreen> {
   double? alertPercentage;
   bool alertTriggered = false;
   bool _isAlertSet = false;
+  bool budgetFullyUsedTriggered = false;
 
   void checkAlert(double totalAmount, double budget, BuildContext context) {
-    if (budget <= 0 || alertPercentage == null) return;
+    if (budget <= 0) return;
 
     final percentage = totalAmount / budget;
 
     final notificationProvider =
         Provider.of<NotificationProvider>(context, listen: false);
 
-    if (percentage >= alertPercentage!) {
+    // Alarm kontrolü (alertPercentage gerekli)
+    if (alertPercentage != null && percentage >= alertPercentage!) {
       if (notificationProvider.isEnabled && !alertTriggered) {
         NotificationService.showNotification(
-          "Budget Alert",
-          "%${(alertPercentage! * 100).toInt()} harcamaya ulasstiniz",
+          "Budget Alert ⚠️",
+          "%${(alertPercentage! * 100).toInt()} of your budget has been spent.",
         );
       }
-
       alertTriggered = true;
+    }
+
+    // %100 kontrolü — alarmdan bağımsız, sadece bildirim açık olsun yeter
+    if (percentage >= 1.0 && notificationProvider.isEnabled && !budgetFullyUsedTriggered) {
+      NotificationService.showBudgetFullyUsedNotification();
+      budgetFullyUsedTriggered = true;
     }
   }
 
@@ -99,11 +106,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
             return Padding(
               padding: EdgeInsets.fromLTRB(
-                  24,
-                  32, 
-                  24, 
-                  MediaQuery.of(context).viewInsets.bottom + 34
-              ),
+                  24, 32, 24, MediaQuery.of(context).viewInsets.bottom + 34),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,12 +134,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Text(
                         "Mevcut: ₺${currentBudget.toStringAsFixed(0)}",
-                        style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(
-                            color: Theme.of(context).colorScheme.primary
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
 
@@ -233,12 +232,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 color: Colors.red, size: 20),
                             const SizedBox(width: 12),
                             Expanded(
-                                child: Text(
-                                  _errorMessage!,
+                                child: Text(_errorMessage!,
                                     style: const TextStyle(
-                                        color: Colors.red, fontSize: 14)
-                                  )
-                            ),
+                                        color: Colors.red, fontSize: 14))),
                           ],
                         ),
                       ),
@@ -302,6 +298,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             alertPercentage = null;
                             alertTriggered = false;
                             _isAlertSet = false;
+                            budgetFullyUsedTriggered = false;
                           });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -325,11 +322,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             alertPercentage = selectedPercentage / 100;
                             alertTriggered = false;
                             _isAlertSet = true;
+                            budgetFullyUsedTriggered = false;
                           });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
-                                "%${selectedPercentage.toInt()} icin alert kuruldu"),
+                                "Alert set for %${selectedPercentage.toInt()} of budget"),
                             backgroundColor: Colors.green,
                           ));
                         },
@@ -385,7 +383,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                 final monthlyBudget = userSnapshot.data?.monthlyBudget ?? 0;
                 checkAlert(totalAmount, monthlyBudget, context);
-
 
                 /// 🔹 3️⃣ Kategoriye Göre Grupla
                 final Map<String, double> categoryTotals = {};
@@ -461,7 +458,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     )
                     .toList();
 
-                final previousMonthDate = DateTime(selectedMonth.year, selectedMonth.month - 1);
+                final previousMonthDate =
+                    DateTime(selectedMonth.year, selectedMonth.month - 1);
 
                 final previousMonthExpenses = receipts
                     .where(
@@ -582,8 +580,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   style: textTheme.headlineMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                Text(currentMonth, 
-                                    style: textTheme.bodySmall),
+                                Text(currentMonth, style: textTheme.bodySmall),
                               ],
                             ),
                           ],
@@ -635,17 +632,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       /// 🔹 CATEGORY LIST
                       ...expenses.map((expense) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                    radius: 6,
-                                    backgroundColor: expense.color),
+                                    radius: 6, backgroundColor: expense.color),
                                 const SizedBox(width: 16),
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(expense.title,
                                         style: textTheme.bodyLarge?.copyWith(
@@ -704,8 +698,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               ),
                             );
                           },
-                          icon: Icon(Icons.analytics_outlined,
-                              color: colorScheme.onPrimaryContainer,),
+                          icon: Icon(
+                            Icons.analytics_outlined,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
                           label: Text(
                             'Analytics',
                             style: TextStyle(
@@ -735,8 +731,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           onPressed: _isGeneratingStatement
                               ? null
                               : () async {
-                                  setState(
-                                    () => _isGeneratingStatement = true);
+                                  setState(() => _isGeneratingStatement = true);
                                   try {
                                     await StatementService.generateAndShare(
                                       context: context,
