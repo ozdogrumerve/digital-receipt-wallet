@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class ProfileDetailsScreen extends StatefulWidget {
   const ProfileDetailsScreen({super.key});
@@ -102,15 +103,16 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
 
   Future<void> _saveChanges() async {
     final user = FirebaseAuth.instance.currentUser;
+    final loc = AppLocalizations.of(context)!;
     if (user == null) return;
 
     final newName = _nameController.text.trim();
     final newEmail = _emailController.text.trim();
     final password = _passwordController.text;
-    final newPass = _newPasswordController.text;
+    final newPass = _newPasswordController.text;  
 
     if (newName.isEmpty) {
-      _showError("Name cannot be empty.");
+      _showError(loc.nameCannotBeEmpty);
       return;
     }
 
@@ -120,22 +122,22 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     // Şifre değiştirilecekse kontrol et
     if (passwordChanging) {
       if (newPass.length < 6) {
-        _showError("New password must be at least 6 characters");
+        _showError(loc.newPasswordMustBeAtLeast6);
         return;
       }
       if (newPass != _confirmPasswordController.text) {
-        _showError("Passwords don't match");
+        _showError(loc.passwordsDontMatch);
         return;
       }
       if (_currentPasswordController.text.isEmpty) {
-        _showError("Enter current password");
+        _showError(loc.enterCurrentPassword);
         return;
       }
     }
 
     // Email değişecekse şifre gerekli
     if (emailChanged && password.isEmpty && !passwordChanging) {
-      _showError("Enter your password to change email.");
+      _showError(loc.enterPasswordToChangeEmail);
       return;
     }
 
@@ -176,8 +178,8 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
         await _firestoreService.updateUserEmail(newEmail);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Verification email sent. Please check your inbox."),
+          SnackBar(
+            content: Text(loc.verificationEmailSent),
             backgroundColor: Colors.orange,
           ),
         );
@@ -196,8 +198,8 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
       await user.reload();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Profile updated successfully."),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(loc.profileUpdatedSuccessfully),
           backgroundColor: Colors.green,
         ));
         Navigator.pop(context);
@@ -206,23 +208,23 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
       String msg;
       switch (e.code) {
         case 'wrong-password':
-          msg = "Incorrect password.";
+          msg = loc.incorrectPassword;
           break;
         case 'invalid-credential':
-          msg = "Incorrect password.";
+          msg = loc.incorrectPassword;
           break;
         case 'email-already-in-use':
-          msg = "This email is already in use.";
+          msg = loc.emailAlreadyInUse;
           break;
         case 'invalid-email':
-          msg = "Invalid email address.";
+          msg = loc.invalidEmail;
           break;
         default:
-          msg = e.message ?? "An error occurred.";
+          msg = e.message ?? loc.anErrorOccurred;
       }
       _showError(msg);
     } catch (e) {
-      _showError("An error occurred: $e");
+      _showError("${loc.anErrorOccurred} $e");
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -283,11 +285,12 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
     final emailChanged = _emailController.text.trim() != (user?.email ?? '');
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile Details")),
+      appBar: AppBar(title: Text(loc.profileDetails)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -299,14 +302,14 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
             const SizedBox(height: 32),
 
             // DISPLAY NAME
-            Text("Display Name", style: theme.textTheme.bodyMedium),
+            Text(loc.displayName, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
             TextField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                hintText: "Your name",
+                hintText: loc.yourNameHint,
                 prefixIcon: const Icon(Icons.person_outline),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
@@ -316,14 +319,14 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
             const SizedBox(height: 20),
 
             // EMAIL
-            Text("Email Address (Requires Re-login)", style: theme.textTheme.bodyMedium),
+            Text(loc.emailAddress, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
-                hintText: "your@email.com",
+                hintText: loc.yourEmailHint,
                 prefixIcon: const Icon(Icons.email_outlined),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
@@ -335,13 +338,13 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
             // Şifre alanı sadece email değişince görünür
             if (emailChanged) ...[
               const SizedBox(height: 20),
-              Text("Current Password", style: theme.textTheme.bodyMedium),
+              Text(loc.currentPassword, style: theme.textTheme.bodyMedium),
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  hintText: "Required to change email",
+                  hintText: loc.requiredToChangeEmail,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword
@@ -362,7 +365,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      "A verification email will be sent to the new address.",
+                      loc.aVerificationEmailWillBeSent,
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: theme.colorScheme.primary),
                     ),
@@ -374,13 +377,13 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
             const SizedBox(height: 20),
 
             // CHANGE PASSWORD SECTION
-            Text("Change Password", style: theme.textTheme.bodyMedium),
+            Text(loc.changePassword, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
             TextField(
               controller: _currentPasswordController,
               obscureText: _obscureCurrentPassword,
               decoration: InputDecoration(
-                hintText: "Current password",
+                hintText: loc.currentPassword,
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureCurrentPassword ? Icons.visibility_off : Icons.visibility),
@@ -396,7 +399,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
               controller: _newPasswordController,
               obscureText: _obscureNewPassword,
               decoration: InputDecoration(
-                hintText: "New password",
+                hintText: loc.newPasswordHint,
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureNewPassword ? Icons.visibility_off : Icons.visibility),
@@ -412,7 +415,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
               controller: _confirmPasswordController,
               obscureText: _obscureConfirmPassword,
               decoration: InputDecoration(
-                hintText: "Confirm new password",
+                hintText: loc.confirmNewPasswordHint,
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
@@ -443,7 +446,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white),
                       )
-                    : const Text("Save Changes",
+                    : Text(loc.saveChanges,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
               ),

@@ -2,6 +2,7 @@ import 'package:digital_receipt_wallet/screens/homepage.dart';
 import 'package:digital_receipt_wallet/screens/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obscurePassword = true;
 
     Future<void> login() async {
+      final loc = AppLocalizations.of(context)!;
       setState(() => loading = true);
 
       try {
@@ -33,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } on FirebaseAuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? "Login error")),
+          SnackBar(content: Text(e.message ?? loc.loginError)),
         );
       }
 
@@ -43,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Padding(
@@ -51,16 +54,16 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text("Welcome Back",
+                Text(loc.welcomeBack,
                     style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 12),
-                Text("Sign in to manage your receipts",
+                Text(loc.signInToManageYourReceipts,
                     style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 40),
                 TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
+                  decoration: InputDecoration(
+                    labelText: loc.email,
                     prefixIcon: Icon(Icons.email),
                   ),
                 ),
@@ -69,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   obscureText: obscurePassword, 
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: loc.password,
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -94,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? const CircularProgressIndicator(
                             color: Colors.white,
                           )
-                        : const Text("Sign In"),
+                        : Text(loc.signIn),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -107,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SignUpScreen()));
                   },
                   child:
-                      const Text("Don't have an account? Sign up"),
+                      Text(loc.dontHaveAnAccount),
                 )
               ],
             ),

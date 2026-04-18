@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/receipt_model.dart';
 import '../models/product_model.dart';
 import '../services/firestore_service.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class ProductsScreen extends StatelessWidget {
   final ReceiptModel transaction;
@@ -55,11 +56,12 @@ class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final FirestoreService service = FirestoreService();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Product Details"),
+        title: Text(loc.productDetails),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -111,7 +113,7 @@ class ProductsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    "Items",
+                    loc.items,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.3,
@@ -147,7 +149,7 @@ class ProductsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          "No items recorded",
+                          loc.noItemsRecorded,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -201,10 +203,32 @@ class _HeaderBackground extends StatelessWidget {
     required this.formatTL,
   });
 
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
+    final loc = AppLocalizations.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -283,7 +307,7 @@ class _HeaderBackground extends StatelessWidget {
                                     BorderRadius.circular(20),
                               ),
                               child: Text(
-                                transaction.category,
+                                _localizeCategory(transaction.category, loc),
                                 style:
                                     theme.textTheme.labelSmall?.copyWith(
                                   color: primary,
@@ -315,6 +339,7 @@ class _MetaStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final dateStr =
         DateFormat('d MMMM yyyy, HH:mm').format(transaction.createdAt);
 
@@ -323,15 +348,15 @@ class _MetaStrip extends StatelessWidget {
     switch (transaction.source) {
       case 'scan':
         sourceIcon = Icons.camera_alt_outlined;
-        sourceLabel = 'Scanned';
+        sourceLabel = loc.scanned;
         break;
       case 'pdf':
         sourceIcon = Icons.picture_as_pdf_outlined;
-        sourceLabel = 'PDF';
+        sourceLabel = loc.pdf;
         break;
       default:
         sourceIcon = Icons.edit_outlined;
-        sourceLabel = 'Manual';
+        sourceLabel = loc.manual;
     }
 
     return Container(
@@ -525,6 +550,7 @@ class _TotalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final primary = theme.colorScheme.primary;
 
     return Container(
@@ -546,7 +572,7 @@ class _TotalRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Total",
+            loc.total,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),

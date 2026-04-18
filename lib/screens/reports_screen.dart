@@ -10,6 +10,7 @@ import 'package:digital_receipt_wallet/models/receipt_model.dart';
 import 'package:digital_receipt_wallet/models/expense_item_model.dart';
 import 'package:digital_receipt_wallet/screens/analytics_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -77,6 +78,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _showBudgetBottomSheet() {
     final TextEditingController budgetController = TextEditingController();
+    final loc = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
@@ -89,6 +91,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         return FutureBuilder<UserModel?>(
           future: firestoreService.getUser(),
           builder: (context, snapshot) {
+            final loc = AppLocalizations.of(context)!;
             double currentBudget = 0.0;
 
             if (snapshot.hasData && snapshot.data != null) {
@@ -115,7 +118,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Aylik Butce Ayarla",
+                      Text(loc.monthlyBudget,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -145,7 +148,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         const TextInputType.numberWithOptions(decimal: true),
                     autofocus: false,
                     decoration: InputDecoration(
-                      labelText: "Yeni Bütçe (₺)",
+                      labelText: loc.amountTL,
                       prefixText: "₺ ",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16)),
@@ -166,7 +169,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             budgetController.text.trim().replaceAll(',', '.');
                         if (input.isEmpty) {
                           setState(() =>
-                              _errorMessage = "Please enter a budget amount");
+                              _errorMessage = loc.pleaseEnterBudgetAmount);
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) setState(() => _errorMessage = null);
                           });
@@ -176,7 +179,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         final newBudget = double.tryParse(input);
                         if (newBudget == null || newBudget <= 0) {
                           setState(() =>
-                              _errorMessage = "Please enter a valid amount");
+                              _errorMessage = loc.pleaseEnterValidAmount);
                           Future.delayed(const Duration(seconds: 2), () {
                             if (mounted) setState(() => _errorMessage = null);
                           });
@@ -191,7 +194,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
-                                "Budget updated to ₺${newBudget.toStringAsFixed(0)}"),
+                                loc.budgetUpdatedTo(newBudget.toStringAsFixed(0)
+                            )),
                             backgroundColor: Colors.green,
                           ));
 
@@ -258,20 +262,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
         return StatefulBuilder(builder: (context, setState) {
+        final loc = AppLocalizations.of(context)!;
           return Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 /// TITLE
-                const Text("Alert Ayarla",
+                Text(loc.alertAyari,
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 20),
 
                 /// DESCRIPTION
-                Text(
-                    "%${selectedPercentage.toInt()} harcamaya ulastigimda bildir"),
+                Text(loc.alertDescription(selectedPercentage.toInt())),
 
                 const SizedBox(height: 20),
 
@@ -302,14 +306,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Alert kaldirildi"),
+                              SnackBar(
+                                  content: Text(loc.alertRemoved),
                                   backgroundColor: Colors.orange));
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey.shade300,
                             foregroundColor: Colors.black87),
-                        child: const Text("Iptal Et"),
+                        child: Text(loc.cancelAlert),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -326,12 +330,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                                "Alert set for %${selectedPercentage.toInt()} of budget"),
+                            content: Text(loc.alertSetFor(
+                              selectedPercentage.toInt())),
                             backgroundColor: Colors.green,
                           ));
                         },
-                        child: const Text("Kaydet"),
+                        child: Text(loc.save),
                       ),
                     ),
                   ],
@@ -350,11 +354,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final loc = AppLocalizations.of(context)!;
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(title: const Text("Reports")),
+      appBar: AppBar(title: Text(loc.reports)),
       body: SafeArea(
         child: StreamBuilder<UserModel?>(
           stream: firestoreService.getUserStream(),
@@ -608,12 +613,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             const SizedBox(width: 6),
                             Text(
                               previousMonthTotal == 0
-                                  ? 'No data for previous month'
-                                  : isIncrease
-                                      ? '%${changePercent.abs().toStringAsFixed(1)} increase'
-                                      : isDecrease
-                                          ? '%${changePercent.abs().toStringAsFixed(1)} decrease'
-                                          : 'No change',
+                                ? loc.noDataForPreviousMonth
+                                : isIncrease
+                                    ? '%${changePercent.abs().toStringAsFixed(1)} ${loc.increase}'
+                                    : isDecrease
+                                        ? '%${changePercent.abs().toStringAsFixed(1)} ${loc.decrease}'
+                                        : loc.noChange,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
@@ -646,7 +651,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '%${expense.percentage.toStringAsFixed(0)} of total',
+                                      '%${expense.percentage.toStringAsFixed(0)} ${loc.ofTotal}',
                                       style: textTheme.bodySmall,
                                     ),
                                   ],
@@ -664,7 +669,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       const SizedBox(height: 10),
 
                       Text(
-                        'DAILY AVERAGE: ₺${dailyAverage.toStringAsFixed(2)}',
+                        '${loc.dailyAverage}: ₺${dailyAverage.toStringAsFixed(2)}',
                         style: textTheme.labelSmall?.copyWith(
                             letterSpacing: 1.2, fontWeight: FontWeight.bold),
                       ),
@@ -703,7 +708,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             color: colorScheme.onPrimaryContainer,
                           ),
                           label: Text(
-                            'Analytics',
+                            loc.analytics,
                             style: TextStyle(
                               color: colorScheme.onPrimaryContainer,
                               fontSize: 16,
@@ -744,7 +749,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text(
-                                            "Statement oluşturulamadı: $e"),
+                                            loc.statementCouldNotBeGenerated(e)),
                                         backgroundColor: Colors.red,
                                       ));
                                     }
@@ -768,8 +773,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   color: colorScheme.onPrimaryContainer),
                           label: Text(
                             _isGeneratingStatement
-                                ? 'Generating...'
-                                : 'Export Statement',
+                                ? loc.generating
+                                : loc.exportStatement,
                             style: TextStyle(
                               color: colorScheme.onPrimaryContainer,
                               fontSize: 16,
@@ -803,7 +808,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 icon: Icon(Icons.tune,
                                     color: colorScheme.onSurface),
                                 label: Text(
-                                  'Budget',
+                                  loc.adjustBudget,
                                   style: TextStyle(
                                     color: colorScheme.onSurface,
                                     fontWeight: FontWeight.bold,
@@ -843,9 +848,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                 listen: false);
                                         if (!notifProvider.isEnabled) {
                                           ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
+                                              .showSnackBar(SnackBar(
                                             content: Text(
-                                                "Bildirimler kapalı. Ayarlardan açmalısınız."),
+                                                loc.notificationsAreDisabled),
                                             backgroundColor: Colors.red,
                                           ));
                                           return;
@@ -854,7 +859,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       },
                                       child: Center(
                                         child: Text(
-                                          'Set Alert',
+                                          loc.setAlert,
                                           style: TextStyle(
                                             color: colorScheme.onSurface,
                                             fontWeight: FontWeight.bold,

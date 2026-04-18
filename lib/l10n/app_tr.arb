@@ -1095,6 +1095,11 @@
   "uploadError": "Yükleme hatası: ",
   "@uploadError": {
     "description": "Genel yükleme hataları için önek"
+  },
+
+  "ofTotal": "toplamın",
+  "@ofTotal": {
+    "description": "Ön ek"
   }
   
 }

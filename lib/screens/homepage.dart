@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:digital_receipt_wallet/screens/upload_receipt_pdf.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt_wallet/screens/home_screen.dart';
@@ -8,6 +7,7 @@ import 'package:digital_receipt_wallet/screens/reports_screen.dart';
 import 'package:digital_receipt_wallet/screens/settings_screen.dart';
 import 'package:digital_receipt_wallet/screens/add_expense_screen.dart';
 import 'package:digital_receipt_wallet/screens/scan_receipt_screen.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,6 +60,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final List<Widget> pages = [
       HomeScreen(
           onSeeHistory: () {
@@ -96,11 +97,11 @@ class _HomePageState extends State<HomePage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _navItem(Icons.home, "Home", 0),
-                  _navItem(Icons.receipt_long, "Transaction", 1),
+                  _navItem(Icons.home, loc.home, 0),
+                  _navItem(Icons.receipt_long, loc.transactions, 1),
                   const SizedBox(width: 50),
-                  _navItem(Icons.bar_chart, "Reports", 2),
-                  _navItem(Icons.settings, "Settings", 3),
+                  _navItem(Icons.bar_chart, loc.reports, 2),
+                  _navItem(Icons.settings, loc.settings, 3),
                 ],
               ),
             ),
@@ -140,19 +141,19 @@ class _HomePageState extends State<HomePage>
                 children: [
                 _buildOptionButton(
                   icon: Icons.document_scanner,
-                  label: "Scan Receipt",
+                  label: loc.scanReceipt,
                   index: 1,
                 ),
                 const SizedBox(height: 12),
                 _buildOptionButton(
                   icon: Icons.upload_file,
-                  label: "Upload Receipt / PDF Statement",
+                  label: loc.uploadReceiptPdf,
                   index: 2,
                 ),
                 const SizedBox(height: 12),
                 _buildOptionButton(
                   icon: Icons.edit,
-                  label: "Add Expense",
+                  label: loc.addExpense,
                   index: 3,
                 ),
               ],

@@ -3,6 +3,7 @@ import 'package:digital_receipt_wallet/screens/homepage.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Center(
@@ -45,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 size: 80, color: theme.colorScheme.primary),
             const SizedBox(height: 30),
             Text(
-              "TRACK SMARTER. SPEND BETTER.",
+              loc.splashSlogan,
               style: theme.textTheme.bodyMedium?.copyWith(letterSpacing: 2),
             ),
             const SizedBox(height: 80),

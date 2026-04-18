@@ -3,6 +3,7 @@ import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool loading = false;
 
   Future<void> register() async {
+    final loc = AppLocalizations.of(context)!;
     setState(() => loading = true);
 
     try {
@@ -48,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? "Error")));
+          .showSnackBar(SnackBar(content: Text(e.message ?? loc.error)));
     }
 
     setState(() => loading = false);
@@ -57,6 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Padding(
@@ -65,24 +68,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text("Create Account",
+                Text(loc.createAccount,
                     style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 12),
-                Text("Sign up to start managing your receipts",
+                Text(loc.signUpToStartManagingYourReceipts,
                     style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 40),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: "Full Name",
+                  decoration: InputDecoration(
+                    labelText: loc.fullName,
                     prefixIcon: Icon(Icons.person),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
+                  decoration: InputDecoration(
+                    labelText: loc.email,
                     prefixIcon: Icon(Icons.email),
                   ),
                 ),
@@ -90,8 +93,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 TextField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: "Password",
+                  decoration: InputDecoration(
+                    labelText: loc.password,
                     prefixIcon: Icon(Icons.lock),
                   ),
                 ),
@@ -104,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ? const CircularProgressIndicator(
                             color: Colors.white,
                           )
-                        : const Text("Create Account"),
+                        : Text(loc.createAccount),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -117,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 const LoginScreen()));
                   },
                   child:
-                      const Text("Already have an account? Sign in"),
+                      Text(loc.alreadyHaveAnAccount),
                 )
               ],
             ),

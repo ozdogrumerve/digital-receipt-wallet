@@ -7,6 +7,7 @@ import 'package:digital_receipt_wallet/models/receipt_model.dart';
 import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -62,6 +63,27 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
+    }
+  }
+
   Uint8List? decodeUserPhoto(String? photo) {
     if (photo == null || photo.trim().isEmpty) return null;
 
@@ -76,7 +98,7 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, AppLocalizations loc) {
     final now = DateTime.now();
 
     // Sadece gün, ay, yıl karşılaştırması yapıyoruz (saat ve dakika fark etmesin)
@@ -85,11 +107,10 @@ class HomeScreen extends StatelessWidget {
     final transactionDate = DateTime(date.year, date.month, date.day);
 
     if (transactionDate == today) {
-      return "Today";
+      return loc.today;
     } else if (transactionDate == yesterday) {
-      return "Yesterday";
+      return loc.yesterday;
     } else {
-      // Diğer günler için normal format
       return DateFormat('MMM d').format(date);
     }
   }
@@ -106,6 +127,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final firestoreService = FirestoreService();
 
     return SafeArea(
@@ -159,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                             const Icon(Icons.wallet),
                             const SizedBox(width: 8),
                             Text(
-                              "Digital Receipt Wallet",
+                              loc.digitalReceiptWallet,
                               style: theme.textTheme.titleLarge,
                             ),
                           ],
@@ -214,7 +236,7 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             // Başlık her zaman aynı
                             Text(
-                              "Total Spent",
+                              loc.totalSpent,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
@@ -232,7 +254,7 @@ class HomeScreen extends StatelessWidget {
                             if (monthlyBudget <= 0) ...[
                               // Bütçe yoksa → basit hali (mevcut gibi)
                               Text(
-                                "No monthly budget set yet",
+                                loc.noMonthlyBudgetSetYet,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
@@ -254,7 +276,7 @@ class HomeScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "LIMIT LEFT",
+                                        loc.limitLeft,
                                         style: theme.textTheme.bodySmall?.copyWith(
                                           color: theme.colorScheme.onSurfaceVariant,
                                         ),
@@ -278,7 +300,7 @@ class HomeScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Text(
-                                      "${(progress * 100).toStringAsFixed(0)}% USED",
+                                      "${(progress * 100).toStringAsFixed(0)}% ${loc.percentUsed}",
                                       style: theme.textTheme.labelMedium?.copyWith(
                                         color: theme.colorScheme.primary,
                                         fontWeight: FontWeight.bold,
@@ -312,7 +334,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Recent Activity",
+                          loc.recentActivity,
                           style: theme.textTheme.titleLarge,
                         ),
                         InkWell(
@@ -320,7 +342,7 @@ class HomeScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               Text(
-                                "See History",
+                                loc.seeHistory,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: theme.colorScheme.primary,
                                 ),
@@ -356,13 +378,13 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 20),
                                   Text(
-                                    "No receipts yet",
+                                    loc.noReceiptsYet,
                                     style:
                                         theme.textTheme.bodyLarge,
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    "Your scanned receipts will appear here",
+                                    loc.yourScannedReceiptsWillAppearHere,
                                     style:
                                         theme.textTheme.bodyMedium,
                                     textAlign: TextAlign.center,
@@ -411,7 +433,7 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                _formatDate(receipt.date),
+                                                _formatDate(receipt.date, loc),
                                                 style: theme.textTheme.bodySmall,
                                               ),
                                             ],
@@ -430,7 +452,7 @@ class HomeScreen extends StatelessWidget {
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
-                                              receipt.category,
+                                              _localizeCategory(receipt.category, loc),
                                               style: theme.textTheme.bodySmall,
                                             ),
                                           ],

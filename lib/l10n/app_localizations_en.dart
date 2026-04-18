@@ -677,4 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get uploadError => 'Upload error: ';
+
+  @override
+  String get ofTotal => 'of total';
 }

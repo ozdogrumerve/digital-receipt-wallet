@@ -5,6 +5,7 @@ import '../services/firestore_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -51,12 +52,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   // ─── Save ─────────────────────────────────────────────────────────────────
   Future<void> _save() async {
+    final loc = AppLocalizations.of(context)!;
     if (_storeController.text.trim().isEmpty) {
-      _showSnack("Store name cannot be empty");
+      _showSnack(loc.storeNameCannotBeEmpty);
       return;
     }
     if (_products.isEmpty) {
-      _showSnack("Add at least one product");
+      _showSnack(loc.addAtLeastOneProduct);
       return;
     }
 
@@ -86,6 +88,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   // ─── Add / Edit product bottom sheet ─────────────────────────────────────
   void _openProductSheet({ProductModel? product, int? index}) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final nameCtrl =
         TextEditingController(text: product?.name ?? "");
     final priceCtrl = TextEditingController(
@@ -156,39 +159,39 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 ),
               ),
               Text(
-                product == null ? "Add Item" : "Edit Item",
+                product == null ? loc.addItemTitle : loc.editItemTitle,
                 style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: 20),
               sheetInput(
                 icon: Icons.inventory_2_outlined,
-                hint: "Product name",
+                hint: loc.productName,
                 controller: nameCtrl,
                 validator: (v) => (v == null || v.trim().isEmpty)
-                    ? "Name required"
+                    ? loc.nameRequired
                     : null,
               ),
               const SizedBox(height: 14),
               sheetInput(
                 icon: Icons.attach_money,
-                hint: "Price (₺)",
+                hint: loc.price,
                 controller: priceCtrl,
                 keyboardType: const TextInputType.numberWithOptions(
                     decimal: true),
                 validator: (v) {
                   final val = double.tryParse(v ?? "") ?? 0;
-                  return val <= 0 ? "Price must be > 0" : null;
+                  return val <= 0 ? loc.priceMustBeGreaterThanZero : null;
                 },
               ),
               const SizedBox(height: 14),
               sheetInput(
                 icon: Icons.format_list_numbered,
-                hint: "Quantity",
+                hint: loc.quantity,
                 controller: qtyCtrl,
                 keyboardType: TextInputType.number,
                 validator: (v) {
                   final val = int.tryParse(v ?? "") ?? 0;
-                  return val <= 0 ? "Qty must be > 0" : null;
+                  return val <= 0 ? loc.qtyMustBeGreaterThanZero : null;
                 },
               ),
               const SizedBox(height: 24),
@@ -229,7 +232,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     Navigator.pop(context);
                   },
                   icon: Icon(product == null ? Icons.add : Icons.save),
-                  label: Text(product == null ? "Add" : "Save"),
+                  label: Text(product == null ? loc.add : loc.save),
                 ),
               ),
               const SizedBox(height: 10),
@@ -277,6 +280,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   Future<void> predictCategory() async {
+    final loc = AppLocalizations.of(context)!;
     if (_products.isEmpty) return;
 
     setState(() => _isLoadingAI = true);
@@ -337,7 +341,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       setState(() => _isLoadingAI = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("AI error: $e")),
+        SnackBar(content: Text("${loc.aiError}$e")),
       );
     }
   }
@@ -346,9 +350,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Expense Manually")),
+      appBar: AppBar(title: Text(loc.addExpense)),
       body: SafeArea(
         child: Column(
           children: [
@@ -364,13 +369,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     // ── Store Name ────────────────────────────────────
                     _inputBox(
                       context: context,
-                      label: "Store Name",
+                      label: loc.storeName,
                       icon: Icons.store,
                       child: TextField(
                         controller: _storeController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "e.g. Migros, A101",
+                          hintText: loc.storeNameHint,
                         ),
                       ),
                     ),
@@ -383,7 +388,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         Expanded(
                           child: _inputBox(
                             context: context,
-                            label: "Date",
+                            label: loc.date,
                             icon: Icons.calendar_today,
                             child: InkWell(
                               onTap: () async {
@@ -409,7 +414,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         Expanded(
                           child: _inputBox(
                             context: context,
-                            label: "Category",
+                            label: loc.category,
                             icon: Icons.sell_outlined,
                             child: DropdownButton<String>(
                               value: _category,
@@ -460,11 +465,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                               )
                             : Row(
                                 mainAxisSize: MainAxisSize.min, 
-                                children: const [
+                                children: [
                                   Icon(Icons.auto_awesome, size: 14),
                                   SizedBox(width: 4),
                                   Text(
-                                    "AI Suggest",
+                                    loc.aiSuggest,
                                     style: TextStyle(fontSize: 12),
                                   ),
                                 ],
@@ -475,7 +480,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
                     // ── ADD ITEM section ──────────────────────────────
                     Text(
-                      "ADD ITEM",
+                      loc.addItem,
                       style: theme.textTheme.labelMedium!
                           .copyWith(color: Colors.grey),
                     ),
@@ -500,7 +505,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Product Name",
+                            loc.productName,
                             style: theme.textTheme.labelSmall!.copyWith(
                               color: theme.colorScheme.onSurface.withAlpha(0x99),
                             ),
@@ -509,7 +514,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           TextField(
                             controller: _nameController,
                             decoration: InputDecoration(
-                              hintText: "What did you buy?",
+                              hintText: loc.productNameHint,
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               border: OutlineInputBorder(
@@ -575,7 +580,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                 final qty = int.tryParse(_qtyController.text) ?? 1;
 
                                 if (name.isEmpty || price <= 0) {
-                                  _showSnack("Enter valid product");
+                                  _showSnack(loc.enterValidProduct);
                                   return;
                                 }
 
@@ -593,7 +598,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                 _priceController.clear();
                                 _qtyController.text = "1";
                               },
-                              child: const Text("+ Add to List"),
+                              child: Text(loc.addToList),
                             ),
                           ),
                         ],
@@ -608,7 +613,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "PURCHASE LIST",
+                          loc.purchaseList,
                           style: theme.textTheme.labelMedium!
                               .copyWith(color: Colors.grey),
                         ),
@@ -621,7 +626,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                 BorderRadius.circular(20),
                           ),
                           child: Text(
-                            "${_products.length} ITEMS",
+                            "${_products.length} ${loc.itemsCount}",
                             style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -635,7 +640,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     const SizedBox(height: 6),
 
                     Text(
-                      "Tap item to edit  •  Swipe left to delete",
+                      loc.tapToEditSwipeToDelete,
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade500),
@@ -662,7 +667,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    "No items yet",
+                                    loc.noItemsYet,
                                     style: TextStyle(
                                         color:
                                             Colors.grey.shade500),
@@ -778,8 +783,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                           mainAxisAlignment:
                               MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Total Amount",
+                            Text(
+                              loc.totalAmount,
                               style: TextStyle(
                                   fontWeight: FontWeight.w600),
                             ),
@@ -819,8 +824,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     ),
                     onPressed: _save,
                     icon: const Icon(Icons.save),
-                    label: const Text(
-                      "Save Transaction",
+                    label: Text(
+                      loc.saveTransaction,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../models/receipt_model.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -33,6 +34,27 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     'Taxes / Official Payments':_CategoryMeta(Icons.account_balance_outlined,  Colors.brown,             Colors.brown.shade50),
     'Other':                    _CategoryMeta(Icons.other_houses_outlined,     Colors.grey,              Colors.grey.shade50),
   };
+
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
+    }
+  }
 
   Stream<List<ExpenseItem>>? _weeklyExpensesStream;
   Stream<List<ReceiptModel>>? _monthlyTransactionsStream;
@@ -222,6 +244,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -232,7 +255,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           icon: Icon(Icons.arrow_back_ios_new, size: 20, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Analytics',
+        title: Text(loc.analytics,
             style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
@@ -270,7 +293,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               children: [
 
                 // ── Çizgi grafik ────────────────────────────────
-                Text('Spending Trend',
+                Text(loc.spendingTrend,
                     style: textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
@@ -286,7 +309,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Weekly',
+                      Text(loc.weekly,
                           style: TextStyle(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.bold,
@@ -336,10 +359,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     reservedSize: 22,
                                     interval: 1,
                                     getTitlesWidget: (value, meta) {
-                                      const days = [
-                                        'Mon', 'Tue', 'Wed',
-                                        'Thu', 'Fri', 'Sat', 'Sun'
-                                      ];
+                                      final days = [loc.mon, loc.tue, loc.wed, 
+                                      loc.thu, loc.fri, loc.sat, loc.sun];
                                       final i = value.toInt();
                                       return i >= 0 && i < days.length
                                           ? Text(days[i],
@@ -381,7 +402,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Category Budgets',
+                      loc.categoryBudgets,
                       style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     InkWell(
@@ -404,7 +425,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             const SizedBox(width: 8),
                             Text(
                               _selectedRange == null
-                                  ? 'Select range'
+                                  ? loc.selectRange
                                   : '${DateFormat('dd MMM').format(_selectedRange!.start)} - ${DateFormat('dd MMM').format(_selectedRange!.end)}',
                               style: textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
@@ -453,7 +474,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     const Spacer(),
                                     // Overflow düzeltmesi: maxLines + overflow
                                     Text(
-                                      cat.title,
+                                      _localizeCategory(cat.title, loc),
                                       style: textTheme.bodyMedium
                                           ?.copyWith(
                                               fontWeight: FontWeight.bold),
@@ -477,30 +498,31 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 30),
 
                 // ── Monthly Insights ─────────────────────────────
-                Text('MONTHLY INSIGHTS',
+                Text(loc.monthlyInsights,
                     style: textTheme.labelSmall?.copyWith(
                         letterSpacing: 1.2,
                         fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
 
-                Text('HIGHEST SPENDING CATEGORY',
+                Text(loc.highestSpendingCategory,
                     style: textTheme.bodySmall),
                 const SizedBox(height: 4),
                 Text(
                   analytics.topCategory == '-'
-                      ? 'No data yet'
-                      : '${analytics.topCategory} (₺${analytics.topCategoryAmount.toStringAsFixed(2)})',
+                      ? loc.noDataYet
+                      : '${_localizeCategory(analytics.topCategory, loc)}'
+                      ' (₺${analytics.topCategoryAmount.toStringAsFixed(2)})',
                   style: textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
 
                 const SizedBox(height: 16),
 
-                Text('AVERAGE DAILY SPEND (SO FAR THIS MONTH)',
+                Text(loc.averageDailySpend,
                     style: textTheme.bodySmall),
                 const SizedBox(height: 4),
                 Text(
-                  '₺${analytics.avgDailySpend.toStringAsFixed(2)} / day',
+                  '₺${analytics.avgDailySpend.toStringAsFixed(2)} ${loc.perDay}',
                   style: textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
@@ -508,7 +530,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 30),
 
                 // ── Top Merchant ─────────────────────────────────
-                Text('Top Merchant',
+                Text(loc.topMerchant,
                     style: textTheme.labelSmall
                         ?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
@@ -523,7 +545,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           child: Padding(
                           padding:
                               const EdgeInsets.symmetric(vertical: 8),
-                          child: Text('No data yet',
+                          child: Text(loc.noDataYet,
                               style: textTheme.bodyMedium),
                         ))
                       : Row(
@@ -556,7 +578,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '${analytics.topMerchantCount} transactions',
+                                    '${analytics.topMerchantCount}'
+                                    ' ${loc.transactionsCount}',
                                     style: textTheme.bodySmall,
                                   ),
                                 ],

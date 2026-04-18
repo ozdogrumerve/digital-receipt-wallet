@@ -677,4 +677,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get uploadError => 'Yükleme hatası: ';
+
+  @override
+  String get ofTotal => 'toplamın';
 }

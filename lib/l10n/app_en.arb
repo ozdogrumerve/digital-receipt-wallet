@@ -1094,6 +1094,10 @@
   "uploadError": "Upload error: ",
   "@uploadError": {
     "description": "Prefix for general upload errors"
-  }
+  },
 
+  "ofTotal": "of total",
+  "@ofTotal": {
+    "description": "Prefix"
+  }
 }

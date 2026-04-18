@@ -1414,6 +1414,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload error: '**
   String get uploadError;
+
+  /// Prefix 
+  ///
+  /// In en, this message translates to:
+  /// **'of total: '**  
+  String get ofTotal;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
