@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/firestore_service.dart';
 import '../models/receipt_model.dart';
-import 'products_screen.dart'; // ← yeni ekran
+import 'products_screen.dart';
+import 'recurring_transactions_screen.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
 
   @override
-  State<TransactionsScreen> createState() =>
-      _TransactionsScreenState();
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
-class _TransactionsScreenState
-    extends State<TransactionsScreen> {
+class _TransactionsScreenState extends State<TransactionsScreen> {
   final FirestoreService _service = FirestoreService();
 
   bool isSearching = false;
@@ -78,8 +77,7 @@ class _TransactionsScreenState
     }
   }
 
-  String formatTL(double amount) =>
-      "₺${amount.toStringAsFixed(2)}";
+  String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   bool isToday(DateTime date) {
     final now = DateTime.now();
@@ -89,8 +87,7 @@ class _TransactionsScreenState
   }
 
   bool isYesterday(DateTime date) {
-    final yesterday =
-        DateTime.now().subtract(const Duration(days: 1));
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
     return date.year == yesterday.year &&
         date.month == yesterday.month &&
         date.day == yesterday.day;
@@ -98,16 +95,13 @@ class _TransactionsScreenState
 
   Widget _sourceIcon(String source) {
     if (source == "manual") {
-      return const Icon(Icons.edit,
-          size: 14, color: Colors.white);
+      return const Icon(Icons.edit, size: 14, color: Colors.white);
     }
     if (source == "scan") {
-      return const Icon(Icons.camera_alt,
-          size: 14, color: Colors.white);
+      return const Icon(Icons.camera_alt, size: 14, color: Colors.white);
     }
     if (source == "pdf") {
-      return const Icon(Icons.picture_as_pdf,
-          size: 14, color: Colors.white);
+      return const Icon(Icons.picture_as_pdf, size: 14, color: Colors.white);
     }
     return const SizedBox.shrink();
   }
@@ -115,8 +109,7 @@ class _TransactionsScreenState
   void _applyWeeklyFilter() {
     final now = DateTime.now();
 
-    final rawStart =
-        now.subtract(Duration(days: now.weekday - 1));
+    final rawStart = now.subtract(Duration(days: now.weekday - 1));
 
     final start = DateTime(
       rawStart.year,
@@ -197,8 +190,7 @@ class _TransactionsScreenState
           child: isSearching
               ? TextField(
                   autofocus: true,
-                  onChanged: (val) =>
-                      setState(() => searchQuery = val),
+                  onChanged: (val) => setState(() => searchQuery = val),
                   decoration: InputDecoration(
                     hintText: "Search...",
                     border: InputBorder.none,
@@ -218,12 +210,36 @@ class _TransactionsScreenState
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () =>
-                setState(() => isSearching = true),
+            onPressed: () => setState(() => isSearching = true),
           ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _openFilterSheet,
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'recurring') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const RecurringScreen(),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: 'recurring',
+                child: Row(
+                  children: [
+                    Icon(Icons.repeat),
+                    SizedBox(width: 12),
+                    Text('Recurring Transactions'),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -232,8 +248,7 @@ class _TransactionsScreenState
           _buildCategoryFilter(),
           if (startDate != null || endDate != null)
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Wrap(
                 spacing: 8,
                 children: [
@@ -244,8 +259,7 @@ class _TransactionsScreenState
                           : "Custom Date",
                     ),
                     onDeleted: _clearFilter,
-                    deleteIcon:
-                        const Icon(Icons.close, size: 18),
+                    deleteIcon: const Icon(Icons.close, size: 18),
                   ),
                 ],
               ),
@@ -255,17 +269,12 @@ class _TransactionsScreenState
               stream: _service.getTransactions(
                 start: startDate,
                 end: endDate,
-                category: selectedCategory == "All"
-                    ? null
-                    : selectedCategory,
-                searchQuery: searchQuery.isEmpty
-                    ? null
-                    : searchQuery,
+                category: selectedCategory == "All" ? null : selectedCategory,
+                searchQuery: searchQuery.isEmpty ? null : searchQuery,
               ),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(
-                      child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 final transactions = snapshot.data!;
@@ -273,26 +282,22 @@ class _TransactionsScreenState
                 if (transactions.isEmpty) {
                   return Center(
                     child: Column(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.receipt_long_sharp,
                           size: 60,
-                          color: theme.colorScheme.primary
-                              .withAlpha(40),
+                          color: theme.colorScheme.primary.withAlpha(40),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           "No transactions yet",
-                          style:
-                              theme.textTheme.bodyLarge,
+                          style: theme.textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           "Your transactions will appear here",
-                          style:
-                              theme.textTheme.bodyMedium,
+                          style: theme.textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -307,26 +312,19 @@ class _TransactionsScreenState
                     final tx = transactions[index];
 
                     return Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (index == 0 ||
-                            !_isSameDay(
-                                tx.date,
-                                transactions[index - 1]
-                                    .date))
+                            !_isSameDay(tx.date, transactions[index - 1].date))
                           Padding(
-                            padding:
-                                const EdgeInsets.only(
-                                    bottom: 8),
+                            padding: const EdgeInsets.only(bottom: 8),
                             child: Text(
                               isToday(tx.date)
                                   ? "TODAY"
                                   : isYesterday(tx.date)
                                       ? "YESTERDAY"
                                       : "${tx.date.day}/${tx.date.month}/${tx.date.year}",
-                              style: theme
-                                  .textTheme.labelMedium,
+                              style: theme.textTheme.labelMedium,
                             ),
                           ),
                         // ── Karta tıklanabilirlik ──
@@ -354,13 +352,11 @@ class _TransactionsScreenState
       height: 40,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          final isSelected =
-              selectedCategory == category;
+          final isSelected = selectedCategory == category;
 
           return GestureDetector(
             onTap: () {
@@ -370,14 +366,12 @@ class _TransactionsScreenState
             },
             child: Container(
               margin: const EdgeInsets.only(right: 12),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 32, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4),
               decoration: BoxDecoration(
                 color: isSelected
                     ? theme.colorScheme.primary
                     : theme.colorScheme.surface,
-                borderRadius:
-                    BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(30),
               ),
               child: Center(
                 child: Text(
@@ -385,8 +379,7 @@ class _TransactionsScreenState
                   style: TextStyle(
                     color: isSelected
                         ? Colors.white
-                        : theme.textTheme.bodyMedium!
-                            .color,
+                        : theme.textTheme.bodyMedium!.color,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -422,10 +415,8 @@ class _TransactionsScreenState
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary
-                      .withAlpha(30),
-                  borderRadius:
-                      BorderRadius.circular(14),
+                  color: theme.colorScheme.primary.withAlpha(30),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   _getCategoryIcon(tx.category),
@@ -445,8 +436,7 @@ class _TransactionsScreenState
                       color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color:
-                            theme.colorScheme.surface,
+                        color: theme.colorScheme.surface,
                         width: 2,
                       ),
                     ),
@@ -458,8 +448,7 @@ class _TransactionsScreenState
           const SizedBox(width: 16),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   tx.storeName,
@@ -468,10 +457,8 @@ class _TransactionsScreenState
                 const SizedBox(height: 4),
                 Text(
                   tx.category,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(
-                    color: theme
-                        .colorScheme.onSurfaceVariant,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -482,8 +469,7 @@ class _TransactionsScreenState
             children: [
               Text(
                 "-${formatTL(tx.totalAmount)}",
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary,
                 ),
@@ -502,8 +488,6 @@ class _TransactionsScreenState
   }
 
   bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year &&
-        a.month == b.month &&
-        a.day == b.day;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

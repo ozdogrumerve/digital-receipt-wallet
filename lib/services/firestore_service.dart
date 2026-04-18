@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digital_receipt_wallet/models/product_model.dart';
+import 'package:digital_receipt_wallet/models/recurring_transaction_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
 import '../models/user_model.dart';
@@ -157,6 +158,86 @@ class FirestoreService {
           .toList();
     });
   }
+
+  /// =====================================================
+  /// RECURRING TRANSACTIONS
+  /// =====================================================
+
+  CollectionReference<Map<String, dynamic>> get _recurringRef =>
+      _firestore
+          .collection('users')
+          .doc(_uid)
+          .collection('recurring');
+
+  Stream<List<RecurringModel>> getRecurring() {
+    return _recurringRef
+        .snapshots()
+        .map((s) {
+          final list = s.docs
+              .map((d) => RecurringModel.fromMap(d.id, d.data()))
+              .toList();
+          list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return list;
+        });
+  }
+
+  Future<void> addRecurring(RecurringModel model) async {
+    await _recurringRef.add(model.toMap());
+  }
+
+  Future<void> updateRecurring(RecurringModel model) async {
+    await _recurringRef.doc(model.id).update(model.toMap());
+  }
+
+  Future<void> deleteRecurring(String id) async {
+    await _recurringRef.doc(id).delete();
+  }
+
+  Future<void> toggleRecurringStatus(RecurringModel model) async {
+    final newStatus = model.status == RecurringStatus.active
+        ? RecurringStatus.paused
+        : RecurringStatus.active;
+    await _recurringRef.doc(model.id).update({'status': newStatus.name});
+  }
+
+  Future<void> processRecurring() async {
+    final now = DateTime.now();
+    final snapshot = await _recurringRef.get();
+
+    for (final doc in snapshot.docs) {
+      final r = RecurringModel.fromMap(doc.id, doc.data());
+
+      if (r.status != RecurringStatus.active) continue;
+      if (r.nextDueDate == null) continue;
+      if (r.nextDueDate!.isAfter(now)) continue;
+
+      // nextDueDate geçmiş → kaç tur atladıysa hepsini ekle
+      DateTime due = r.nextDueDate!;
+
+      while (!due.isAfter(now)) {
+        final receipt = ReceiptModel(
+          id: '',
+          storeName: r.storeName,
+          storeNameLower: r.storeNameLower,
+          totalAmount: r.amount,
+          date: due,
+          category: r.category,
+          createdAt: due,
+          source: 'recurring',
+        );
+        await addTransaction(receipt: receipt, products: []);
+
+        // Bir sonraki turu hesapla
+        due = r.computeNextDueDate(due);
+      }
+
+      // nextDueDate'i güncelle
+      await _recurringRef.doc(r.id).update({
+        'nextDueDate': Timestamp.fromDate(due),
+      });
+    }
+  }
+  
   /// =====================================================
   /// ANALYTICS
   /// =====================================================
