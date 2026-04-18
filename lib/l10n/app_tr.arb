@@ -501,7 +501,7 @@
     "description": "Silme onay diyaloğu başlığı"
   },
 
-  "removeFromRecurring": "\"{{storeName}}\" harcamasını tekrarlayanlardan kaldırılsın mı?",
+  "removeFromRecurring": "\"{storeName}\" harcamasını tekrarlayanlardan kaldırılsın mı?",
   "@removeFromRecurring": {
     "description": "Silme onay diyaloğu içeriği",
     "placeholders": {

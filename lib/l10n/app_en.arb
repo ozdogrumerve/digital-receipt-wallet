@@ -496,7 +496,7 @@
     "description": "Title of the delete confirmation dialog"
   },
 
-  "removeFromRecurring": "Remove \"{{storeName}}\" from recurring transactions?",
+  "removeFromRecurring": "Remove \"{storeName}\" from recurring transactions?",
   "@removeFromRecurring": {
     "description": "Content of delete confirmation dialog. Use {{storeName}} as placeholder",
     "placeholders": {
@@ -1095,5 +1095,5 @@
   "@uploadError": {
     "description": "Prefix for general upload errors"
   }
-  
+
 }
