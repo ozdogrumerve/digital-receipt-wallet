@@ -812,9 +812,14 @@
     "description": "Tema değiştirme alt metni"
   },
 
-  "language": "Dil",
+  "language": "DİL SEÇENEKLERİ",
   "@language": {
     "description": "Dil seçimi başlığı"
+  },
+
+  "selectAppLanguage": "Uygulama Dilini Seçin",
+  "@selectAppLanguage": {
+    "description": "Dil seçimi alt metni"
   },
 
   "signOut": "Çıkış Yap",
@@ -832,7 +837,7 @@
     "description": "Bildirimler kapatıldığında gösterilen mesaj"
   },
 
-  "goToSettings": "Ayarlara Git",
+  "goToSettings": "Ayarlar",
   "@goToSettings": {
     "description": "Cihaz ayarlarına gitmek için snackbar buton metni"
   },

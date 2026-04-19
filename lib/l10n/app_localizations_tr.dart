@@ -508,7 +508,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get switchBetweenLightAndDark => 'Açık ve koyu tema arasında geçiş yap';
 
   @override
-  String get language => 'Dil';
+  String get language => 'DİL SEÇENEKLERİ';
+
+  @override
+  String get selectAppLanguage => 'Uygulama Dilini Seçin';
 
   @override
   String get signOut => 'Çıkış Yap';
@@ -520,7 +523,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notificationsTurnedOff => 'Bildirimler kapatıldı. Tamamen kapatmak isterseniz cihaz ayarlarından kapatabilirsiniz.';
 
   @override
-  String get goToSettings => 'Ayarlara Git';
+  String get goToSettings => 'Ayarlar';
 
   @override
   String get createAccount => 'Hesap Oluştur';

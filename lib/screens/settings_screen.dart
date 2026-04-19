@@ -261,12 +261,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             content: Text(loc.notificationsTurnedOff),
                             action: SnackBarAction(
                               label: loc.goToSettings,
-                              textColor: Colors.white,
+                              textColor: Colors.grey,
                               onPressed: () async {
                                 await openAppSettings();
                               },
                             ),
-                            duration: const Duration(seconds: 4),
+                            duration: const Duration(seconds: 3),
                           ),
                         );
                       }
@@ -296,7 +296,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             const SizedBox(height: 30),
 
-            // YENİ
             /// LANGUAGE
             Text(loc.language,
                 style: theme.textTheme.bodyMedium),
@@ -306,7 +305,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.language_outlined),
-                title: Text(loc.language),
+                title: Text(loc.selectAppLanguage),
                 subtitle: Text(
                   localeProvider.locale.languageCode == 'tr'
                       ? 'Türkçe'

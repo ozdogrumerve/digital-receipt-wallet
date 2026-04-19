@@ -392,7 +392,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String alertSetFor(Object percentage) {
-    return 'Alert set for %$percentage% of budget';
+    return 'Alert set for %$percentage of budget';
   }
 
   @override
@@ -508,7 +508,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get switchBetweenLightAndDark => 'Switch between light and dark';
 
   @override
-  String get language => 'Language';
+  String get language => 'LANGUAGE OPTIONS';
+
+  @override
+  String get selectAppLanguage => 'Select App Language';
 
   @override
   String get signOut => 'Sign Out';
@@ -520,7 +523,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsTurnedOff => 'Notifications turned off. You can fully disable them from device settings.';
 
   @override
-  String get goToSettings => 'Go to Settings';
+  String get goToSettings => 'Settings';
 
   @override
   String get createAccount => 'Create Account';

@@ -617,7 +617,7 @@
     "description": "Snackbar message when alert is cancelled"
   },
 
-  "alertSetFor": "Alert set for %{percentage}% of budget",
+  "alertSetFor": "Alert set for %{percentage} of budget",
   "@alertSetFor": {
     "description": "Success message when alert is set. Use {percentage} as placeholder",
     "placeholders": {
@@ -811,9 +811,14 @@
     "description": "Subtitle for theme switch"
   },
 
-  "language": "Language",
+  "language": "LANGUAGE OPTIONS",
   "@language": {
     "description": "Title for language selection"
+  },
+
+  "selectAppLanguage": "Select App Language",
+  "@selectAppLanguage": {
+    "description": "Subtitle for language selection"
   },
 
   "signOut": "Sign Out",
@@ -831,7 +836,7 @@
     "description": "Message shown when user turns off notifications"
   },
 
-  "goToSettings": "Go to Settings",
+  "goToSettings": "Settings",
   "@goToSettings": {
     "description": "Action button text in snackbar for opening app settings"
   },

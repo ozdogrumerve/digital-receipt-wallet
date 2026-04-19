@@ -1079,6 +1079,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// Subtitle for language selection
+  ///   
+  /// In en, this message translates to:
+  /// **'Choose your preferred language'**
+  String get selectAppLanguage;
+
   /// Sign out button text
   ///
   /// In en, this message translates to:
