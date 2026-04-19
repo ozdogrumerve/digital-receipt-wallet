@@ -213,6 +213,7 @@ class FirestoreService {
       if (r.nextDueDate!.isAfter(now)) continue;
 
       DateTime due = r.nextDueDate!;
+      bool anyAdded = false;
 
       while (!due.isAfter(now)) {
         final receipt = ReceiptModel(
@@ -226,8 +227,9 @@ class FirestoreService {
           source: 'recurring',
         );
         await addTransaction(receipt: receipt, products: []);
+        anyAdded = true;
 
-        if (notify) {
+        if (anyAdded && notify) {
           await NotificationService.showRecurringNotification(
             storeName: r.storeName,
             amount: r.amount,
