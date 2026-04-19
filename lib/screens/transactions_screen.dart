@@ -126,6 +126,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     if (source == "pdf") {
       return const Icon(Icons.picture_as_pdf, size: 14, color: Colors.white);
     }
+    if (source == "recurring") {
+      return const Icon(Icons.repeat, size: 14, color: Colors.white);
+    }
     return const SizedBox.shrink();
   }
 
@@ -455,7 +458,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
               if (tx.source == "scan" ||
                   tx.source == "pdf" ||
-                  tx.source == "manual")
+                  tx.source == "manual" ||
+                  tx.source == "recurring")
                 Positioned(
                   right: 0,
                   bottom: 0,

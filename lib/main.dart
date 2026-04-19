@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,9 @@ void main() async {
   // Kullanıcı giriş yapmışsa recurring işle
   final user = FirebaseAuth.instance.currentUser;
   if (user != null) {
-    await FirestoreService().processRecurring();
+    final prefs = await SharedPreferences.getInstance();
+    final notifEnabled = prefs.getBool('notifications_enabled') ?? true;
+    await FirestoreService().processRecurring(notify: notifEnabled);
   }
   
   await dotenv.load(fileName: ".env");

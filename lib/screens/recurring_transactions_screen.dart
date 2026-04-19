@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/recurring_transaction_model.dart';
 import '../services/firestore_service.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
@@ -76,7 +77,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
       case RecurringFrequency.monthly:
         return cs.primary;
       case RecurringFrequency.yearly:
-        return Colors.purple;
+        return const Color.fromARGB(255, 229, 161, 241);
     }
   }
 
@@ -114,7 +115,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
           }
         },
       ),
-    );
+    ).then((_) => _processRecurring());
   }
 
   void _confirmDelete(RecurringModel r) {
@@ -140,6 +141,20 @@ class _RecurringScreenState extends State<RecurringScreen> {
         ],
       ),
     );
+  }
+
+  // Ekran açılır açılmaz recurring işle
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // InıtState içinde async işlem yapmanın en güvenli yolu bu şekilde 
+  // ayrı bir fonksiyon oluşturup çağırmak 
+  Future<void> _processRecurring() async {
+    final prefs = await SharedPreferences.getInstance();
+    final notifEnabled = prefs.getBool('notifications_enabled') ?? true;
+    await FirestoreService().processRecurring(notify: notifEnabled);
   }
 
   @override
