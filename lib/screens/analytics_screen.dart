@@ -104,16 +104,28 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         final data = doc.data();
         final date = (data['date'] as Timestamp).toDate();
         final products = await doc.reference.collection('products').get();
-        for (final p in products.docs) {
-          final pd = p.data();
+
+        if (products.docs.isEmpty) {
+          // Recurring veya ürünsüz transaction — totalAmount'u direkt kullan
           items.add(ExpenseItem(
-            title: pd['name'] ?? '',
-            amount: ((pd['price'] as num?)?.toDouble() ?? 0) *
-                ((pd['quantity'] as num?)?.toDouble() ?? 1),
+            title: data['storeName'] ?? '',
+            amount: (data['totalAmount'] ?? 0).toDouble(),
             date: date,
             percentage: 0,
             color: Colors.grey,
           ));
+        } else {
+          for (final p in products.docs) {
+            final pd = p.data();
+            items.add(ExpenseItem(
+              title: pd['name'] ?? '',
+              amount: ((pd['price'] as num?)?.toDouble() ?? 0) *
+                  ((pd['quantity'] as num?)?.toDouble() ?? 1),
+              date: date,
+              percentage: 0,
+              color: Colors.grey,
+            ));
+          }
         }
       }
       return items;
