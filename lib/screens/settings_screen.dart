@@ -267,6 +267,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               },
                             ),
                             duration: const Duration(seconds: 3),
+                            persist: false,
                           ),
                         );
                       }
