@@ -181,7 +181,7 @@
     "description": "Placeholder text shown when there is no data"
   },
 
-  "transactionsCount": "transactions",
+  "transactionsCount": "transaction",
   "@transactionsCount": {
     "description": "Text after the number of transactions for top merchant"
   },
@@ -206,49 +206,49 @@
   "@sat": { "description": "Abbreviated day name for chart - Saturday" },
   "@sun": { "description": "Abbreviated day name for chart - Sunday" },
 
-  "digitalReceiptWallet": "Dijital Fiş Cüzdanı",
+  "digitalReceiptWallet": "Digital Receipt Wallet",
   "@digitalReceiptWallet": {
-    "description": "Ana sayfada üstte görünen uygulama başlığı"
+    "description": "App title shown in the header of Home screen"
   },
 
-  "totalSpent": "Toplam Harcama",
+  "totalSpent": "Total Spent",
   "@totalSpent": {
-    "description": "Özet kartındaki bu ayki toplam harcama etiketi"
+    "description": "Label for the total monthly spending in the summary card"
   },
 
-  "noMonthlyBudgetSetYet": "Henüz aylık bütçe ayarlanmadı",
+  "noMonthlyBudgetSetYet": "No monthly budget set yet",
   "@noMonthlyBudgetSetYet": {
-    "description": "Kullanıcı aylık bütçe belirlemediğinde gösterilen metin"
+    "description": "Text shown when user has not set a monthly budget"
   },
 
-  "limitLeft": "KALAN LİMİT",
+  "limitLeft": "LIMIT LEFT",
   "@limitLeft": {
-    "description": "Kalan bütçe miktarının etiketi"
+    "description": "Label for remaining budget amount"
   },
 
-  "percentUsed": "% KULLANILDI",
+  "percentUsed": "USED",
   "@percentUsed": {
-    "description": "Bütçe kullanım yüzdesi çipinde gösterilen metin (örn: %65 KULLANILDI)"
+    "description": "Text shown on the budget usage chip (e.g. 65% USED)"
   },
 
-  "recentActivity": "Son İşlemler",
+  "recentActivity": "Recent Activity",
   "@recentActivity": {
-    "description": "Son işlemler bölümü başlığı"
+    "description": "Header for the recent transactions section"
   },
 
-  "seeHistory": "Geçmişi Gör",
+  "seeHistory": "See History",
   "@seeHistory": {
-    "description": "Tüm işlemleri görmek için buton metni"
+    "description": "Button text to navigate to full transactions history"
   },
 
-  "noReceiptsYet": "Henüz fiş yok",
+  "noReceiptsYet": "No receipts yet",
   "@noReceiptsYet": {
-    "description": "Ana sayfada hiç fiş olmadığında başlık"
+    "description": "Empty state title when there are no receipts"
   },
 
-  "yourScannedReceiptsWillAppearHere": "Taranan fişleriniz burada görünecek",
+  "yourScannedReceiptsWillAppearHere": "Your scanned receipts will appear here",
   "@yourScannedReceiptsWillAppearHere": {
-    "description": "Ana sayfadaki boş durum alt metni"
+    "description": "Empty state subtitle on home screen"
   },
 
   "home": "Home",
@@ -1096,8 +1096,23 @@
     "description": "Prefix for general upload errors"
   },
 
-  "ofTotal": "of total",
-  "@ofTotal": {
-    "description": "Prefix"
+  "frequencyDaily": "Daily",
+  "@frequencyDaily": {
+    "description": "Frequency option for recurring transactions"
+  },
+
+  "frequencyWeekly": "Weekly",
+  "@frequencyWeekly": {
+    "description": "Frequency option for recurring transactions"
+  },
+
+  "frequencyMonthly": "Monthly",
+  "@frequencyMonthly": {
+    "description": "Frequency option for recurring transactions"
+  },
+
+  "frequencyYearly": "Yearly",
+  "@frequencyYearly": {
+    "description": "Frequency option for recurring transactions"
   }
 }

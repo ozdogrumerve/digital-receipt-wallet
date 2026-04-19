@@ -231,7 +231,7 @@
     "description": "Kalan bütçe miktarının etiketi"
   },
 
-  "percentUsed": "% KULLANILDI",
+  "percentUsed": "KULLANILDI",
   "@percentUsed": {
     "description": "Bütçe kullanım yüzdesi çipinde gösterilen metin (örn: %65 KULLANILDI)"
   },
@@ -617,7 +617,7 @@
     "description": "Alarm iptal edildiğinde gösterilen snackbar mesajı"
   },
 
-  "alertSetFor": "Bütçenin %{percentage}%'i için alarm ayarlandı",
+  "alertSetFor": "Bütçenin %{percentage}'i için alarm ayarlandı",
   "@alertSetFor": {
     "description": "Alarm ayarlandığında başarı mesajı. {percentage} placeholder kullanılır",
     "placeholders": {
@@ -1097,9 +1097,23 @@
     "description": "Genel yükleme hataları için önek"
   },
 
-  "ofTotal": "toplamın",
-  "@ofTotal": {
-    "description": "Ön ek"
+  "frequencyDaily": "Günlük",
+  "@frequencyDaily": {
+    "description": "Yinelenen işlemler için sıklık seçeneği"
+  },
+
+  "frequencyWeekly": "Haftalık",
+  "@frequencyWeekly": {
+    "description": "Yinelenen işlemler için sıklık seçeneği"
+  },
+
+  "frequencyMonthly": "Aylık",
+  "@frequencyMonthly": {
+    "description": "Yinelenen işlemler için sıklık seçeneği"
+  },
+  "frequencyYearly": "Yıllık",
+  "@frequencyYearly": {
+    "description": "Yinelenen işlemler için sıklık seçeneği"
   }
-  
+
 }

@@ -78,7 +78,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _showBudgetBottomSheet() {
     final TextEditingController budgetController = TextEditingController();
-    final loc = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
@@ -453,7 +452,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     totalAmount == 0 ? 0.0 : totalAmount / daysInMonth;
 
                 final currentMonth =
-                    DateFormat('MMMM yyyy').format(selectedMonth);
+                    DateFormat('MMMM yyyy',).format(selectedMonth);
 
                 final currentMonthExpenses = receipts
                     .where(
@@ -526,7 +525,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           DateFormat('yyyy-MM').parse(monthKey);
                                       return DropdownMenuItem<String>(
                                         value: monthKey,
-                                        child: Text(DateFormat('MMMM yyyy')
+                                        child: Text(DateFormat('MMMM yyyy', 
+                                            loc.localeName)
                                             .format(parsedDate)),
                                       );
                                     }).toList(),
@@ -651,7 +651,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                             fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 2),
                                     Text(
-                                      '%${expense.percentage.toStringAsFixed(0)} ${loc.ofTotal}',
+                                      '%${expense.percentage.toStringAsFixed(0)}',
                                       style: textTheme.bodySmall,
                                     ),
                                   ],

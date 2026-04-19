@@ -156,7 +156,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get limitLeft => 'KALAN LİMİT';
 
   @override
-  String get percentUsed => '% KULLANILDI';
+  String get percentUsed => 'KULLANILDI';
 
   @override
   String get recentActivity => 'Son İşlemler';
@@ -392,7 +392,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String alertSetFor(Object percentage) {
-    return 'Bütçenin %$percentage%\'i için alarm ayarlandı';
+    return 'Bütçenin %$percentage\'i için alarm ayarlandı';
   }
 
   @override
@@ -679,5 +679,14 @@ class AppLocalizationsTr extends AppLocalizations {
   String get uploadError => 'Yükleme hatası: ';
 
   @override
-  String get ofTotal => 'toplamın';
+  String get frequencyDaily => 'Günlük';
+
+  @override
+  String get frequencyWeekly => 'Haftalık';
+
+  @override
+  String get frequencyMonthly => 'Aylık';
+
+  @override
+  String get frequencyYearly => 'Yıllık';
 }

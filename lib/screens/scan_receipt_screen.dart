@@ -7,6 +7,7 @@ import '../models/receipt_model.dart';
 import '../services/firestore_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class ScanReceiptScreen extends StatefulWidget {
   final List<ProductModel> detectedProducts;
@@ -133,6 +134,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   }
 
   Future<void> _scanReceipt(File imageFile) async {
+    final loc = AppLocalizations.of(context)!;
 
     try {
 
@@ -200,8 +202,8 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
       if (!cleaned.trim().startsWith("{")) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Invalid receipt scan"),
+          SnackBar(
+            content: Text(loc.invalidReceiptScan),
           ),
         );
         return;
@@ -229,8 +231,8 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
       if (scannedProducts.isEmpty || total <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("This doesn't look like a receipt"),
+          SnackBar(
+            content: Text(loc.thisDoesntLookLikeAReceipt),
           ),
         );
         return;
@@ -260,7 +262,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
     } catch (e) {
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Scan error: $e")),
+        SnackBar(content: Text("$loc.scanError: $e")),
       );
 
     }
@@ -268,10 +270,11 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   }
 
   Future<void> _save() async {
+    final loc = AppLocalizations.of(context)!;
     if (!_scanSuccessful) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please scan a receipt first"),
+        SnackBar(
+          content: Text(loc.pleaseScanReceiptFirst),
         ),
       );
       return;
@@ -279,7 +282,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
     if (_storeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Store name cannot be empty")),
+        SnackBar(content: Text(loc.storeNameCannotBeEmpty)),
       );
       return;
     }
@@ -288,14 +291,14 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
     if (totalAmount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Total amount must be greater than 0")),
+        SnackBar(content: Text(loc.totalMustBeGreaterThanZero)),
       );
       return;
     }
 
     if (_products.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Add at least one product")),
+        SnackBar(content: Text(loc.addAtLeastOneProduct)),
       );
       return;
     }
@@ -373,6 +376,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         ),
       ),
       builder: (_) {
+        final loc = AppLocalizations.of(context)!;
         return Padding(
           padding: EdgeInsets.only(
             left: 20,
@@ -397,7 +401,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                   ),
 
                   Text(
-                    product == null ? "Add Item Manually" : "Edit Item",
+                    product == null ? loc.addItemManually : loc.editItem,
                     style: theme.textTheme.titleMedium,
                   ),
 
@@ -405,11 +409,11 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
                   input(
                     icon: Icons.inventory_2_outlined,
-                    hint: "Product name",
+                    hint: loc.productName,
                     controller: nameController,
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) {
-                        return "Name required";
+                        return loc.nameRequired;
                       }
                       return null;
                     },
@@ -419,13 +423,13 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
                   input(
                     icon: Icons.attach_money,
-                    hint: "Price",
+                    hint: loc.price,
                     controller: priceController,
                     type: const TextInputType.numberWithOptions(decimal: true),
                     validator: (v) {
                       final price = double.tryParse(v ?? "") ?? 0;
                       if (price <= 0) {
-                        return "Price must be > 0";
+                        return loc.priceMustBeGreaterThanZero;
                       }
                       return null;
                     },
@@ -435,13 +439,13 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
                   input(
                     icon: Icons.format_list_numbered,
-                    hint: "Quantity",
+                    hint: loc.quantity,
                     controller: qtyController,
                     type: TextInputType.number,
                     validator: (v) {
                       final qty = int.tryParse(v ?? "") ?? 0;
                       if (qty <= 0) {
-                        return "Qty must be > 0";
+                        return loc.qtyMustBeGreaterThanZero;
                       }
                       return null;
                     },
@@ -492,7 +496,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                         Navigator.pop(context);
                       },
                       icon: product == null ? Icon(Icons.add) : Icon(Icons.save),
-                      label: Text(product == null ? "Add" : "Save"),
+                      label: Text(product == null ? loc.add : loc.save),
                     ),
                   ),
 
@@ -542,9 +546,10 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Scan Receipt")),
+      appBar: AppBar(title: Text(loc.scanReceipt)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -562,7 +567,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                       child: Container(
                         color: theme.colorScheme.surface,
                         child: _image == null
-                            ? const Center(child: Text("No Image Captured"))
+                            ? Center(child: Text(loc.noImageCaptured))
                             : Image.file(
                                 _image!,
                                 fit: BoxFit.cover,
@@ -587,7 +592,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                       icon: _image == null
                           ? Icon(Icons.camera_alt)
                           : Icon(Icons.refresh),
-                      label: Text(_image == null ? "Take Photo" : "Retake"),
+                      label: Text(_image == null ? loc.takePhoto : loc.retake),
                     ),
                   )
                 ],
@@ -600,7 +605,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Extraction Results",
+                  loc.extractionResults,
                   style: theme.textTheme.titleMedium,
                 ),
                 TextButton.icon(
@@ -611,7 +616,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                   },
                   icon: _isEditing ? Icon(Icons.check) : Icon(Icons.edit),
                   label: Text(
-                    _isEditing ? "Done" : "Edit",
+                    _isEditing ? loc.done : loc.edit ,
                   ),
                 )
               ],
@@ -622,14 +627,14 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
             /// STORE NAME
             inputBox(
               context: context,
-              label: "Store Name",
+              label: loc.storeName,
               icon: Icons.store,
               child: TextField(
                 controller: _storeController,
                 enabled: _isEditing,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "Whole Foods Market",
+                  hintText: loc.storeNameHint,
                 ),
               ),
             ),
@@ -642,7 +647,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                 Expanded(
                   child: inputBox(
                     context: context,
-                    label: "Date",
+                    label: loc.date,
                     icon: Icons.calendar_today,
                     child: InkWell(
                       onTap: _isEditing
@@ -679,7 +684,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                 Expanded(
                   child: inputBox(
                       context: context,
-                      label: "Total Amount",
+                      label: loc.totalAmount,
                       icon: Icons.attach_money,
                       child: TextField(
                         controller: _totalController,
@@ -699,7 +704,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
             /// CATEGORY
             inputBox(
               context: context,
-              label: "Category",
+              label: loc.category,
               icon: Icons.sell_outlined,
               child: DropdownButton<String>(
                 value: categories.contains(_category)
@@ -729,7 +734,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 6, left: 4),
                 child: Text(
-                  "AI suggested ⚡",
+                  loc.aiSuggested,
                   style: TextStyle(
                     color: Colors.red,
                     fontSize: 11,
@@ -741,12 +746,12 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
             const SizedBox(height: 30),
 
             /// PRODUCTS
-            Text("Detected Products", style: theme.textTheme.titleMedium),
+            Text(loc.detectedProducts, style: theme.textTheme.titleMedium),
 
             const SizedBox(height: 4),
 
             Text(
-              "Tap item to edit • Swipe left to delete",
+              loc.tapToEditSwipeToDelete,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey,
@@ -762,9 +767,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                 color: theme.colorScheme.surface,
               ),
               child: _products.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        "No products detected",
+                        loc.noProductsDetected,
                         style: TextStyle(color: Colors.grey),
                       ),
                     )
@@ -831,7 +836,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                                       const SizedBox(height: 4),
 
                                       Text(
-                                        "Qty: ${p.quantity}",
+                                        "${loc.quantity}: ${p.quantity}",
                                         style: TextStyle(
                                           color: Colors.grey.shade600,
                                         ),
@@ -862,7 +867,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
             Center(
               child: TextButton(
                 onPressed: _addManualProduct,
-                child: const Text("+ Add Item Manually"),
+                child: Text(loc.addItemManually),
               ),
             ),
 
@@ -874,7 +879,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
               child: ElevatedButton.icon(
                 onPressed: _save,
                 icon: Icon(Icons.save),
-                label: const Text("Save Receipt"),
+                label: Text(loc.saveReceipt),
               ),
             ),
 

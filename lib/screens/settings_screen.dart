@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:digital_receipt_wallet/providers/locale_provider.dart';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -105,6 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
     final notificationProvider = Provider.of<NotificationProvider>(context);
     final localeProvider = Provider.of<LocaleProvider>(context);
@@ -122,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: Text(loc.settings),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -171,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 30),
 
             /// PERSONAL ACCOUNT
-            Text("PERSONAL ACCOUNT",
+            Text(loc.personalAccount,
                 style: theme.textTheme.bodyMedium),
 
             const SizedBox(height: 12),
@@ -179,9 +181,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.person_outline),
-                title: const Text("Profile Details"),
+                title: Text(loc.profileDetails),
                 subtitle:
-                    const Text("Change name, email, and avatar"),
+                    Text(loc.changeNameEmailAndAvatar),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () async {
                   await Navigator.push(
@@ -201,7 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 30),
 
             /// APP PREFERENCES
-            Text("APP PREFERENCES",
+            Text(loc.appPreferences,
                 style: theme.textTheme.bodyMedium),
 
             const SizedBox(height: 12),
@@ -210,9 +212,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.notifications_none),
-                title: const Text("Push Notifications"),
+                title: Text(loc.pushNotifications),
                 subtitle:
-                    const Text("Alerts for large transactions"),
+                    Text(loc.alertsForLargeTransactions),
                 trailing: Switch(
                   value: notificationProvider.isEnabled,
                   onChanged: (value) async {
@@ -237,15 +239,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Bildirimlere izin vermelisiniz."),
+                              SnackBar(
+                                content: Text(loc.notificationsDisabledPermission),
                                 backgroundColor: Colors.red,
                               ),
                             );
                           }
                         }
                       } catch (e) {
-                        print("Permission error: $e");
+                        print("$loc.permissionError: $e");
                       }
                     } 
                     else {
@@ -256,10 +258,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text("Bildirimler kapatıldı. "
-                            "Tamamen kapatmak isterseniz cihaz ayarlarından kapatabilirsiniz."),
+                            content: Text(loc.notificationsTurnedOff),
                             action: SnackBarAction(
-                              label: "Ayarlara Git",
+                              label: loc.goToSettings,
                               textColor: Colors.white,
                               onPressed: () async {
                                 await openAppSettings();
@@ -281,9 +282,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.palette_outlined),
-                title: const Text("Visual Theme"),
+                title: Text(loc.visualTheme),
                 subtitle:
-                    const Text("Switch between light and dark"),
+                    Text(loc.switchBetweenLightAndDark),
                 trailing: Switch(
                   value: themeProvider.isDark,
                   onChanged: (value) {
@@ -297,7 +298,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // YENİ
             /// LANGUAGE
-            Text("LANGUAGE",
+            Text(loc.language,
                 style: theme.textTheme.bodyMedium),
 
             const SizedBox(height: 12),
@@ -305,7 +306,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.language_outlined),
-                title: const Text("Language"),
+                title: Text(loc.language),
                 subtitle: Text(
                   localeProvider.locale.languageCode == 'tr'
                       ? 'Türkçe'
@@ -324,8 +325,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: OutlinedButton.icon(
                 icon:
                     const Icon(Icons.logout, color: Colors.red),
-                label: const Text(
-                  "Sign Out",
+                label: Text(
+                  loc.signOut,
                   style: TextStyle(color: Colors.red),
                 ),
                 style: OutlinedButton.styleFrom(

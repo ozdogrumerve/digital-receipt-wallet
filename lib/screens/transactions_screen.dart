@@ -280,7 +280,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   Chip(
                     label: Text(
                       startDate != null && endDate != null
-                          ? "${DateFormat('d MMM').format(startDate!)} - ${DateFormat('d MMM').format(endDate!)}"
+                          ? "${DateFormat('d MMM', loc.localeName).
+                          format(startDate!)} - ${DateFormat('d MMM', 
+                          loc.localeName).format(endDate!)}"
                           : loc.customDate,
                     ),
                     onDeleted: _clearFilter,

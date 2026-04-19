@@ -9,6 +9,7 @@ import '../services/firestore_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pdfx/pdfx.dart'; // PDF'i image'e çevirmek için: pub add pdfx (sayfaları render et)
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class UploadReceiptPdf extends StatefulWidget {
   const UploadReceiptPdf({super.key});
@@ -83,6 +84,7 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   Future<void> _processPdf() async {
     if (_pdf == null) return;
     setState(() => _isEditing = true);
+    final loc = AppLocalizations.of(context)!;
 
     try {
       final document = await PdfDocument.openFile(_pdf!.path);
@@ -227,7 +229,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
     } catch (e) {
       setState(() => _isEditing = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("PDF hatası: $e")),
+        SnackBar(content: Text("${loc.pdfError}$e")),
       );
     }
   }
@@ -296,6 +298,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   }
 
   Future<void> _scanReceipt(File imageFile) async {
+    final loc = AppLocalizations.of(context)!;
     try {
       final bytes = await imageFile.readAsBytes();
       final base64Data = base64Encode(bytes);
@@ -363,8 +366,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
       if (!cleaned.trim().startsWith("{")) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Invalid receipt scan"),
+          SnackBar(
+            content: Text(loc.invalidReceiptScan),
           ),
         );
         return;
@@ -392,8 +395,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
       if (scannedProducts.isEmpty || total <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("This doesn't look like a receipt"),
+          SnackBar(
+            content: Text(loc.thisDoesntLookLikeAReceipt),
           ),
         );
         return;
@@ -421,17 +424,18 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Upload error: $e")),
+        SnackBar(content: Text("${loc.pdfError}$e")),
       );
     }
   }
 
   // Receipt Save
   Future<void> _save() async {
+    final loc =  AppLocalizations.of(context)!;
     if (!_scanSuccessful) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please upload a receipt first"),
+        SnackBar(
+          content: Text(loc.pleaseScanReceiptFirst),
         ),
       );
       return;
@@ -439,7 +443,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
     if (_storeController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Store name cannot be empty")),
+        SnackBar(content: Text(loc.storeNameCannotBeEmpty)),
       );
       return;
     }
@@ -448,14 +452,14 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
     if (totalAmount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Total amount must be greater than 0")),
+        SnackBar(content: Text(loc.totalMustBeGreaterThanZero)),
       );
       return;
     }
 
     if (_products.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Add at least one product")),
+        SnackBar(content: Text(loc.addAtLeastOneProduct)),
       );
       return;
     }
@@ -480,9 +484,10 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
   // Ekstre Save
   Future<void> _savePdf() async {
+    final loc = AppLocalizations.of(context)!;
     if (_transactions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("İşlem bulunamadı")),
+        SnackBar(content: Text(loc.noTransactionsFound)),
       );
       return;
     }
@@ -490,7 +495,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
     for (final tx in _transactions) {
       if (!_selectedCategories.containsKey(tx.name)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Lütfen tüm kategorileri seçin")),
+          SnackBar(content: Text(loc.pleaseSelectAllCategories)),
         );
         return;
       }
@@ -517,6 +522,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   }
 
   void _addManualProduct({ProductModel? product, int? index}) {
+    final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     final nameController = TextEditingController(text: product?.name ?? "");
@@ -595,7 +601,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                   ),
 
                   Text(
-                    product == null ? "Add Item Manually" : "Edit Item",
+                    product == null ? loc.addItemManually : loc.editItem,
                     style: theme.textTheme.titleMedium,
                   ),
 
@@ -603,11 +609,11 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
                   input(
                     icon: Icons.inventory_2_outlined,
-                    hint: "Product name",
+                    hint: loc.productName,
                     controller: nameController,
                     validator: (v) {
                       if (v == null || v.trim().isEmpty) {
-                        return "Name required";
+                        return loc.nameRequired;
                       }
                       return null;
                     },
@@ -617,13 +623,13 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
                   input(
                     icon: Icons.attach_money,
-                    hint: "Price",
+                    hint: loc.price,
                     controller: priceController,
                     type: const TextInputType.numberWithOptions(decimal: true),
                     validator: (v) {
                       final price = double.tryParse(v ?? "") ?? 0;
                       if (price <= 0) {
-                        return "Price must be > 0";
+                        return loc.priceMustBeGreaterThanZero;
                       }
                       return null;
                     },
@@ -633,13 +639,13 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
                   input(
                     icon: Icons.format_list_numbered,
-                    hint: "Quantity",
+                    hint: loc.quantity,
                     controller: qtyController,
                     type: TextInputType.number,
-                    validator: (v) {
+                    validator: (v) {                      
                       final qty = int.tryParse(v ?? "") ?? 0;
                       if (qty <= 0) {
-                        return "Qty must be > 0";
+                        return loc.qtyMustBeGreaterThanZero;
                       }
                       return null;
                     },
@@ -691,7 +697,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       },
                       icon:
                           product == null ? Icon(Icons.add) : Icon(Icons.save),
-                      label: Text(product == null ? "Add" : "Save"),
+                      label: Text(product == null ? loc.add : loc.save),
                     ),
                   ),
 
@@ -739,6 +745,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
   Widget _buildPdfContent() {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     // İşlemleri ay-yıl'a göre grupla
     final Map<String, List<_Transaction>> grouped = {};
@@ -789,7 +796,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       children: [
                         Text(
                           _pdf == null
-                              ? "Ekstre yükle"
+                              ? loc.uploadEkstre
                               : _pdf!.path.split('/').last,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w600,
@@ -800,8 +807,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                         const SizedBox(height: 2),
                         Text(
                           _pdf == null
-                              ? "Banka ekstrenizi seçin"
-                              : "Değiştirmek için dokun",
+                              ? loc.selectBankStatement
+                              : loc.changePdf,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurface.withAlpha(0x80),
                           ),
@@ -836,7 +843,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       ),
                     )
                   : const Icon(Icons.auto_fix_high, size: 18),
-              label: Text(_isEditing ? "Analiz ediliyor..." : "Analiz et"),
+              label: Text(_isEditing ? loc.analyzing : loc.analyze),
             ),
           ),
 
@@ -859,7 +866,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       Expanded(
                         child: _summaryItem(
                           context: context,
-                          label: "Toplam gider",
+                          label: loc.totalExpense,
                           value: "₺${_pdfTotalOut.toStringAsFixed(2)}",
                           valueColor: const Color(0xFF993C1D),
                         ),
@@ -867,7 +874,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       Expanded(
                         child: _summaryItem(
                           context: context,
-                          label: "Toplam gelir",
+                          label: loc.totalIncome,
                           value: "₺${_pdfTotalIn.toStringAsFixed(2)}",
                           valueColor: const Color(0xFF3B6D11),
                         ),
@@ -884,7 +891,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                           Expanded(
                             child: _summaryItem(
                               context: context,
-                              label: "Banka",
+                              label: loc.bank,
                               value: _pdfBanka,
                             ),
                           ),
@@ -892,7 +899,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                           Expanded(
                             child: _summaryItem(
                               context: context,
-                              label: "Dönem",
+                              label: loc.period,
                               value: _pdfDonem,
                             ),
                           ),
@@ -908,7 +915,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
             // İşlem başlığı
             Row(
               children: [
-                Text("İşlemler", style: theme.textTheme.titleMedium),
+                Text(loc.transactions, style: theme.textTheme.titleMedium),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -923,7 +930,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                     ),
                   ),
                   child: Text(
-                    "${_transactions.length} adet",
+                    "${_transactions.length}",
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(0x80),
                     ),
@@ -1133,7 +1140,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
               child: ElevatedButton.icon(
                 onPressed: _savePdf,
                 icon: const Icon(Icons.save, size: 18),
-                label: const Text("İşlemleri kaydet"),
+                label: Text(loc.saveTransactions),
               ),
             ),
           ],
@@ -1183,6 +1190,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
   Widget _buildGalleryContent() {
     final theme = Theme.of(context);
+    final loc = AppLocalizations.of(context)!;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -1201,7 +1209,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                     child: Container(
                       color: theme.colorScheme.surface,
                       child: _image == null
-                          ? const Center(child: Text("No Image Selected"))
+                          ? Center(child: Text(loc.noImageSelected))
                           : Image.file(
                               _image!,
                               fit: BoxFit.cover,
@@ -1227,8 +1235,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                         ? Icon(Icons.photo_library)
                         : Icon(Icons.refresh),
                     label: Text(_image == null
-                        ? "Select from Gallery"
-                        : "Change Image"),
+                        ? loc.selectFromGallery
+                        : loc.changeImage),
                   ),
                 )
               ],
@@ -1241,7 +1249,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Extraction Results",
+                loc.extractionResults,
                 style: theme.textTheme.titleMedium,
               ),
               TextButton.icon(
@@ -1252,7 +1260,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                 },
                 icon: _isEditing ? Icon(Icons.check) : Icon(Icons.edit),
                 label: Text(
-                  _isEditing ? "Done" : "Edit",
+                  _isEditing ? loc.done : loc.edit,
                 ),
               )
             ],
@@ -1263,14 +1271,14 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           /// STORE NAME
           inputBox(
             context: context,
-            label: "Store Name",
+            label: loc.storeName,
             icon: Icons.store,
             child: TextField(
               controller: _storeController,
               enabled: _isEditing,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: "Whole Foods Market",
+                hintText: loc.storeNameHint,
               ),
             ),
           ),
@@ -1283,7 +1291,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
               Expanded(
                 child: inputBox(
                   context: context,
-                  label: "Date",
+                  label: loc.date,
                   icon: Icons.calendar_today,
                   child: InkWell(
                     onTap: _isEditing
@@ -1320,7 +1328,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
               Expanded(
                 child: inputBox(
                     context: context,
-                    label: "Total Amount",
+                    label: loc.totalAmount,
                     icon: Icons.attach_money,
                     child: TextField(
                       controller: _totalController,
@@ -1340,7 +1348,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           /// CATEGORY
           inputBox(
             context: context,
-            label: "Category",
+            label: loc.category,
             icon: Icons.sell_outlined,
             child: DropdownButton<String>(
               value:
@@ -1369,7 +1377,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
               Padding(
                 padding: const EdgeInsets.only(top: 6, left: 4),
                 child: Text(
-                  "AI suggested ⚡",
+                  loc.aiSuggested,
                   style: TextStyle(
                     color: Colors.red,
                     fontSize: 11,
@@ -1382,12 +1390,12 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           const SizedBox(height: 30),
 
           /// PRODUCTS
-          Text("Detected Products", style: theme.textTheme.titleMedium),
+          Text(loc.detectedProducts, style: theme.textTheme.titleMedium),
 
           const SizedBox(height: 4),
 
           Text(
-            "Tap item to edit • Swipe left to delete",
+            loc.tapToEditSwipeToDelete,
             style: TextStyle(
               fontSize: 12,
               color: Colors.grey,
@@ -1403,9 +1411,9 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                 color: theme.colorScheme.surface,
               ),
               child: _products.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        "No products detected",
+                        loc.noProductsDetected,
                         style: TextStyle(color: Colors.grey),
                       ),
                     )
@@ -1493,7 +1501,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           Center(
             child: TextButton(
               onPressed: _addManualProduct,
-              child: const Text("+ Add Item Manually"),
+              child: Text(loc.addItemManually),
             ),
           ),
 
@@ -1505,7 +1513,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
             child: ElevatedButton.icon(
               onPressed: _save,
               icon: Icon(Icons.save),
-              label: const Text("Save Receipt"),
+              label: Text(loc.saveReceipt),
             ),
           ),
 
@@ -1517,9 +1525,10 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Upload Receipt"),
+        title: Text(loc.uploadReceipt),
       ),
       body: Column(
         children: [
@@ -1546,7 +1555,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Text("Gallery", 
+                        child: Text(loc.gallery, 
                           style: TextStyle(color: Colors.black),), 
                       ),
                     ),
@@ -1562,7 +1571,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Text("PDF", 
+                        child: Text(loc.pdf, 
                           style: TextStyle(color: Colors.black)),
                       ),
                     ),

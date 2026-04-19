@@ -426,7 +426,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             Text(
                               _selectedRange == null
                                   ? loc.selectRange
-                                  : '${DateFormat('dd MMM').format(_selectedRange!.start)} - ${DateFormat('dd MMM').format(_selectedRange!.end)}',
+                                  : '${DateFormat('dd MMM', loc.localeName).format(
+                                    _selectedRange!.start)} - ${DateFormat('dd MMM'
+                                    , loc.localeName).format(_selectedRange!.end)}',
                               style: textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),

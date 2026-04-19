@@ -82,14 +82,13 @@ class _RecurringScreenState extends State<RecurringScreen> {
 
   String _frequencyLabel(RecurringFrequency freq, AppLocalizations loc) {
     switch (freq) {
-      case RecurringFrequency.daily:
-        return 'Daily';
-      case RecurringFrequency.weekly:
-        return 'Weekly';
-      case RecurringFrequency.monthly:
-        return 'Monthly';
-      case RecurringFrequency.yearly:
-        return 'Yearly';
+      case RecurringFrequency.daily: return loc.frequencyDaily;
+
+      case RecurringFrequency.weekly: return loc.frequencyWeekly;
+
+      case RecurringFrequency.monthly: return loc.frequencyMonthly;
+
+      case RecurringFrequency.yearly: return loc.frequencyYearly;
     }
   }
 
@@ -247,6 +246,27 @@ class _RecurringCard extends StatelessWidget {
     required this.onToggle,
   });
 
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -326,7 +346,7 @@ class _RecurringCard extends StatelessWidget {
                                       ?.copyWith(color: freqColor)),
                             ),
                             const SizedBox(width: 8),
-                            Text(model.category,
+                            Text(_localizeCategory(model.category, loc),
                                 style: theme.textTheme.bodySmall
                                     ?.copyWith(color: cs.onSurfaceVariant)),
                           ],
@@ -363,7 +383,7 @@ class _RecurringCard extends StatelessWidget {
                               size: 12, color: cs.onSurfaceVariant),
                           const SizedBox(width: 4),
                           Text(
-                            '${loc.next} ${DateFormat('d MMM yyyy').format(model.nextDueDate!)}',
+                            '${loc.next} ${DateFormat('d MMM yyyy', loc.localeName).format(model.nextDueDate!)}',
                             style: theme.textTheme.labelSmall
                                 ?.copyWith(color: cs.onSurfaceVariant),
                           ),
@@ -425,10 +445,40 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
   final _amountCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
 
-  String _category = 'Bills';
+  String _category = "Food";
   RecurringFrequency _frequency = RecurringFrequency.monthly;
   DateTime _startDate = DateTime.now();
   bool _saving = false;
+
+  String _frequencyLabelFromScreen(RecurringFrequency f, AppLocalizations loc) {
+    switch (f) {
+      case RecurringFrequency.daily: return loc.frequencyDaily;
+      case RecurringFrequency.weekly: return loc.frequencyWeekly;
+      case RecurringFrequency.monthly: return loc.frequencyMonthly;
+      case RecurringFrequency.yearly: return loc.frequencyYearly;
+    }
+  }
+
+  String _localizeCategory(String category, AppLocalizations loc) {
+    switch (category) {
+      case 'Food': return loc.food;
+      case 'Clothing': return loc.clothing;
+      case 'Tech': return loc.tech;
+      case 'Transportation': return loc.transportation;
+      case 'Bills': return loc.bills;
+      case 'Rent': return loc.rent;
+      case 'Education': return loc.education;
+      case 'Healthcare': return loc.healthcare;
+      case 'Personal Care': return loc.personalCare;
+      case 'Entertainment': return loc.entertainment;
+      case 'Household / Furniture': return loc.householdFurniture;
+      case 'Stationery': return loc.stationery;
+      case 'Vacation / Travel': return loc.vacationTravel;
+      case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+      case 'Other': return loc.other;
+      default: return category;
+    }
+  }
 
   @override
   void initState() {
@@ -554,7 +604,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
                     OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
               items: widget.categories
-                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .map((c) => DropdownMenuItem(value: c, child: Text(_localizeCategory(c, loc))))
                   .toList(),
               onChanged: (v) => setState(() => _category = v!),
             ),
@@ -568,7 +618,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
               children: RecurringFrequency.values.map((f) {
                 final selected = _frequency == f;
                 return ChoiceChip(
-                  label: Text(f.name[0].toUpperCase() + f.name.substring(1)),
+                  label: Text(_frequencyLabelFromScreen(f, loc)),
                   selected: selected,
                   onSelected: (_) => setState(() => _frequency = f),
                   selectedColor: cs.primary,
@@ -585,7 +635,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.calendar_today_outlined),
               title: Text(loc.startDate),
-              subtitle: Text(DateFormat('d MMMM yyyy').format(_startDate)),
+              subtitle: Text(DateFormat('d MMMM yyyy', loc.localeName).format(_startDate)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
                 final picked = await showDatePicker(

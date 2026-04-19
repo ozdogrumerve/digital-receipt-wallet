@@ -117,7 +117,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDataYet => 'No data yet';
 
   @override
-  String get transactionsCount => 'transactions';
+  String get transactionsCount => 'transaction';
 
   @override
   String get perDay => '/ day';
@@ -144,31 +144,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sun => 'Sun';
 
   @override
-  String get digitalReceiptWallet => 'Dijital Fiş Cüzdanı';
+  String get digitalReceiptWallet => 'Digital Receipt Wallet';
 
   @override
-  String get totalSpent => 'Toplam Harcama';
+  String get totalSpent => 'Total Spent';
 
   @override
-  String get noMonthlyBudgetSetYet => 'Henüz aylık bütçe ayarlanmadı';
+  String get noMonthlyBudgetSetYet => 'No monthly budget set yet';
 
   @override
-  String get limitLeft => 'KALAN LİMİT';
+  String get limitLeft => 'LIMIT LEFT';
 
   @override
-  String get percentUsed => '% KULLANILDI';
+  String get percentUsed => 'USED';
 
   @override
-  String get recentActivity => 'Son İşlemler';
+  String get recentActivity => 'Recent Activity';
 
   @override
-  String get seeHistory => 'Geçmişi Gör';
+  String get seeHistory => 'See History';
 
   @override
-  String get noReceiptsYet => 'Henüz fiş yok';
+  String get noReceiptsYet => 'No receipts yet';
 
   @override
-  String get yourScannedReceiptsWillAppearHere => 'Taranan fişleriniz burada görünecek';
+  String get yourScannedReceiptsWillAppearHere => 'Your scanned receipts will appear here';
 
   @override
   String get home => 'Home';
@@ -679,5 +679,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadError => 'Upload error: ';
 
   @override
-  String get ofTotal => 'of total';
+  String get frequencyDaily => 'Daily';
+
+  @override
+  String get frequencyWeekly => 'Weekly';
+
+  @override
+  String get frequencyMonthly => 'Monthly';
+
+  @override
+  String get frequencyYearly => 'Yearly';
 }

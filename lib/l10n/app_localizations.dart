@@ -314,7 +314,7 @@ abstract class AppLocalizations {
   /// Text after the number of transactions for top merchant
   ///
   /// In en, this message translates to:
-  /// **'transactions'**
+  /// **'transaction'**
   String get transactionsCount;
 
   /// Suffix for average daily spend (e.g. ₺XX.XX / day)
@@ -365,58 +365,58 @@ abstract class AppLocalizations {
   /// **'Sun'**
   String get sun;
 
-  /// Ana sayfada üstte görünen uygulama başlığı
+  /// App title shown in the header of Home screen
   ///
   /// In en, this message translates to:
-  /// **'Dijital Fiş Cüzdanı'**
+  /// **'Digital Receipt Wallet'**
   String get digitalReceiptWallet;
 
-  /// Özet kartındaki bu ayki toplam harcama etiketi
+  /// Label for the total monthly spending in the summary card
   ///
   /// In en, this message translates to:
-  /// **'Toplam Harcama'**
+  /// **'Total Spent'**
   String get totalSpent;
 
-  /// Kullanıcı aylık bütçe belirlemediğinde gösterilen metin
+  /// Text shown when user has not set a monthly budget
   ///
   /// In en, this message translates to:
-  /// **'Henüz aylık bütçe ayarlanmadı'**
+  /// **'No monthly budget set yet'**
   String get noMonthlyBudgetSetYet;
 
-  /// Kalan bütçe miktarının etiketi
+  /// Label for remaining budget amount
   ///
   /// In en, this message translates to:
-  /// **'KALAN LİMİT'**
+  /// **'LIMIT LEFT'**
   String get limitLeft;
 
-  /// Bütçe kullanım yüzdesi çipinde gösterilen metin (örn: %65 KULLANILDI)
+  /// Text shown on the budget usage chip (e.g. 65% USED)
   ///
   /// In en, this message translates to:
-  /// **'% KULLANILDI'**
+  /// **'USED'**
   String get percentUsed;
 
-  /// Son işlemler bölümü başlığı
+  /// Header for the recent transactions section
   ///
   /// In en, this message translates to:
-  /// **'Son İşlemler'**
+  /// **'Recent Activity'**
   String get recentActivity;
 
-  /// Tüm işlemleri görmek için buton metni
+  /// Button text to navigate to full transactions history
   ///
   /// In en, this message translates to:
-  /// **'Geçmişi Gör'**
+  /// **'See History'**
   String get seeHistory;
 
-  /// Ana sayfada hiç fiş olmadığında başlık
+  /// Empty state title when there are no receipts
   ///
   /// In en, this message translates to:
-  /// **'Henüz fiş yok'**
+  /// **'No receipts yet'**
   String get noReceiptsYet;
 
-  /// Ana sayfadaki boş durum alt metni
+  /// Empty state subtitle on home screen
   ///
   /// In en, this message translates to:
-  /// **'Taranan fişleriniz burada görünecek'**
+  /// **'Your scanned receipts will appear here'**
   String get yourScannedReceiptsWillAppearHere;
 
   /// Bottom navigation bar - Home tab label
@@ -1415,11 +1415,29 @@ abstract class AppLocalizations {
   /// **'Upload error: '**
   String get uploadError;
 
-  /// Prefix 
+  /// Frequency option for recurring transactions
   ///
   /// In en, this message translates to:
-  /// **'of total: '**  
-  String get ofTotal;
+  /// **'Daily'**
+  String get frequencyDaily;
+
+  /// Frequency option for recurring transactions
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get frequencyWeekly;
+
+  /// Frequency option for recurring transactions
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get frequencyMonthly;
+
+  /// Frequency option for recurring transactions
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get frequencyYearly;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
