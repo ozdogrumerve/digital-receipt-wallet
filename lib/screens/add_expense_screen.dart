@@ -516,7 +516,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                             decoration: InputDecoration(
                               hintText: loc.productNameHint,
                               filled: true,
-                              fillColor: Colors.grey.shade100,
+                              fillColor: theme.colorScheme.surfaceContainerHighest,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: BorderSide.none,
@@ -535,7 +535,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                   decoration: InputDecoration(
                                     hintText: "₺ 0.00",
                                     filled: true,
-                                    fillColor: Colors.grey.shade100,
+                                    fillColor: theme.colorScheme.surfaceContainerHighest,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(14),
                                       borderSide: BorderSide.none,
@@ -551,7 +551,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                   decoration: InputDecoration(
                                     hintText: "1",
                                     filled: true,
-                                    fillColor: Colors.grey.shade100,
+                                    fillColor: theme.colorScheme.surfaceContainerHighest,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(14),
                                       borderSide: BorderSide.none,
@@ -715,8 +715,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                       padding:
                                           const EdgeInsets.all(14),
                                       decoration: BoxDecoration(
-                                        color: Colors.white
-                                            .withAlpha(0xEE),
+                                        color: theme.colorScheme.surface,
                                         borderRadius:
                                             BorderRadius.circular(
                                                 16),

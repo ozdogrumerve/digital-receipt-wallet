@@ -792,7 +792,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(Icons.delete, color: Colors.white),
+                          child: Icon(Icons.delete, color: theme.colorScheme.onSurface),
                         ),
 
                         onDismissed: (_) {
@@ -814,7 +814,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                             margin: const EdgeInsets.only(bottom: 12),
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(0xEE),
+                              color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(

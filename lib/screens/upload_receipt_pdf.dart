@@ -834,12 +834,12 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
             child: ElevatedButton.icon(
               onPressed: (_pdf == null || _isEditing) ? null : _processPdf,
               icon: _isEditing
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: theme.colorScheme.onSurface,
                       ),
                     )
                   : const Icon(Icons.auto_fix_high, size: 18),
@@ -971,7 +971,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(Icons.delete, color: Colors.white),
+                        child:  Icon(Icons.delete, color: theme.colorScheme.onSurface),
                       ),
                       onDismissed: (_) {
                         setState(() {
@@ -1436,7 +1436,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child:
-                                const Icon(Icons.delete, color: Colors.white),
+                                Icon(Icons.delete, color: theme.colorScheme.onSurface),
                           ),
                           onDismissed: (_) {
                             setState(() {
@@ -1455,7 +1455,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                               margin: const EdgeInsets.only(bottom: 12),
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: Colors.white.withAlpha(0xEE),
+                                color: theme.colorScheme.surface,
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Row(

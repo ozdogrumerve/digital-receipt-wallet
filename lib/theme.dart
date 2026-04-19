@@ -86,14 +86,14 @@ final ThemeData lightTheme = ThemeData(
 // KARANLIK TEMA (Dark Theme) - Derin mor/siyah palet
 // ────────────────────────────────────────────────
 
-const Color darkPrimary = Color(0xFF100725);       // en koyu mor - buton/accent
-const Color darkSecondary = Color(0xFF220B39);     // kart/surface
-const Color darkTertiary = Color(0xFF491358);      // hover/border vurgu
-const Color darkAccent = Color(0xFF6E1F86);        // ikon, progress bar
-const Color darkBackground = Color(0xFF0A0412);    // scaffold arka plan
-const Color darkSurface = Color(0xFF1A0F24);       // kart/input dolgusu
-const Color darkTextPrimary = Color(0xFFEBD9FF);   // ana metin (açık mor-beyaz)
-const Color darkTextSecondary = Color(0xFFB79CFF); // yardımcı metin
+const Color darkPrimary = Color(0xFFBB86FC);       // daha parlak mor — buton/accent
+const Color darkSecondary = Color(0xFF2C1654);     // kart surface
+const Color darkTertiary = Color(0xFF6C3483);      // hover/border vurgu
+const Color darkAccent = Color(0xFFAF7AC5);        // ikon, progress bar
+const Color darkBackground = Color(0xFF12071E);    // scaffold arka plan
+const Color darkSurface = Color(0xFF1E0F30);       // kart dolgusu — background'dan belirgin farklı
+const Color darkTextPrimary = Color(0xFFF5EEFF);   // neredeyse beyaz — ana metin
+const Color darkTextSecondary = Color(0xFFCBA4E0); // açık mor — yardımcı metin
 
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
@@ -105,10 +105,14 @@ final ThemeData darkTheme = ThemeData(
     tertiary: darkTertiary,
     surface: darkSurface,
     background: darkBackground,
-    onPrimary: darkTextPrimary,
+    onPrimary: Colors.white,
     onSecondary: darkTextPrimary,
     onSurface: darkTextPrimary,
     onBackground: darkTextPrimary,
+    onSurfaceVariant: darkTextSecondary,
+    surfaceContainerHighest: Color(0xFF2A1545),
+    outline: Color(0xFF6C3483),
+    outlineVariant: Color(0xFF3D1E5F),
   ),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.transparent,
