@@ -386,7 +386,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 }
 
                 final monthlyBudget = userSnapshot.data?.monthlyBudget ?? 0;
-                checkAlert(totalAmount, monthlyBudget, context);
+
+                final now = DateTime.now();
+                final isCurrentMonth = selectedMonth.year == now.year && 
+                                      selectedMonth.month == now.month;
+
+                if (isCurrentMonth) {
+                  checkAlert(totalAmount, monthlyBudget, context);
+                }
 
                 /// 🔹 3️⃣ Kategoriye Göre Grupla
                 final Map<String, double> categoryTotals = {};
