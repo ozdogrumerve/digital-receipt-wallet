@@ -755,4 +755,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get removeBudget => 'Bütçeyi Kaldır';
+
+  @override
+  String get errorNameRequired => 'İsim zorunludur';
+
+  @override
+  String get errorAmountRequired => 'Tutar zorunludur';
+
+  @override
+  String get errorAmountPositive => 'Tutar pozitif bir sayı olmalıdır';
 }

@@ -465,6 +465,9 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
   DateTime _startDate = DateTime.now();
   bool _saving = false;
 
+  String? _nameError;
+  String? _amountError;
+
   String _frequencyLabelFromScreen(RecurringFrequency f, AppLocalizations loc) {
     switch (f) {
       case RecurringFrequency.daily: return loc.frequencyDaily;
@@ -517,12 +520,21 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
     super.dispose();
   }
 
-  Future<void> _save() async {
+  Future<void> _save(AppLocalizations loc) async {
     final name = _nameCtrl.text.trim();
     final amount = double.tryParse(_amountCtrl.text.trim()) ?? 0;
-    if (name.isEmpty || amount <= 0) return;
 
-    setState(() => _saving = true);
+    setState(() {
+      _nameError = name.isEmpty ? loc.errorNameRequired : null;
+      _amountError = _amountCtrl.text.trim().isEmpty
+          ? loc.errorAmountRequired
+          : amount <= 0
+              ? loc.errorAmountPositive
+              : null;
+      _saving = _nameError == null && _amountError == null;
+    });
+
+    if (_nameError != null || _amountError != null) return;
 
     final now = DateTime.now();
     final e = widget.existing;
@@ -590,6 +602,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
               decoration: InputDecoration(
                 labelText: loc.nameOrStore,
                 prefixIcon: const Icon(Icons.store_outlined),
+                errorText: _nameError,
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
@@ -603,6 +616,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
               decoration: InputDecoration(
                 labelText: loc.amountTL,
                 prefixIcon: const Icon(Icons.attach_money),
+                errorText: _amountError,
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
@@ -680,7 +694,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
 
             // Save button
             FilledButton(
-              onPressed: _saving ? null : _save,
+              onPressed: _saving ? null : () => _save(loc),
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(52),
                 shape: RoundedRectangleBorder(

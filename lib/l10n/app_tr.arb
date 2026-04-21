@@ -1226,5 +1226,20 @@
   "removeBudget": "Bütçeyi Kaldır",
   "@removeBudget": {
     "description": "Aylık bütçeyi kaldırmak için buton metni"
+  },
+
+  "errorNameRequired": "İsim zorunludur",
+  "@errorNameRequired": {
+    "description": "Gerekli isim alanı için hata mesajı"
+  },
+
+  "errorAmountRequired": "Tutar zorunludur",
+  "@errorAmountRequired": {
+    "description": "Gerekli tutar alanı için hata mesajı"
+  },
+
+  "errorAmountPositive": "Tutar pozitif bir sayı olmalıdır",
+  "@errorAmountPositive": {
+    "description": "Pozitif tutar gereksinimi için hata mesajı"
   }
 }

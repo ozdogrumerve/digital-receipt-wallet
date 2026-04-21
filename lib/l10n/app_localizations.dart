@@ -1558,6 +1558,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove Budget'**
   String get removeBudget;
+
+  /// Error message for required name field
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get errorNameRequired;
+
+  /// Error message for required amount field
+  ///
+  /// In en, this message translates to:
+  /// **'Amount is required'**
+  String get errorAmountRequired;
+
+  /// Error message for positive amount requirement
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be a positive number'**
+  String get errorAmountPositive;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1227,5 +1227,20 @@
   "removeBudget": "Remove Budget",
   "@removeBudget": {
     "description": "Button text to remove monthly budget"
+  },
+
+  "errorNameRequired": "Name is required",
+  "@errorNameRequired": {
+    "description": "Error message for required name field"
+  },
+
+  "errorAmountRequired": "Amount is required",
+  "@errorAmountRequired": {
+    "description": "Error message for required amount field"
+  },
+
+  "errorAmountPositive": "Amount must be a positive number",
+  "@errorAmountPositive": {
+    "description": "Error message for positive amount requirement"
   }
 }

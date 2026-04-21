@@ -755,4 +755,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get removeBudget => 'Remove Budget';
+
+  @override
+  String get errorNameRequired => 'Name is required';
+
+  @override
+  String get errorAmountRequired => 'Amount is required';
+
+  @override
+  String get errorAmountPositive => 'Amount must be a positive number';
 }
