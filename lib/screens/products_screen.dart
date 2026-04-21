@@ -350,10 +350,16 @@ class _MetaStrip extends StatelessWidget {
         sourceIcon = Icons.camera_alt_outlined;
         sourceLabel = loc.scanned;
         break;
+
       case 'pdf':
         sourceIcon = Icons.picture_as_pdf_outlined;
         sourceLabel = loc.pdf;
+
+      case 'recurring':
+        sourceIcon = Icons.repeat_outlined;
+        sourceLabel = loc.recurringTransactions;
         break;
+
       default:
         sourceIcon = Icons.edit_outlined;
         sourceLabel = loc.manual;
