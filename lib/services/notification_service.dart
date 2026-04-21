@@ -1,3 +1,5 @@
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -17,7 +19,7 @@ class NotificationService {
   }
 
   // Bütçe bildirimi (mevcut)
-  static Future<void> showNotification(String title, String body) async {
+  static Future<void> showNotification(BuildContext context, String title, String body) async {
     const androidDetails = AndroidNotificationDetails(
       'channel_id',
       'Alerts',
@@ -34,7 +36,8 @@ class NotificationService {
   }
 
   // Bütçenin %100'ü harcandı bildirimi (yeni)
-  static Future<void> showBudgetFullyUsedNotification() async {
+  static Future<void> showBudgetFullyUsedNotification(BuildContext context) async {
+    final loc = AppLocalizations.of(context)!;
     const androidDetails = AndroidNotificationDetails(
       'channel_id',
       'Alerts',
@@ -44,8 +47,8 @@ class NotificationService {
 
     await _notifications.show(
       id: 1,
-      title: 'Budget Fully Used 💸',
-      body: 'You have spent your entire monthly budget.',
+      title: loc.notificationBudgetFullTitle,
+      body: loc.notificationBudgetFullBody,
       notificationDetails: NotificationDetails(android: androidDetails),
     );
   }
@@ -55,6 +58,8 @@ class NotificationService {
     required String storeName,
     required double amount,
     required String category,
+    String title = 'Recurring Transaction',
+    String? body,
   }) async {
     const androidDetails = AndroidNotificationDetails(
       'recurring_channel',
@@ -66,8 +71,8 @@ class NotificationService {
 
     await _notifications.show(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title: 'Recurring Transaction Processed 🔁',
-      body: '$storeName — ₺${amount.toStringAsFixed(2)} ($category)',
+      title: title,
+      body: body ?? '$storeName — ₺${amount.toStringAsFixed(2)} ($category)',
       notificationDetails: NotificationDetails(android: androidDetails),
     );
   }

@@ -589,12 +589,12 @@
     "description": "Shorter label used on the budget button"
   },
 
-  "alertAyari": "Alert Ayarla",
+  "alertAyari": "Set Alert",
   "@alertAyari": {
     "description": "Title of the budget alert bottom sheet (Turkish mixed for now, can be changed)"
   },
 
-  "alertDescription": "%{percentage} harcamaya ulaştığımda bildir",
+  "alertDescription": "Notify me when I have spent %{percentage} of my budget",
   "@alertDescription": {
     "description": "Description text in alert bottom sheet. Use {percentage} as placeholder",
     "placeholders": {
@@ -1170,13 +1170,52 @@
   "@statementFileName": {
     "description": "Base file name for the generated PDF statement (without extension)"
   },
-  
+
   "budgetUsedPercent": "%{value}",
   "@budgetUsedPercent": {
     "placeholders": {
       "value": {
         "type": "String"
       }
+    }
+  },
+
+  "notificationBudgetFullTitle": "Budget Fully Used 💸",
+  "@notificationBudgetFullTitle": {
+    "description": "Title for the push notification when user reaches 100% of their monthly budget"
+  },
+
+
+  "notificationBudgetFullBody": "You have spent your entire monthly budget.",
+  "@notificationBudgetFullBody": {
+    "description": "Body text for the push notification when user reaches 100% of their monthly budget"
+  },
+
+  "notificationRecurringTitle": "Recurring Transaction Processed 🔁",
+  "@notificationRecurringTitle": {
+    "description": "Title for the push notification when a recurring transaction is processed"
+  },
+
+  "notificationRecurringBody": "{storeName} — {amount} ({category})",
+
+  "@notificationRecurringBody": {
+    "placeholders": {
+      "storeName": {},
+      "amount": {},
+      "category": {}
+    }
+  },
+
+  "notificationBudgetAlertTitle": "Budget Alert ⚠️",
+  "@notificationBudgetAlertTitle": {
+    "description": "Title for the push notification when user reaches their budget alert threshold (e.g. 80%)"
+  },
+  
+  "notificationBudgetAlertBody": "%{value} of your budget has been spent.",
+
+  "@notificationBudgetAlertBody": {
+    "placeholders": {
+      "value": {}
     }
   }
 }

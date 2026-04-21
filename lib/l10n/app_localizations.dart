@@ -824,13 +824,13 @@ abstract class AppLocalizations {
   /// Title of the budget alert bottom sheet (Turkish mixed for now, can be changed)
   ///
   /// In en, this message translates to:
-  /// **'Alert Ayarla'**
+  /// **'Set Alert'**
   String get alertAyari;
 
   /// Description text in alert bottom sheet. Use {percentage} as placeholder
   ///
   /// In en, this message translates to:
-  /// **'%{percentage} harcamaya ulaştığımda bildir'**
+  /// **'Notify me when I have spent %{percentage} of my budget'**
   String alertDescription(Object percentage);
 
   /// Button to disable/remove budget alert
@@ -1510,6 +1510,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'%{value}'**
   String budgetUsedPercent(String value);
+
+  /// Title for the push notification when user reaches 100% of their monthly budget
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Fully Used 💸'**
+  String get notificationBudgetFullTitle;
+
+  /// Body text for the push notification when user reaches 100% of their monthly budget
+  ///
+  /// In en, this message translates to:
+  /// **'You have spent your entire monthly budget.'**
+  String get notificationBudgetFullBody;
+
+  /// Title for the push notification when a recurring transaction is processed
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring Transaction Processed 🔁'**
+  String get notificationRecurringTitle;
+
+  /// No description provided for @notificationRecurringBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{storeName} — {amount} ({category})'**
+  String notificationRecurringBody(Object storeName, Object amount, Object category);
+
+  /// Title for the push notification when user reaches their budget alert threshold (e.g. 80%)
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Alert ⚠️'**
+  String get notificationBudgetAlertTitle;
+
+  /// No description provided for @notificationBudgetAlertBody.
+  ///
+  /// In en, this message translates to:
+  /// **'%{value} of your budget has been spent.'**
+  String notificationBudgetAlertBody(Object value);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

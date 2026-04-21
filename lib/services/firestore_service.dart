@@ -5,6 +5,8 @@ import 'package:digital_receipt_wallet/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
 import '../models/user_model.dart';
+import 'package:flutter/material.dart';
+
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -201,7 +203,11 @@ class FirestoreService {
     await _recurringRef.doc(model.id).update({'status': newStatus.name});
   }
 
-  Future<void> processRecurring({bool notify = true}) async {
+  Future<void> processRecurring({
+    bool notify = true,
+    String Function(String storeName, String amount, String category)? buildBody,
+    String? notificationTitle,
+  }) async {
     final now = DateTime.now();
     final snapshot = await _recurringRef.get();
 
@@ -235,6 +241,12 @@ class FirestoreService {
             storeName: r.storeName,
             amount: r.amount,
             category: r.category,
+            title: notificationTitle ?? 'Recurring Transaction',
+            body: buildBody?.call(
+              r.storeName,
+              '₺${r.amount.toStringAsFixed(2)}',
+              r.category,
+            ),
           );
         }
 

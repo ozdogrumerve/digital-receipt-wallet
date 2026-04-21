@@ -374,11 +374,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adjustBudget => 'Budget';
 
   @override
-  String get alertAyari => 'Alert Ayarla';
+  String get alertAyari => 'Set Alert';
 
   @override
   String alertDescription(Object percentage) {
-    return '%$percentage harcamaya ulaştığımda bildir';
+    return 'Notify me when I have spent %$percentage of my budget';
   }
 
   @override
@@ -726,5 +726,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String budgetUsedPercent(String value) {
     return '%$value';
+  }
+
+  @override
+  String get notificationBudgetFullTitle => 'Budget Fully Used 💸';
+
+  @override
+  String get notificationBudgetFullBody => 'You have spent your entire monthly budget.';
+
+  @override
+  String get notificationRecurringTitle => 'Recurring Transaction Processed 🔁';
+
+  @override
+  String notificationRecurringBody(Object storeName, Object amount, Object category) {
+    return '$storeName — $amount ($category)';
+  }
+
+  @override
+  String get notificationBudgetAlertTitle => 'Budget Alert ⚠️';
+
+  @override
+  String notificationBudgetAlertBody(Object value) {
+    return '%$value of your budget has been spent.';
   }
 }

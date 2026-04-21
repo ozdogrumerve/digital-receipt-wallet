@@ -58,12 +58,16 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final notificationProvider =
         Provider.of<NotificationProvider>(context, listen: false);
 
+    final loc = AppLocalizations.of(context)!;
     // Alarm kontrolü (alertPercentage gerekli)
     if (alertPercentage != null && percentage >= alertPercentage!) {
       if (notificationProvider.isEnabled && !alertTriggered) {
         NotificationService.showNotification(
-          "Budget Alert ⚠️",
-          "%${(alertPercentage! * 100).toInt()} of your budget has been spent.",
+          context,
+          loc.notificationBudgetAlertTitle,
+          loc.notificationBudgetAlertBody(
+            (alertPercentage! * 100).toInt(),
+          ),
         );
       }
       alertTriggered = true;
@@ -71,7 +75,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     // %100 kontrolü — alarmdan bağımsız, sadece bildirim açık olsun yeter
     if (percentage >= 1.0 && notificationProvider.isEnabled && !budgetFullyUsedTriggered) {
-      NotificationService.showBudgetFullyUsedNotification();
+      NotificationService.showBudgetFullyUsedNotification(context);
       budgetFullyUsedTriggered = true;
     }
   }

@@ -1178,5 +1178,43 @@
         "type": "String"
       }
     }
+  },
+
+  "notificationBudgetFullTitle": "Bütçe Tamamen Kullanıldı 💸",
+  "@notificationBudgetFullTitle": {
+    "description": "Bütçe alarmı tetiklendiğinde gösterilen bildirim başlığı"
+  },
+
+  "notificationBudgetFullBody": "Aylık bütçenizin tamamını harcadınız.",
+  "@notificationBudgetFullBody": {
+    "description": "Bütçe alarmı tetiklendiğinde gösterilen bildirim içeriği"
+  },
+
+  "notificationRecurringTitle": "Tekrarlayan İşlem Gerçekleşti 🔁",
+  "@notificationRecurringTitle": {
+    "description": "Tekrarlayan işlem gerçekleştiğinde gösterilen bildirim başlığı"
+  },
+
+  "notificationRecurringBody": "{storeName} — {amount} ({category})",
+
+  "@notificationRecurringBody": {
+    "placeholders": {
+      "storeName": {},
+      "amount": {},
+      "category": {}
+    }
+  },
+
+  "notificationBudgetAlertTitle": "Bütçe Uyarısı ⚠️",
+  "@notificationBudgetAlertTitle": {
+    "description": "Bütçe alarmı uyarısı tetiklendiğinde gösterilen bildirim başlığı"
+  },
+  
+  "notificationBudgetAlertBody": "Bütçenizin %{value} kadarı harcandı.",
+
+  "@notificationBudgetAlertBody": {
+    "placeholders": {
+      "value": {}
+    }
   }
 }

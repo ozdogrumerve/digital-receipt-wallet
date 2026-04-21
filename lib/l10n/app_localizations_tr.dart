@@ -727,4 +727,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String budgetUsedPercent(String value) {
     return '%$value';
   }
+
+  @override
+  String get notificationBudgetFullTitle => 'Bütçe Tamamen Kullanıldı 💸';
+
+  @override
+  String get notificationBudgetFullBody => 'Aylık bütçenizin tamamını harcadınız.';
+
+  @override
+  String get notificationRecurringTitle => 'Tekrarlayan İşlem Gerçekleşti 🔁';
+
+  @override
+  String notificationRecurringBody(Object storeName, Object amount, Object category) {
+    return '$storeName — $amount ($category)';
+  }
+
+  @override
+  String get notificationBudgetAlertTitle => 'Bütçe Uyarısı ⚠️';
+
+  @override
+  String notificationBudgetAlertBody(Object value) {
+    return 'Bütçenizin %$value kadarı harcandı.';
+  }
 }
