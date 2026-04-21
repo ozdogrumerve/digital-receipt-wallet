@@ -124,7 +124,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(loc.deleteRecurring),
-        content: Text('loc.removeFromRecurring(r.storeName)'),
+        content: Text(loc.removeFromRecurring(r.storeName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
