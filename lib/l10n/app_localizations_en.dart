@@ -764,4 +764,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorAmountPositive => 'Amount must be a positive number';
+
+  @override
+  String get errorInvalidEmail => 'Invalid email address';
+
+  @override
+  String get errorEmailInUse => 'This email is already in use';
+
+  @override
+  String get errorUserNotFound => 'No account found with this email';
+
+  @override
+  String get errorUserDisabled => 'This account has been disabled';
+
+  @override
+  String get errorWrongPassword => 'Incorrect password';
+
+  @override
+  String get errorWeakPassword => 'Password must be at least 6 characters long';
+
+  @override
+  String get errorTooManyRequests => 'Too many attempts made, please wait';
+
+  @override
+  String get errorNetworkFailed => 'Internet connection error';
+
+  @override
+  String get errorUnknown => 'An unexpected error occurred';
+
+  @override
+  String get errorFillAllFields => 'Please fill in all fields';
 }

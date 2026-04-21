@@ -764,4 +764,34 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorAmountPositive => 'Tutar pozitif bir sayı olmalıdır';
+
+  @override
+  String get errorInvalidEmail => 'Geçersiz e-posta adresi';
+
+  @override
+  String get errorEmailInUse => 'Bu e-posta zaten kullanımda';
+
+  @override
+  String get errorUserNotFound => 'Bu e-posta ile kayıtlı hesap bulunamadı';
+
+  @override
+  String get errorUserDisabled => 'Bu hesap devre dışı bırakılmış';
+
+  @override
+  String get errorWrongPassword => 'Şifre yanlış';
+
+  @override
+  String get errorWeakPassword => 'Şifre en az 6 karakter olmalıdır';
+
+  @override
+  String get errorTooManyRequests => 'Çok fazla deneme yapıldı, lütfen bekleyin';
+
+  @override
+  String get errorNetworkFailed => 'İnternet bağlantısı hatası';
+
+  @override
+  String get errorUnknown => 'Beklenmeyen bir hata oluştu';
+
+  @override
+  String get errorFillAllFields => 'Lütfen tüm alanları doldurun';
 }

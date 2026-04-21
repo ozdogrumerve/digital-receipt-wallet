@@ -18,8 +18,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final passwordController = TextEditingController();
   bool loading = false;
 
+  String _authErrorMessage(String code, AppLocalizations loc) {
+    switch (code) {
+      // Email hataları
+      case 'invalid-email':
+        return loc.errorInvalidEmail;
+      case 'email-already-in-use':
+        return loc.errorEmailInUse;
+      case 'user-not-found':
+        return loc.errorUserNotFound;
+      case 'user-disabled':
+        return loc.errorUserDisabled;
+
+      // Şifre hataları
+      case 'invalid-credential':
+        return loc.errorWrongPassword;
+      case 'weak-password':
+        return loc.errorWeakPassword;
+      case 'too-many-requests':
+        return loc.errorTooManyRequests;
+
+      // Ağ hatası
+      case 'network-request-failed':
+        return loc.errorNetworkFailed;
+
+      default:
+        return loc.errorUnknown;
+    }
+  }
+
   Future<void> register() async {
     final loc = AppLocalizations.of(context)!;
+
+    // Boş alan kontrolü
+    if (nameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(child: Text(loc.errorFillAllFields)),
+            ],
+          ),
+          backgroundColor: Colors.orange.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     setState(() => loading = true);
 
     try {
@@ -49,8 +99,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pop(context);
 
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? loc.error)));
+      final msg = _authErrorMessage(e.code, loc);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(child: Text(msg)),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+        ),
+      );
     }
 
     setState(() => loading = false);

@@ -1241,5 +1241,55 @@
   "errorAmountPositive": "Tutar pozitif bir sayı olmalıdır",
   "@errorAmountPositive": {
     "description": "Pozitif tutar gereksinimi için hata mesajı"
+  },
+
+  "errorInvalidEmail": "Geçersiz e-posta adresi",
+  "@errorInvalidEmail": {
+    "description": "Geçersiz e-posta adresi için hata mesajı"
+  },
+
+  "errorEmailInUse": "Bu e-posta zaten kullanımda",
+  "@errorEmailInUse": {
+    "description": "E-posta zaten kullanımda olduğunda gösterilen hata mesajı"
+  },
+
+  "errorUserNotFound": "Bu e-posta ile kayıtlı hesap bulunamadı",
+  "@errorUserNotFound": {
+    "description": "Kullanıcı bulunamadığında gösterilen hata mesajı"
+  },
+
+  "errorUserDisabled": "Bu hesap devre dışı bırakılmış",
+  "@errorUserDisabled": {
+    "description": "Hesap devre dışı bırakıldığında gösterilen hata mesajı"
+  },
+
+  "errorWrongPassword": "Şifre yanlış",
+  "@errorWrongPassword": {
+    "description": "Yanlış şifre girildiğinde gösterilen hata mesajı"
+  },
+
+  "errorWeakPassword": "Şifre en az 6 karakter olmalıdır",
+  "@errorWeakPassword": {
+    "description": "Zayıf şifre girildiğinde gösterilen hata mesajı"
+  },
+
+  "errorTooManyRequests": "Çok fazla deneme yapıldı, lütfen bekleyin",
+  "@errorTooManyRequests": {
+    "description": "Çok fazla başarısız giriş denemesi yapıldığında gösterilen hata mesajı"
+  },
+
+  "errorNetworkFailed": "İnternet bağlantısı hatası",
+  "@errorNetworkFailed": {
+    "description": "Ağ bağlantısı sorunları için hata mesajı"
+  },
+
+  "errorUnknown": "Beklenmeyen bir hata oluştu",
+  "@errorUnknown": {
+    "description": "Beklenmeyen hatalar için genel hata mesajı"
+  },
+
+  "errorFillAllFields": "Lütfen tüm alanları doldurun",
+  "@errorFillAllFields": {
+    "description": "Gerekli alanlar doldurulmadığında gösterilen hata mesajı"
   }
 }

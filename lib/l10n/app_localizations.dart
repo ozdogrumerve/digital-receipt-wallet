@@ -1576,6 +1576,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount must be a positive number'**
   String get errorAmountPositive;
+
+  /// Error message for invalid email address
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address'**
+  String get errorInvalidEmail;
+
+  /// Error message for email already in use
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already in use'**
+  String get errorEmailInUse;
+
+  /// Error message for user not found
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email'**
+  String get errorUserNotFound;
+
+  /// Error message for disabled user account
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been disabled'**
+  String get errorUserDisabled;
+
+  /// Error message for incorrect password
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password'**
+  String get errorWrongPassword;
+
+  /// Error message for weak password
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters long'**
+  String get errorWeakPassword;
+
+  /// Error message for too many failed login attempts
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts made, please wait'**
+  String get errorTooManyRequests;
+
+  /// Error message for network connection issues
+  ///
+  /// In en, this message translates to:
+  /// **'Internet connection error'**
+  String get errorNetworkFailed;
+
+  /// General error message for unexpected errors
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred'**
+  String get errorUnknown;
+
+  /// Error message for required fields not filled
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all fields'**
+  String get errorFillAllFields;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

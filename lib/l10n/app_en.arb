@@ -1242,5 +1242,55 @@
   "errorAmountPositive": "Amount must be a positive number",
   "@errorAmountPositive": {
     "description": "Error message for positive amount requirement"
+  },
+
+  "errorInvalidEmail": "Invalid email address",
+  "@errorInvalidEmail": {
+    "description": "Error message for invalid email address"
+  },
+
+  "errorEmailInUse": "This email is already in use",
+  "@errorEmailInUse": {
+    "description": "Error message for email already in use"
+  },
+
+  "errorUserNotFound": "No account found with this email",
+  "@errorUserNotFound": {
+    "description": "Error message for user not found"
+  },
+
+  "errorUserDisabled": "This account has been disabled",
+  "@errorUserDisabled": {
+    "description": "Error message for disabled user account"
+  },
+
+  "errorWrongPassword": "Incorrect password",
+  "@errorWrongPassword": {
+    "description": "Error message for incorrect password"
+  },
+
+  "errorWeakPassword": "Password must be at least 6 characters long",
+  "@errorWeakPassword": {
+    "description": "Error message for weak password"
+  },
+
+  "errorTooManyRequests": "Too many attempts made, please wait",
+  "@errorTooManyRequests": {
+    "description": "Error message for too many failed login attempts"
+  },
+
+  "errorNetworkFailed": "Internet connection error",
+  "@errorNetworkFailed": {
+    "description": "Error message for network connection issues"
+  },
+
+  "errorUnknown": "An unexpected error occurred",
+  "@errorUnknown": {
+    "description": "General error message for unexpected errors"
+  },
+
+  "errorFillAllFields": "Please fill in all fields",
+  "@errorFillAllFields": {
+    "description": "Error message for required fields not filled"
   }
 }
