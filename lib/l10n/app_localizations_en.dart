@@ -749,4 +749,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String notificationBudgetAlertBody(Object value) {
     return '%$value of your budget has been spent.';
   }
+
+  @override
+  String get budgetRemoved => 'Budget removed';
+
+  @override
+  String get removeBudget => 'Remove Budget';
 }

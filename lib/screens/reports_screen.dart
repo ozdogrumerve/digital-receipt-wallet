@@ -221,6 +221,38 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                   ),
 
+                  // Kaydet butonunun altına ekle
+                  const SizedBox(height: 12),
+
+                  if (currentBudget > 0)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: () async {
+                          await firestoreService.removeMonthlyBudget();
+                          if (!context.mounted) return;
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(loc.budgetRemoved), // l10n ekle
+                            backgroundColor: Colors.orange,
+                          ));
+                          setState(() {});
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                          side: const BorderSide(color: Colors.red),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          loc.removeBudget, // l10n ekle
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+
                   const SizedBox(height: 24),
 
                   if (_errorMessage != null)

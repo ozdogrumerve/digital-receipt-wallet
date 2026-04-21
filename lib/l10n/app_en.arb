@@ -1210,12 +1210,22 @@
   "@notificationBudgetAlertTitle": {
     "description": "Title for the push notification when user reaches their budget alert threshold (e.g. 80%)"
   },
-  
+
   "notificationBudgetAlertBody": "%{value} of your budget has been spent.",
 
   "@notificationBudgetAlertBody": {
     "placeholders": {
       "value": {}
     }
+  },
+
+  "budgetRemoved": "Budget removed",
+  "@budgetRemoved": {
+    "description": "Snackbar message when monthly budget is removed"
+  },
+
+  "removeBudget": "Remove Budget",
+  "@removeBudget": {
+    "description": "Button text to remove monthly budget"
   }
 }

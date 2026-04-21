@@ -1546,6 +1546,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'%{value} of your budget has been spent.'**
   String notificationBudgetAlertBody(Object value);
+
+  /// Snackbar message when monthly budget is removed
+  ///
+  /// In en, this message translates to:
+  /// **'Budget removed'**
+  String get budgetRemoved;
+
+  /// Button text to remove monthly budget
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Budget'**
+  String get removeBudget;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

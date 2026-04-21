@@ -749,4 +749,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String notificationBudgetAlertBody(Object value) {
     return 'Bütçenizin %$value kadarı harcandı.';
   }
+
+  @override
+  String get budgetRemoved => 'Bütçe kaldırıldı';
+
+  @override
+  String get removeBudget => 'Bütçeyi Kaldır';
 }

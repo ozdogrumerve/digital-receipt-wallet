@@ -1209,12 +1209,22 @@
   "@notificationBudgetAlertTitle": {
     "description": "Bütçe alarmı uyarısı tetiklendiğinde gösterilen bildirim başlığı"
   },
-  
+
   "notificationBudgetAlertBody": "Bütçenizin %{value} kadarı harcandı.",
 
   "@notificationBudgetAlertBody": {
     "placeholders": {
       "value": {}
     }
+  },
+
+  "budgetRemoved": "Bütçe kaldırıldı",
+  "@budgetRemoved": {
+    "description": "Bütçe kaldırıldığında gösterilen snackbar mesajı"
+  },
+
+  "removeBudget": "Bütçeyi Kaldır",
+  "@removeBudget": {
+    "description": "Aylık bütçeyi kaldırmak için buton metni"
   }
 }

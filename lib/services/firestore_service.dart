@@ -61,6 +61,12 @@ class FirestoreService {
     );
   }
 
+  Future<void> removeMonthlyBudget() async {
+    await _firestore.collection('users').doc(_uid).update({
+      'monthlyBudget': 0,
+    });
+  }
+
   /// =====================================================
   /// TRANSACTIONS (MAIN DATA STRUCTURE)
   /// =====================================================
