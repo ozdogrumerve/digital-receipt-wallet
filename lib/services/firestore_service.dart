@@ -5,8 +5,6 @@ import 'package:digital_receipt_wallet/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/receipt_model.dart';
 import '../models/user_model.dart';
-import 'package:flutter/material.dart';
-
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -214,11 +212,22 @@ class FirestoreService {
     for (final doc in snapshot.docs) {
       final r = RecurringModel.fromMap(doc.id, doc.data());
 
-      if (r.status != RecurringStatus.active) continue;
       if (r.nextDueDate == null) continue;
       if (r.nextDueDate!.isAfter(now)) continue;
 
       DateTime due = r.nextDueDate!;
+
+      // Paused ise sadece tarihi ilerlet, işlem ekleme
+      if (r.status != RecurringStatus.active) {
+        while (!due.isAfter(now)) {
+          due = r.computeNextDueDate(due);
+        }
+        await _recurringRef.doc(r.id).update({
+          'nextDueDate': Timestamp.fromDate(due),
+        });
+        continue; // işlem ekleme, sadece tarih güncelle
+      }
+
       bool anyAdded = false;
 
       while (!due.isAfter(now)) {

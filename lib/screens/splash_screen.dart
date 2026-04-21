@@ -67,6 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 30),
             Text(
               loc.splashSlogan,
+              textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(letterSpacing: 2),
             ),
             const SizedBox(height: 80),
