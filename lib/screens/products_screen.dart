@@ -341,7 +341,7 @@ class _MetaStrip extends StatelessWidget {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
     final dateStr =
-        DateFormat('d MMMM yyyy, HH:mm').format(transaction.createdAt);
+        DateFormat('d MMMM yyyy, HH:mm').format(transaction.date);
 
     IconData sourceIcon;
     String sourceLabel;

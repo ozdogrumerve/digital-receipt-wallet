@@ -470,7 +470,10 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
         storeName: _storeController.text,
         storeNameLower: _storeController.text.toLowerCase(),
         totalAmount: double.tryParse(_totalController.text) ?? 0,
-        date: _selectedDate,
+        date: DateTime(
+          _selectedDate.year, _selectedDate.month, _selectedDate.day,
+          DateTime.now().hour, DateTime.now().minute, DateTime.now().second,
+        ),
         category: _category,
         createdAt: DateTime.now(),
         source: 'scan',
