@@ -58,12 +58,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Stream<List<ExpenseItem>>? _weeklyExpensesStream;
   Stream<List<ReceiptModel>>? _monthlyTransactionsStream;
+  Stream<List<ReceiptModel>>? _insightsStream;
 
   late DateTime _weekStart;
   late DateTime _monthStart;
   late DateTime _monthEnd;
   DateTimeRange? _selectedRange;
-
 
   @override
   void initState() {
@@ -131,8 +131,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       return items;
     });
 
-    // Aylık stream → budget kategoriler + insights + top merchant
+    // Category stream → budget kategoriler 
     _monthlyTransactionsStream = ref
+        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_monthStart))
+        .where('date', isLessThanOrEqualTo: Timestamp.fromDate(_monthEnd))
+        .snapshots()
+        .map((snap) => snap.docs
+            .map((d) => ReceiptModel.fromMap(d.id, d.data()))
+            .toList());
+
+    // Ayrı .snapshots() çağrısı — bağımsız stream, tarih değişmez
+    _insightsStream = ref
         .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_monthStart))
         .where('date', isLessThanOrEqualTo: Timestamp.fromDate(_monthEnd))
         .snapshots()
@@ -177,6 +186,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       _monthStart = start;
       _monthEnd = endExclusive;
 
+      // Sadece _monthlyTransactionsStream güncellenir, _insightsStream dokunulmaz
       _monthlyTransactionsStream = ref
           .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(_monthStart))
           .where('date', isLessThan: Timestamp.fromDate(_monthEnd))
@@ -228,12 +238,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       }
     });
 
-    // Ortalama günlük harcama (bu ayki gün sayısına göre)
-    final now = DateTime.now();
-    final daysInMonth = _monthEnd.difference(_monthStart).inDays;
-    final passedDays = now.day.clamp(1, daysInMonth);
+    // Ortalama günlük harcama = toplam harcama / gün sayısı (30 varsayıyoruz)
     final totalSpent = transactions.fold(0.0, (s, t) => s + t.totalAmount);
-    final avgDaily = passedDays > 0 ? totalSpent / passedDays : 0.0;
+    final avgDaily = totalSpent / 30;
 
     // Budget yüzdeleri (sabit bütçe yoksa harcamayı max'a oranlıyoruz)
     final maxSpend =
@@ -264,7 +271,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 20, color: colorScheme.onSurface),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(loc.analytics,
@@ -274,31 +281,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: StreamBuilder<List<ReceiptModel>>(
-          stream: _monthlyTransactionsStream,
-          builder: (context, monthlySnap) {
-            final monthlyData = monthlySnap.data ?? [];
-            final analytics = _computeAnalytics(monthlyData);
-
-            // Toplam harcamayı 1 kez hesapla (map dışında)
-            final totalSpent = analytics.categoryTotals.values
-                .fold(0.0, (total, val) => total + val);
-
-            // Kategori listesini hazırla
-            final budgetCategories = _categoryMeta.entries.map((entry) {
-              final spent = analytics.categoryTotals[entry.key] ?? 0.0;
-
-              final pct = totalSpent > 0
-                  ? (spent / totalSpent * 100).clamp(0.0, 100.0).toDouble()
-                  : 0.0;
-
-              return BudgetCategory(
-                title: entry.key,
-                spentPercentage: pct,
-                icon: entry.value.icon,
-                iconColor: entry.value.iconColor,
-                bgColor: entry.value.bgColor,
-              );
-            }).toList();
+          stream: _insightsStream,
+          builder: (context, insightsSnap) {
+            final insightsData = insightsSnap.data ?? [];
+            final analytics = _computeAnalytics(insightsData);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,103 +396,125 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 30),
 
                 // ── Monthly Budgets ──────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      loc.categoryBudgets,
-                      style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    InkWell(
-                      onTap: _pickDateRange,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: colorScheme.outline.withAlpha(80)),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.date_range_outlined,
-                              size: 18,
-                              color: colorScheme.primary,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _selectedRange == null
-                                  ? loc.selectRange
-                                  : '${DateFormat('dd MMM', loc.localeName).format(
-                                    _selectedRange!.start)} - ${DateFormat('dd MMM'
-                                    , loc.localeName).format(_selectedRange!.end)}',
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
+                StreamBuilder<List<ReceiptModel>>(
+                  stream: _monthlyTransactionsStream,
+                  builder: (context, monthlySnap) {
+                    final monthlyData = monthlySnap.data ?? [];
+                    final totalSpent = monthlyData.fold(0.0, (s, r) => s + r.totalAmount);
 
-                SizedBox(
-                  height: 140,
-                  child: monthlySnap.connectionState ==
-                          ConnectionState.waiting
-                      ? const Center(child: CircularProgressIndicator())
-                      : ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: budgetCategories.length,
-                          itemBuilder: (context, index) {
-                            final cat = budgetCategories[index];
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 16.0),
+                    final budgetCategories = _categoryMeta.entries.map((entry) {
+                      final spent = monthlyData
+                          .where((r) => r.category == entry.key)
+                          .fold(0.0, (s, r) => s + r.totalAmount);
+                      final pct = totalSpent > 0
+                          ? (spent / totalSpent * 100).clamp(0.0, 100.0).toDouble()
+                          : 0.0;
+                      return BudgetCategory(
+                        title: entry.key,
+                        spentPercentage: pct,
+                        icon: entry.value.icon,
+                        iconColor: entry.value.iconColor,
+                        bgColor: entry.value.bgColor,
+                      );
+                    }).toList();
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              loc.categoryBudgets,
+                              style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            InkWell(
+                              onTap: _pickDateRange,
+                              borderRadius: BorderRadius.circular(12),
                               child: Container(
-                                width: 130,
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                    color: colorScheme.surface,
-                                    borderRadius:
-                                        BorderRadius.circular(16)),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  color: colorScheme.surface,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: colorScheme.outline.withAlpha(80)),
+                                ),
+                                child: Row(
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                          color: cat.bgColor,
-                                          shape: BoxShape.circle),
-                                      child: Icon(cat.icon,
-                                          color: cat.iconColor),
+                                    Icon(
+                                      Icons.date_range_outlined,
+                                      size: 18,
+                                      color: colorScheme.primary,
                                     ),
-                                    const Spacer(),
-                                    // Overflow düzeltmesi: maxLines + overflow
+                                    const SizedBox(width: 8),
                                     Text(
-                                      _localizeCategory(cat.title, loc),
-                                      style: textTheme.bodyMedium
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "${cat.spentPercentage.toStringAsFixed(1)}%",
-                                      style: textTheme.bodySmall,
+                                      _selectedRange == null
+                                          ? loc.selectRange
+                                          : '${DateFormat('dd MMM', loc.localeName).format(
+                                            _selectedRange!.start)} - ${DateFormat('dd MMM'
+                                            , loc.localeName).format(_selectedRange!.end)}',
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 16),
+
+                        SizedBox(
+                          height: 140,
+                          child: monthlySnap.connectionState == ConnectionState.waiting
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: budgetCategories.length,
+                                  itemBuilder: (context, index) {
+                                    final cat = budgetCategories[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 16.0),
+                                      child: Container(
+                                        width: 130,
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                            color: colorScheme.surface,
+                                            borderRadius: BorderRadius.circular(16)),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                  color: cat.bgColor,
+                                                  shape: BoxShape.circle),
+                                              child: Icon(cat.icon, color: cat.iconColor),
+                                            ),
+                                            const Spacer(),
+                                            Text(
+                                              _localizeCategory(cat.title, loc),
+                                              style: textTheme.bodyMedium
+                                                  ?.copyWith(fontWeight: FontWeight.bold),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "${cat.spentPercentage.toStringAsFixed(1)}%",
+                                              style: textTheme.bodySmall,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 30),
@@ -557,8 +565,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   child: analytics.topMerchant == '-'
                       ? Center(
                           child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(loc.noDataYet,
                               style: textTheme.bodyMedium),
                         ))
@@ -567,26 +574,20 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                  color: colorScheme.primary
-                                      .withAlpha(0x1A),
-                                  borderRadius:
-                                      BorderRadius.circular(12)),
-                              child: Icon(
-                                  Icons.shopping_bag_outlined,
+                                  color: colorScheme.primary.withAlpha(0x1A),
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Icon(Icons.shopping_bag_outlined,
                                   color: colorScheme.primary),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     analytics.topMerchant,
                                     style: textTheme.bodyLarge
-                                        ?.copyWith(
-                                            fontWeight:
-                                                FontWeight.bold),
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
