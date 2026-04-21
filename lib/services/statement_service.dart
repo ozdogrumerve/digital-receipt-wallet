@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -14,7 +15,11 @@ class StatementService {
     double monthlyBudget = 0,
   }) async {
     final pdf = pw.Document();
-    final monthLabel = DateFormat('MMMM yyyy').format(month);
+    final loc = AppLocalizations.of(context)!;
+    final monthLabel = DateFormat('MMMM yyyy', loc.localeName).format(month);
+
+    final regularFont = await PdfGoogleFonts.notoSansRegular();
+    final boldFont = await PdfGoogleFonts.notoSansBold();
 
     const primaryColor = PdfColor.fromInt(0xFF805AD5);
     const headerBg = PdfColor.fromInt(0xFF6B46C1);
@@ -43,12 +48,38 @@ class StatementService {
       ..sort((a, b) => b.value.compareTo(a.value));
 
     // TL sembolunun (lira isareti) pdf fontunda render edilmeme sorununu onlemek icin TL prefix kullaniyoruz
-    String fmt(double amount) => 'TL ${amount.toStringAsFixed(2)}';
+    String fmt(double amount) => '₺ ${amount.toStringAsFixed(2)}';
+
+    String _localizeCategory(String category, AppLocalizations loc) {
+      switch (category) {
+        case 'Food': return loc.food;
+        case 'Clothing': return loc.clothing;
+        case 'Tech': return loc.tech;
+        case 'Transportation': return loc.transportation;
+        case 'Bills': return loc.bills;
+        case 'Rent': return loc.rent;
+        case 'Education': return loc.education;
+        case 'Healthcare': return loc.healthcare;
+        case 'Personal Care': return loc.personalCare;
+        case 'Entertainment': return loc.entertainment;
+        case 'Household / Furniture': return loc.householdFurniture;
+        case 'Stationery': return loc.stationery;
+        case 'Vacation / Travel': return loc.vacationTravel;
+        case 'Taxes / Official Payments': return loc.taxesOfficialPayments;
+        case 'Other': return loc.other;
+        default: return category;
+      }
+    }
 
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.symmetric(horizontal: 40, vertical: 36),
+        // font: await PdfGoogleFonts.notoSansRegular(), tr karakterlerin düzgün çıkması icin
+        theme: pw.ThemeData.withFont(
+          base: regularFont,
+          bold: boldFont,
+        ),
         build: (pw.Context ctx) => [
           // ── HEADER ──────────────────────────────────────────────
           pw.Container(
@@ -61,7 +92,7 @@ class StatementService {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
-                  'Monthly Statement',
+                  loc.monthlyStatement,
                   style: pw.TextStyle(
                     fontSize: 22,
                     fontWeight: pw.FontWeight.bold,
@@ -84,18 +115,18 @@ class StatementService {
           pw.Row(
             children: [
               _summaryCard(
-                  label: 'Total Spending',
+                  label: loc.totalSpending,
                   value: fmt(totalAmount),
                   color: primaryColor),
               pw.SizedBox(width: 12),
               _summaryCard(
-                  label: 'Transactions',
+                  label: loc.transactionsCount,
                   value: '${monthlyReceipts.length}',
                   color: const PdfColor.fromInt(0xFF9F7AEA)),
               if (monthlyBudget > 0) ...[
                 pw.SizedBox(width: 12),
                 _summaryCard(
-                  label: 'Budget Used',
+                  label: loc.budgetUsed,
                   value: '%${((totalAmount / monthlyBudget) * 100).toStringAsFixed(1)}',
                   color: totalAmount > monthlyBudget
                       ? const PdfColor.fromInt(0xFFE53E3E)
@@ -110,7 +141,7 @@ class StatementService {
           // ── CATEGORY SUMMARY ─────────────────────────────────────
           if (sortedCategories.isNotEmpty) ...[
             pw.Text(
-              'Category Summary',
+              loc.categorySummary,
               style: pw.TextStyle(
                 fontSize: 13,
                 fontWeight: pw.FontWeight.bold,
@@ -135,7 +166,7 @@ class StatementService {
                       children: [
                         pw.Expanded(
                           flex: 4,
-                          child: pw.Text(entry.key,
+                          child: pw.Text(_localizeCategory(entry.key, loc),
                               style: const pw.TextStyle(
                                   fontSize: 10, color: textDark)),
                         ),
@@ -173,7 +204,7 @@ class StatementService {
 
           // ── TRANSACTION TABLE ─────────────────────────────────────
           pw.Text(
-            'Transaction Details',
+            loc.transactionDetails,
             style: pw.TextStyle(
               fontSize: 13,
               fontWeight: pw.FontWeight.bold,
@@ -193,7 +224,7 @@ class StatementService {
               // Header
               pw.TableRow(
                 decoration: const pw.BoxDecoration(color: primaryColor),
-                children: ['Date', 'Store', 'Category', 'Amount']
+                children: [loc.date, loc.store, loc.category, loc.amount]
                     .map((h) => pw.Padding(
                           padding: const pw.EdgeInsets.symmetric(
                               horizontal: 8, vertical: 7),
@@ -217,7 +248,7 @@ class StatementService {
                   decoration:
                       pw.BoxDecoration(color: i.isEven ? rowEven : rowOdd),
                   children: [
-                    _cell(DateFormat('dd MMM').format(r.date), textDark),
+                    _cell(DateFormat('dd MMM', loc.localeName).format(r.date), textDark),
                     _cell(r.storeName, textDark),
                     _cell(r.category, textMuted),
                     _cell(fmt(r.totalAmount), textDark,
@@ -233,7 +264,7 @@ class StatementService {
                 children: [
                   _cell('', textDark),
                   _cell('', textDark),
-                  _cell('TOTAL', primaryColor, bold: true),
+                  _cell(loc.total, primaryColor, bold: true),
                   _cell(fmt(totalAmount), primaryColor,
                       bold: true, align: pw.TextAlign.right),
                 ],
@@ -247,8 +278,8 @@ class StatementService {
           pw.Divider(color: dividerColor),
           pw.SizedBox(height: 6),
           pw.Text(
-            'Generated by Digital Receipt Wallet  |  '
-            '${DateFormat('dd MMMM yyyy HH:mm').format(DateTime.now())}',
+            '${loc.generatedBy} | ${DateFormat('dd MMMM yyyy HH:mm', 
+                  loc.localeName).format(DateTime.now())}',
             style: const pw.TextStyle(fontSize: 8, color: textMuted),
           ),
         ],
@@ -260,7 +291,7 @@ class StatementService {
     // sharePdf yerine layoutPdf kullaniyoruz — platform channel hatasini onler
     await Printing.layoutPdf(
       onLayout: (_) async => bytes,
-      name: 'statement_${DateFormat('yyyy_MM').format(month)}.pdf',
+      name: '${loc.statementFileName}_${DateFormat('yyyy_MM').format(month)}.pdf',
     );
   }
 

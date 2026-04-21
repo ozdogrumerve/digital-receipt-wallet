@@ -692,4 +692,39 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get frequencyYearly => 'Yıllık';
+
+  @override
+  String get monthlyStatement => 'Aylık Ekstre';
+
+  @override
+  String get totalSpending => 'Toplam Harcama';
+
+  @override
+  String get transactionCount => 'İşlem Sayısı';
+
+  @override
+  String get budgetUsed => 'Bütçe Kullanımı';
+
+  @override
+  String get categorySummary => 'Kategori Özeti';
+
+  @override
+  String get transactionDetails => 'İşlem Detayları';
+
+  @override
+  String get store => 'Mağaza';
+
+  @override
+  String get amount => 'Tutar';
+
+  @override
+  String get generatedBy => 'Digital Receipt Wallet tarafından oluşturuldu';
+
+  @override
+  String get statementFileName => 'ekstre';
+
+  @override
+  String budgetUsedPercent(String value) {
+    return '%$value';
+  }
 }

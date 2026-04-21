@@ -1119,6 +1119,64 @@
   "frequencyYearly": "Yıllık",
   "@frequencyYearly": {
     "description": "Yinelenen işlemler için sıklık seçeneği"
-  }
+  },
 
+  "monthlyStatement": "Aylık Ekstre",
+  "@monthlyStatement": {
+    "description": "PDF raporu başlığı"
+  },
+
+  "totalSpending": "Toplam Harcama",
+  "@totalSpending": {
+    "description": "PDF raporunda toplam harcama etiketi"
+  },
+
+  "transactionCount": "İşlem Sayısı",
+  "@transactionCount": {
+    "description": "PDF raporunda işlem sayısı etiketi"
+  },
+
+  "budgetUsed": "Bütçe Kullanımı",
+  "@budgetUsed": {
+    "description": "PDF raporunda bütçe kullanımı etiketi"
+  },
+
+  "categorySummary": "Kategori Özeti",
+  "@categorySummary": {
+    "description": "PDF raporunda kategori özeti bölümü başlığı"
+  },
+
+  "transactionDetails": "İşlem Detayları",
+  "@transactionDetails": {
+    "description": "PDF raporunda işlem detayları bölümü başlığı"
+  },
+  
+  "store": "Mağaza",
+  "@store": {
+    "description": "PDF raporunda işlem detayları tablosunda mağaza adı sütunu başlığı"
+  },
+
+  "amount": "Tutar",
+  "@amount": {
+    "description": "PDF raporunda işlem detayları tablosunda tutar sütunu başlığı"
+  },
+
+  "generatedBy": "Digital Receipt Wallet tarafından oluşturuldu",
+  "@generatedBy": {
+    "description": "PDF raporunda en altta gösterilen oluşturulma bilgisi"
+  },
+
+  "statementFileName": "ekstre",
+  "@statementFileName": {
+    "description": "PDF raporu için varsayılan dosya adı"
+  },
+
+  "budgetUsedPercent": "%{value}",
+  "@budgetUsedPercent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  }
 }
