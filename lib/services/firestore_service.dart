@@ -213,64 +213,94 @@ class FirestoreService {
     String? notificationTitle,
   }) async {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     final snapshot = await _recurringRef.get();
 
     for (final doc in snapshot.docs) {
       final r = RecurringModel.fromMap(doc.id, doc.data());
 
       if (r.nextDueDate == null) continue;
-      if (r.nextDueDate!.isAfter(now)) continue;
 
-      DateTime due = r.nextDueDate!;
+      final due = DateTime(
+        r.nextDueDate!.year,
+        r.nextDueDate!.month,
+        r.nextDueDate!.day,
+      );
 
-      // Paused ise sadece tarihi ilerlet, işlem ekleme
+      // Paused ise tarihi ilerlet ama işlem ekleme (orijinal davranış korundu)
       if (r.status != RecurringStatus.active) {
-        while (!due.isAfter(now)) {
-          due = r.computeNextDueDate(due);
+        if (!due.isAfter(today)) {
+          DateTime nextDue = due;
+          while (!nextDue.isAfter(today)) {
+            nextDue = r.computeNextDueDate(nextDue);
+          }
+          await _recurringRef.doc(r.id).update({
+            'nextDueDate': Timestamp.fromDate(nextDue),
+          });
         }
-        await _recurringRef.doc(r.id).update({
-          'nextDueDate': Timestamp.fromDate(due),
-        });
-        continue; // işlem ekleme, sadece tarih güncelle
+        continue;
       }
 
-      bool anyAdded = false;
+      // Sadece tam bugün olan active işlemleri işle
+      if (due != today) continue;
 
-      while (!due.isAfter(now)) {
-        final receipt = ReceiptModel(
-          id: '',
-          storeName: r.storeName,
-          storeNameLower: r.storeNameLower,
-          totalAmount: r.amount,
-          date: DateTime(due.year, due.month, due.day, 
-            DateTime.now().hour, DateTime.now().minute, DateTime.now().second),
-          category: r.category,
-          createdAt: due,
-          source: 'recurring',
+      // Bugün için zaten işlenmiş mi?
+      final startOfDay = Timestamp.fromDate(today);
+      final endOfDay = Timestamp.fromDate(today.add(const Duration(days: 1)));
+
+      bool alreadyProcessed = false;
+      try {
+        final existing = await _transactionsRef
+            .where('source', isEqualTo: 'recurring')
+            .where('date', isGreaterThanOrEqualTo: startOfDay)
+            .where('date', isLessThan: endOfDay)
+            .get();
+
+        alreadyProcessed = existing.docs.any(
+          (d) => d.data()['storeNameLower'] == r.storeNameLower,
         );
-        await addTransaction(receipt: receipt, products: []);
-        anyAdded = true;
-
-        if (anyAdded && notify) {
-          await NotificationService.showRecurringNotification(
-            storeName: r.storeName,
-            amount: r.amount,
-            category: r.category,
-            title: notificationTitle ?? 'Recurring Transaction',
-            body: buildBody?.call(
-              r.storeName,
-              '₺${r.amount.toStringAsFixed(2)}',
-              r.category,
-            ),
-          );
-        }
-
-        due = r.computeNextDueDate(due);
+      } catch (e) {
+        // Sorgu hata verirse işleme devam et
+        alreadyProcessed = false;
       }
 
+      if (alreadyProcessed) continue;
+
+      // İşlemi ekle
+      final receipt = ReceiptModel(
+        id: '',
+        storeName: r.storeName,
+        storeNameLower: r.storeNameLower,
+        totalAmount: r.amount,
+        date: DateTime(today.year, today.month, today.day,
+            now.hour, now.minute, now.second),
+        category: r.category,
+        createdAt: now,
+        source: 'recurring',
+      );
+
+      await addTransaction(receipt: receipt, products: []);
+
+      // Sonraki tarihi güncelle
       await _recurringRef.doc(r.id).update({
-        'nextDueDate': Timestamp.fromDate(due),
+        'nextDueDate': Timestamp.fromDate(r.computeNextDueDate(due)),
       });
+
+      // Bildirim — bu recurring için bir kez
+      if (notify) {
+        await NotificationService.showRecurringNotification(
+          storeName: r.storeName,
+          amount: r.amount,
+          category: r.category,
+          title: notificationTitle ?? 'Recurring Transaction',
+          body: buildBody?.call(
+            r.storeName,
+            '₺${r.amount.toStringAsFixed(2)}',
+            r.category,
+          ),
+        );
+      }
     }
   }
   

@@ -115,7 +115,12 @@ class _RecurringScreenState extends State<RecurringScreen> {
           }
         },
       ),
-    ).then((_) => _processRecurring());
+    ).then((_) {
+      // Edit ise processRecurring çağırma!
+      if (existing == null) {
+        _processRecurring();
+      }
+    });
   }
 
   void _confirmDelete(RecurringModel r) {
@@ -548,7 +553,11 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
       frequency: _frequency,
       status: e?.status ?? RecurringStatus.active,
       startDate: _startDate,
-      nextDueDate: _startDate,
+      nextDueDate: e == null
+        ? _startDate  // yeni kayıt → startDate'den başla
+        : _startDate != e.startDate
+            ? _startDate  // startDate değişti → yeni startDate'den başla
+            : e.nextDueDate,  // startDate değişmedi → mevcut nextDueDate'i koru
       note: _noteCtrl.text.trim(),
       createdAt: e?.createdAt ?? now,
     );
@@ -670,7 +679,7 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
                 final picked = await showDatePicker(
                   context: context,
                   initialDate: _startDate,
-                  firstDate: DateTime(2020),
+                  firstDate: DateTime.now(),
                   lastDate: DateTime(2100),
                 );
                 if (picked != null) setState(() => _startDate = picked);
