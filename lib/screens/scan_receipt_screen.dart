@@ -90,6 +90,13 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
 
     setState(() {
       _image = imageFile;
+      _products = [];
+      _storeController.clear();
+      _totalController.text = "0.00";
+      _selectedDate = DateTime.now();
+      _category = "Food";
+      _isCategoryFromAI = false;
+      _scanSuccessful = false;
     });
 
     await _scanReceipt(imageFile);

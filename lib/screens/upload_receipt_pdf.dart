@@ -243,6 +243,13 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
     setState(() {
       _image = imageFile;
+      _products = [];
+      _storeController.clear();
+      _totalController.text = "0.00";
+      _selectedDate = DateTime.now();
+      _category = "Food";
+      _isCategoryFromAI = false;
+      _scanSuccessful = false;
     });
 
     await _scanReceipt(imageFile);
@@ -258,6 +265,13 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
     setState(() {
       _pdf = File(result.files.single.path!);
+      _transactions = [];
+      _selectedCategories.clear();
+      _pdfTotalIn = 0;
+      _pdfTotalOut = 0;
+      _pdfBanka = "";
+      _pdfDonem = "";
+      _scanSuccessful = false;
     });
   }
 
