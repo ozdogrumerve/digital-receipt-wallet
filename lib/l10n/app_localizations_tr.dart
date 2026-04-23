@@ -54,6 +54,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tapToEditSwipeToDelete => 'Düzenlemek için dokun  •  Silmek için sola kaydır';
 
   @override
+  String get swipeToDelete => 'Silmek için sola kaydır';
+
+  @override
   String get noItemsYet => 'Henüz ürün yok';
 
   @override

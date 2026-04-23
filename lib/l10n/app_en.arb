@@ -76,6 +76,11 @@
     "description": "Helper text below purchase list header & detected products header"
   },
 
+  "swipeToDelete": "Swipe left to delete",
+  "@swipeToDelete": {
+    "description": "Helper text for swipe-to-delete functionality"
+  },
+
   "noItemsYet": "No items yet",
   "@noItemsYet": {
     "description": "Empty state text when no products added yet"

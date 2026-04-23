@@ -54,6 +54,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapToEditSwipeToDelete => 'Tap item to edit  •  Swipe left to delete';
 
   @override
+  String get swipeToDelete => 'Swipe left to delete';
+
+  @override
   String get noItemsYet => 'No items yet';
 
   @override

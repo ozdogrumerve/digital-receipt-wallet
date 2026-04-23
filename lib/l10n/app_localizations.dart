@@ -185,6 +185,12 @@ abstract class AppLocalizations {
   /// **'Tap item to edit  •  Swipe left to delete'**
   String get tapToEditSwipeToDelete;
 
+  /// Helper text for swipe-to-delete functionality
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left to delete'**
+  String get swipeToDelete;
+
   /// Empty state text when no products added yet
   ///
   /// In en, this message translates to:

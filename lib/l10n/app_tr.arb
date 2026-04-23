@@ -76,6 +76,11 @@
     "description": "Alışveriş listesi altındaki ve ürünler listelendiğinde yardımcı metin"
   },
 
+  "swipeToDelete": "Silmek için sola kaydır",
+  "@swipeToDelete": {
+    "description": "Sola kaydırarak silme işlevi için yardımcı metin"
+  },
+
   "noItemsYet": "Henüz ürün yok",
   "@noItemsYet": {
     "description": "Henüz ürün eklenmediğinde gösterilen boş durum metni"

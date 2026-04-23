@@ -933,7 +933,9 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
             Row(
               children: [
                 Text(loc.transactions, style: theme.textTheme.titleMedium),
+
                 const SizedBox(width: 8),
+
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -951,6 +953,15 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.onSurface.withAlpha(0x80),
                     ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                Text(
+                  loc.swipeToDelete,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
                   ),
                 ),
               ],
