@@ -959,7 +959,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       ),
                     ),
                   ),
-                  ...entry.value.asMap().entries.map((e) {
+                  ...entry.value.where((tx) => tx.amount < 0).toList().asMap().
+                  entries.map((e){
                     final tx = e.value;
                     final isOut = tx.amount < 0;
 
