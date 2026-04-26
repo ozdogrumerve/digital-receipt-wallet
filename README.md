@@ -1,4 +1,6 @@
-<div align="center">
+<table>
+  <tr>
+    <td>
 
 <pre>
 ██████╗ ██╗ ██████╗ ██╗████████╗ █████╗ ██╗         
@@ -23,9 +25,15 @@
  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝   ╚═╝
 </pre>
 
-<p align="center">
-  <img src="assets/gif/drw.gif" height="400"/>
-</p>
+    </td>
+    <td>
+      <img src="assets/gif/drw.gif" height="300"/>
+    </td>
+  </tr>
+</table>
+
+<div align="center">
+
  
 ### *All your spending. One place. Finally.*
 
