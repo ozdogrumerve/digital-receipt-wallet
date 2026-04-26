@@ -22,6 +22,8 @@
 ╚███╔███╔╝██║  ██║███████╗███████╗███████╗   ██║   
  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝   ╚═╝
 </pre>
+
+![Demo](assets/gif/drw.gif)
  
 ### *All your spending. One place. Finally.*
 
