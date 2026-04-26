@@ -204,7 +204,25 @@ class FirestoreService {
     final newStatus = model.status == RecurringStatus.active
         ? RecurringStatus.paused
         : RecurringStatus.active;
-    await _recurringRef.doc(model.id).update({'status': newStatus.name});
+
+    final Map<String, dynamic> update = {'status': newStatus.name};
+
+    // Resume olunca ve nextDueDate geçmişteyse bugüne çek
+    if (newStatus == RecurringStatus.active && model.nextDueDate != null) {
+      final today = DateTime.now();
+      final todayClean = DateTime(today.year, today.month, today.day);
+      final due = DateTime(
+        model.nextDueDate!.year,
+        model.nextDueDate!.month,
+        model.nextDueDate!.day,
+      );
+
+      if (due.isBefore(todayClean)) {
+        update['nextDueDate'] = Timestamp.fromDate(todayClean);
+      }
+    }
+
+    await _recurringRef.doc(model.id).update(update);
   }
 
   Future<void> processRecurring({
@@ -242,49 +260,67 @@ class FirestoreService {
         continue;
       }
 
-      // Sadece tam bugün olan active işlemleri işle
-      if (due != today) continue;
+      // due bugün veya geçmişte mi?
+      if (due.isAfter(today)) continue;
 
-      // Bugün için zaten işlenmiş mi?
-      final startOfDay = Timestamp.fromDate(today);
-      final endOfDay = Timestamp.fromDate(today.add(const Duration(days: 1)));
+      DateTime current = due;
 
-      bool alreadyProcessed = false;
-      try {
-        final existing = await _transactionsRef
-            .where('source', isEqualTo: 'recurring')
-            .where('date', isGreaterThanOrEqualTo: startOfDay)
-            .where('date', isLessThan: endOfDay)
-            .get();
+      while (!current.isAfter(today)) {
+        final currentDay = DateTime(current.year, current.month, current.day);
+        final startOfDay = Timestamp.fromDate(currentDay);
+        final endOfDay = Timestamp.fromDate(currentDay.add(const Duration(days: 1)));
 
-        alreadyProcessed = existing.docs.any(
-          (d) => d.data()['storeNameLower'] == r.storeNameLower,
-        );
-      } catch (e) {
-        // Sorgu hata verirse işleme devam et
-        alreadyProcessed = false;
+        bool alreadyProcessed = false;
+        try {
+          final existing = await _transactionsRef
+              .where('source', isEqualTo: 'recurring')
+              .where('date', isGreaterThanOrEqualTo: startOfDay)
+              .where('date', isLessThan: endOfDay)
+              .get();
+
+          alreadyProcessed = existing.docs.any(
+            (d) => d.data()['storeNameLower'] == r.storeNameLower,
+          );
+        } catch (e) {
+          alreadyProcessed = false;
+        }
+
+        if (!alreadyProcessed) {
+          final receipt = ReceiptModel(
+            id: '',
+            storeName: r.storeName,
+            storeNameLower: r.storeNameLower,
+            totalAmount: r.amount,
+            date: DateTime(currentDay.year, currentDay.month, currentDay.day,
+                now.hour, now.minute, now.second),
+            category: r.category,
+            createdAt: now,
+            source: 'recurring',
+          );
+
+          await addTransaction(receipt: receipt, products: []);
+
+          if (notify) {
+            await NotificationService.showRecurringNotification(
+              storeName: r.storeName,
+              amount: r.amount,
+              category: r.category,
+              title: notificationTitle ?? 'Recurring Transaction',
+              body: buildBody?.call(
+                r.storeName,
+                '₺${r.amount.toStringAsFixed(2)}',
+                r.category,
+              ),
+            );
+          }
+        }
+
+        current = r.computeNextDueDate(current);
       }
 
-      if (alreadyProcessed) continue;
-
-      // İşlemi ekle
-      final receipt = ReceiptModel(
-        id: '',
-        storeName: r.storeName,
-        storeNameLower: r.storeNameLower,
-        totalAmount: r.amount,
-        date: DateTime(today.year, today.month, today.day,
-            now.hour, now.minute, now.second),
-        category: r.category,
-        createdAt: now,
-        source: 'recurring',
-      );
-
-      await addTransaction(receipt: receipt, products: []);
-
-      // Sonraki tarihi güncelle
+      // Döngü bitti, nextDueDate'i güncelle
       await _recurringRef.doc(r.id).update({
-        'nextDueDate': Timestamp.fromDate(r.computeNextDueDate(due)),
+        'nextDueDate': Timestamp.fromDate(current),
       });
 
       // Bildirim — bu recurring için bir kez
