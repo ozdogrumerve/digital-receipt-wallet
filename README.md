@@ -24,7 +24,7 @@
 </pre>
 
 <p align="center">
-  <img src="assets/gif/drw.gif" width="500"/>
+  <img src="assets/gif/drw.gif" height="400"/>
 </p>
  
 ### *All your spending. One place. Finally.*
