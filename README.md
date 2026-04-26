@@ -23,7 +23,9 @@
  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝   ╚═╝
 </pre>
 
-![Demo](assets/gif/drw.gif)
+<p align="center">
+  <img src="assets/gif/drw.gif" width="500"/>
+</p>
  
 ### *All your spending. One place. Finally.*
 
