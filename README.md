@@ -24,6 +24,9 @@
 </pre>
  
 ### *All your spending. One place. Finally.*
+
+🌐 **Live Demo:** https://digital-receipt-wallet-55880.web.app  
+⚠️ *Web demo supports core features. Some mobile-only features (PDF upload, AI suggestions) may be limited.*
  
 <br>
 
