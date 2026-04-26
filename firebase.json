@@ -1,0 +1,36 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "digital-receipt-wallet-55880",
+          "appId": "1:234104413984:android:d21acc2fbae708d25fc145",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "digital-receipt-wallet-55880",
+          "configurations": {
+            "android": "1:234104413984:android:d21acc2fbae708d25fc145",
+            "web": "1:234104413984:web:677924b820db506c5fc145"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
