@@ -8,6 +8,8 @@ import 'package:digital_receipt_wallet/screens/settings_screen.dart';
 import 'package:digital_receipt_wallet/screens/add_expense_screen.dart';
 import 'package:digital_receipt_wallet/screens/scan_receipt_screen.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:digital_receipt_wallet/services/firestore_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,6 +40,13 @@ class _HomePageState extends State<HomePage>
       parent: _controller,
       curve: Curves.easeOut,
     );
+
+    // Hesap değiştirince de tetiklensin
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final prefs = await SharedPreferences.getInstance();
+      final notifEnabled = prefs.getBool('notifications_enabled') ?? true;
+      await FirestoreService().processRecurring(notify: notifEnabled);
+    });
   }
 
   void toggleFab() {
