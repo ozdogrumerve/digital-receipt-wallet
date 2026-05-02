@@ -24,21 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _init() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      final prefs = await SharedPreferences.getInstance();
-      final notifEnabled = prefs.getBool('notifications_enabled') ?? true;
-
-      if (!mounted) return;
-      final loc = AppLocalizations.of(context)!;
-
-      await FirestoreService().processRecurring(
-        notify: notifEnabled,
-        notificationTitle: loc.notificationRecurringTitle,
-        buildBody: (store, amt, cat) =>
-            loc.notificationRecurringBody(store, amt, cat),
-      );
-    }
-
     // 2 saniyelik bekleme hala çalışsın
     await Future.delayed(const Duration(seconds: 2));
 

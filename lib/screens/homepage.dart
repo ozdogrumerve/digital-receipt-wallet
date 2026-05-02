@@ -45,7 +45,13 @@ class _HomePageState extends State<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final prefs = await SharedPreferences.getInstance();
       final notifEnabled = prefs.getBool('notifications_enabled') ?? true;
-      await FirestoreService().processRecurring(notify: notifEnabled);
+      final loc = AppLocalizations.of(context)!;
+      await FirestoreService().processRecurring(
+        notify: notifEnabled,
+        notificationTitle: loc.notificationRecurringTitle,
+        buildBody: (store, amt, cat) =>
+            loc.notificationRecurringBody(store, amt, cat),
+      );
     });
   }
 
