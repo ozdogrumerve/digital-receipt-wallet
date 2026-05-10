@@ -322,21 +322,6 @@ class FirestoreService {
       await _recurringRef.doc(r.id).update({
         'nextDueDate': Timestamp.fromDate(current),
       });
-
-      // Bildirim — bu recurring için bir kez
-      if (notify) {
-        await NotificationService.showRecurringNotification(
-          storeName: r.storeName,
-          amount: r.amount,
-          category: r.category,
-          title: notificationTitle ?? 'Recurring Transaction',
-          body: buildBody?.call(
-            r.storeName,
-            '₺${r.amount.toStringAsFixed(2)}',
-            r.category,
-          ),
-        );
-      }
     }
   }
   
