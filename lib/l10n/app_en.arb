@@ -612,6 +612,11 @@
     "description": "Button to disable/remove budget alert"
   },
 
+  "current": "Current",
+  "@current": {
+    "description": "Text for the 'Current' option in budget setting selection for current budget"
+  },
+
   "save": "Save",
   "@save": {
     "description": "General save button text"

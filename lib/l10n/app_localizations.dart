@@ -845,6 +845,12 @@ abstract class AppLocalizations {
   /// **'Cancel Alert'**
   String get cancelAlert;
 
+  /// Text for the 'Current' option in budget setting selection for current budget
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get current;
+
   /// General save button text
   ///
   /// In en, this message translates to:

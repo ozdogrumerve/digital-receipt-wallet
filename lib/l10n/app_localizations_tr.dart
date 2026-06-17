@@ -388,6 +388,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get cancelAlert => 'Alarmı Kaldır';
 
   @override
+  String get current => 'Mevcut';
+
+  @override
   String get save => 'Kaydet';
 
   @override

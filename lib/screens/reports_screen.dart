@@ -215,7 +215,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
                       ),
-                      child: const Text("Kaydet",
+                      child: Text(loc.save,
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)),
                     ),

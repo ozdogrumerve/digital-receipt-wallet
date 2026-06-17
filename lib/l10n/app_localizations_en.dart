@@ -388,6 +388,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelAlert => 'Cancel Alert';
 
   @override
+  String get current => 'Current';
+
+  @override
   String get save => 'Save';
 
   @override

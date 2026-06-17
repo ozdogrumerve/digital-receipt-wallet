@@ -612,6 +612,11 @@
     "description": "Alarmı iptal etme butonu"
   },
 
+  "current": "Mevcut",
+  "@current": {
+    "description": "Bütçe ayarlama seçiminde 'Mevcut' seçeneği için metin"
+  },
+
   "save": "Kaydet",
   "@save": {
     "description": "Genel kaydet butonu metni"
