@@ -35,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen>
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
 
-    _receiptOffset = Tween<double>(begin: -28, end: 8).animate(
+    _receiptOffset = Tween<double>(begin: -10, end: 25).animate(
       CurvedAnimation(parent: _walletController, curve: Curves.easeInOut),
     );
   }
@@ -209,54 +209,103 @@ class _SignUpScreenState extends State<SignUpScreen>
             child: Column(
               children: [
                 SizedBox(
-                  height: 90,
+                  width: 90,
+                  height: 80,
                   child: Stack(
-                    alignment: Alignment.center,
                     clipBehavior: Clip.none,
                     children: [
-                      // Fiş (hareketli, cüzdanın arkasından girip çıkıyor)
+                      // Arka gövde (cüzdanın içi/arkası)
+                      Positioned(
+                        left: 10,
+                        top: 15,
+                        child: Container(
+                          width: 70,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withAlpha(180),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      // Fiş (arka gövde ile ön kapak arasında hareket eder)
                       AnimatedBuilder(
                         animation: _receiptOffset,
                         builder: (context, child) {
                           return Positioned(
+                            left: 28, // width büyüdüğü için ortalamak adına 32'den 28'e çektim
                             top: _receiptOffset.value,
                             child: child!,
                           );
                         },
-                        child: Container(
-                          width: 30,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(4),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withAlpha(30),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 5),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(
-                                4,
-                                (_) => Container(
-                                  height: 2,
-                                  color: theme.colorScheme.onSurface.withAlpha(60),
+                        child: ClipPath(
+                          clipper: _ReceiptClipper(teeth: 5),
+                          child: Container(
+                            width: 34, // 26'dan büyüttük
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surface,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withAlpha(40),
+                                  blurRadius: 3,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 12, left: 4, right: 4, bottom: 12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: List.generate(
+                                  4,
+                                  (_) => Container(
+                                    height: 2,
+                                    color: theme.colorScheme.onSurface.withAlpha(60),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      // Cüzdan ikonu (sabit, önde)
-                      Icon(
-                        Icons.account_balance_wallet,
-                        size: 64,
-                        color: theme.colorScheme.primary,
+                      // Ön kapak (fişi gerçekten örten opak katman — arkası asla sızmaz)
+                      Positioned(
+                        left: 8,
+                        top: 46,
+                        child: Container(
+                          width: 74,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(50),
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Container(
+                                width: 18,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.onPrimary.withAlpha(80),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -384,4 +433,41 @@ class _SignUpScreenState extends State<SignUpScreen>
       ),
     );
   }
+}
+
+class _ReceiptClipper extends CustomClipper<Path> {
+  final int teeth;
+  _ReceiptClipper({this.teeth = 5});
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final toothWidth = size.width / teeth;
+
+    // Üst kenar (tırtıklı, soldan sağa)
+    path.moveTo(0, 6);
+    for (int i = 0; i < teeth; i++) {
+      final xMid = i * toothWidth + toothWidth / 2;
+      final x1 = (i + 1) * toothWidth;
+      path.lineTo(xMid, 0);
+      path.lineTo(x1, 6);
+    }
+
+    path.lineTo(size.width, size.height - 6);
+
+    // Alt kenar (tırtıklı, sağdan sola)
+    for (int i = teeth; i >= 1; i--) {
+      final x1 = i * toothWidth;
+      final xMid = x1 - toothWidth / 2;
+      path.lineTo(x1, size.height - 6);
+      path.lineTo(xMid, size.height);
+    }
+
+    path.lineTo(0, size.height - 6);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
