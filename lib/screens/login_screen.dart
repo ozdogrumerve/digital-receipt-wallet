@@ -183,6 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Image.asset(
+                  'assets/icon/drwlogo.jpg',
+                  height: 100,
+                ),
+                const SizedBox(height: 24),
                 Text(loc.welcomeBack,
                     style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 12),
