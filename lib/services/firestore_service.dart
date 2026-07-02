@@ -68,6 +68,38 @@ class FirestoreService {
   }
 
   /// =====================================================
+  /// ACCOUNT DELETION (SOFT DELETE)
+  /// =====================================================
+
+  Future<void> softDeleteAccount() async {
+    await _firestore.collection('users').doc(_uid).set(
+      {
+        'isDeleted': true,
+        'deletedAt': Timestamp.fromDate(DateTime.now()),
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  Future<void> reactivateAccount(String uid) async {
+    await _firestore.collection('users').doc(uid).set(
+      {
+        'isDeleted': false,
+        'deletedAt': null,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  /// uid parametresi alıyor çünkü login sırasında henüz
+  /// _uid getter'ının bağlı olduğu oturum tam kurulmamış olabilir
+  Future<UserModel?> getUserById(String uid) async {
+    final doc = await _firestore.collection('users').doc(uid).get();
+    if (!doc.exists) return null;
+    return UserModel.fromMap(doc.id, doc.data()!);
+  }
+
+  /// =====================================================
   /// TRANSACTIONS (MAIN DATA STRUCTURE)
   /// =====================================================
 

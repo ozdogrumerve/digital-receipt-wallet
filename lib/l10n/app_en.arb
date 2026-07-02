@@ -1362,6 +1362,41 @@
   "couldNotOpenLink": "Could not open link",
   "@couldNotOpenLink": {
     "description": "Error message shown when a URL fails to open"
+  },
+
+  "deleteAccount": "Delete Account",
+  "@deleteAccount": {
+    "description": "Text for the delete account button"
+  },
+
+  "deleteAccountTitle": "Are you sure you want to delete your account?",
+  "@deleteAccountTitle": {
+    "description": "Title for the delete account confirmation dialog"
+  },
+
+  "deleteAccountWarning": "Your account will remain inactive for 30 days. During this period, you can sign in again to reactivate your account. After 30 days, your account and all data will be permanently deleted.",
+  "@deleteAccountWarning": {
+    "description": "Warning message for the delete account confirmation dialog"
+  },
+
+  "deleteAccountConfirm": "Yes, Delete Account",
+  "@deleteAccountConfirm": {
+    "description": "Text for the delete account confirmation button"
+  },
+
+  "reactivateAccountTitle": "Your account is inactive",
+  "@reactivateAccountTitle": {
+    "description": "Title for the account reactivation dialog"
+  },
+
+  "reactivateAccountMessage": "This account is marked for deletion. Would you like to reactivate it?",
+  "@reactivateAccountMessage": {
+    "description": "Message for the account reactivation dialog"
+  },
+
+  "reactivateAccountConfirm": "Reactivate Account",
+  "@reactivateAccountConfirm": {
+    "description": "Text for the account reactivation button"
   }
 
 }

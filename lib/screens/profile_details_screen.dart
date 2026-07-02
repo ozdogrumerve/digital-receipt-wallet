@@ -80,6 +80,53 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     }
   }
 
+  Future<void> _confirmDeleteAccount() async {
+    final loc = AppLocalizations.of(context)!;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(loc.deleteAccountTitle),
+        content: Text(loc.deleteAccountWarning),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(loc.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(loc.deleteAccountConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await _firestoreService.softDeleteAccount();
+      await FirebaseAuth.instance.signOut();
+
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      debugPrint("DELETE ACCOUNT ERROR: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(loc.errorUnknown),
+          backgroundColor: Colors.red.shade700,
+        ),
+      );
+    }
+  }
+
   // Kullanıcı email değişikliği yaptıktan sonra uygulamaya geri döndüğünde
   // email doğrulamasını kontrol eden fonksiyon
   Future<void> _checkEmailVerification() async {
@@ -457,6 +504,25 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
                     : Text(loc.saveChanges,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 40), 
+
+            /// DELETE ACCOUNT
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.delete_forever_outlined, color: Colors.red),
+                label: Text(
+                  loc.deleteAccount,
+                  style: const TextStyle(color: Colors.red),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.red),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16),
+                ),
+                onPressed: _confirmDeleteAccount,
               ),
             ),
           ],

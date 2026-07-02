@@ -836,4 +836,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Não foi possível abrir o link';
+
+  @override
+  String get deleteAccount => 'Excluir Conta';
+
+  @override
+  String get deleteAccountTitle => 'Tem certeza de que deseja excluir sua conta?';
+
+  @override
+  String get deleteAccountWarning => 'Sua conta ficará inativa por 30 dias. Durante esse período, você pode fazer login novamente para reativar sua conta. Após 30 dias, sua conta e todos os dados serão excluídos permanentemente.';
+
+  @override
+  String get deleteAccountConfirm => 'Sim, Excluir';
+
+  @override
+  String get reactivateAccountTitle => 'Sua conta está inativa';
+
+  @override
+  String get reactivateAccountMessage => 'Sua conta está inativa. Deseja reativá-la?';
+
+  @override
+  String get reactivateAccountConfirm => 'Reativar Conta';
 }

@@ -1360,5 +1360,40 @@
   "couldNotOpenLink": "No se pudo abrir el enlace",
   "@couldNotOpenLink": {
     "description": "Error message shown when a URL fails to open"
+  },
+
+  "deleteAccount": "Eliminar Cuenta",
+  "@deleteAccount": {
+    "description": "Texto del botón para eliminar cuenta"
+  },
+
+  "deleteAccountTitle": "¿Estás seguro de que quieres eliminar tu cuenta?",
+  "@deleteAccountTitle": {
+    "description": "Título del diálogo de confirmación para eliminar cuenta"
+  },
+
+  "deleteAccountWarning": "Tu cuenta permanecerá inactiva durante 30 días. Durante este período, puedes iniciar sesión nuevamente para reactivar tu cuenta. Después de 30 días, tu cuenta y todos los datos serán eliminados permanentemente.",
+  "@deleteAccountWarning": {
+    "description": "Mensaje de advertencia para el diálogo de confirmación para eliminar cuenta"
+  },
+
+  "deleteAccountConfirm": "Sí, Eliminar",
+  "@deleteAccountConfirm": {
+    "description": "Texto del botón de confirmación para eliminar cuenta"
+  },
+
+  "reactivateAccountTitle": "Tu cuenta está inactiva",
+  "@reactivateAccountTitle": {
+    "description": "Título del diálogo para reactivar cuenta"
+  },
+
+  "reactivateAccountMessage": "Esta cuenta está marcada para eliminación. ¿Quieres reactivarla?",
+  "@reactivateAccountMessage": {
+    "description": "Mensaje para el diálogo de reactivación de cuenta"
+  },
+
+  "reactivateAccountConfirm": "Reactivar Cuenta",
+  "@reactivateAccountConfirm": {
+    "description": "Texto del botón para reactivar cuenta"
   }
 }

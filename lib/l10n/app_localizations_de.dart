@@ -836,4 +836,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Link konnte nicht geöffnet werden';
+
+  @override
+  String get deleteAccount => 'Konto löschen';
+
+  @override
+  String get deleteAccountTitle => 'Bist du sicher, dass du dein Konto löschen möchtest?';
+
+  @override
+  String get deleteAccountWarning => 'Dein Konto bleibt 30 Tage lang inaktiv. Während dieser Zeit kannst du dich erneut anmelden, um dein Konto zu reaktivieren. Nach 30 Tagen werden dein Konto und alle Daten dauerhaft gelöscht.';
+
+  @override
+  String get deleteAccountConfirm => 'Ja, Konto löschen';
+
+  @override
+  String get reactivateAccountTitle => 'Dein Konto ist inaktiv';
+
+  @override
+  String get reactivateAccountMessage => 'Dein Konto ist zum Löschen markiert. Möchtest du es reaktivieren?';
+
+  @override
+  String get reactivateAccountConfirm => 'Konto reaktivieren';
 }

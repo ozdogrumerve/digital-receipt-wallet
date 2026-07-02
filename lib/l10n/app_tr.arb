@@ -1361,5 +1361,40 @@
   "couldNotOpenLink": "Bağlantı açılamadı",
   "@couldNotOpenLink": {
     "description": "Bir URL açılamadığında gösterilen hata mesajı"
+  },
+
+  "deleteAccount": "Hesabı Sil",
+  "@deleteAccount": {
+    "description": "Hesabı silme butonu metni"
+  },
+
+  "deleteAccountTitle": "Hesabını silmek istediğine emin misin?",
+  "@deleteAccountTitle": {
+    "description": "Hesabı silme onay diyaloğu başlığı"
+  },
+
+  "deleteAccountWarning": "Hesabın 30 gün boyunca pasif kalacak. Bu süre içinde tekrar giriş yaparsan hesabını geri açabilirsin. 30 gün sonra hesabın ve tüm verilerin kalıcı olarak silinir.",
+  "@deleteAccountWarning": {
+    "description": "Hesabı silme onay diyaloğu uyarı metni"
+  },
+
+  "deleteAccountConfirm": "Evet, Sil",
+  "@deleteAccountConfirm": {
+    "description": "Hesabı silme onay diyaloğu onay butonu metni"
+  },
+
+  "reactivateAccountTitle": "Hesabın pasif durumda",
+  "@reactivateAccountTitle": {
+    "description": "Hesabı silinmiş kullanıcıya gösterilen başlık"
+  },
+
+  "reactivateAccountMessage": "Bu hesap silinmek üzere işaretlenmiş. Hesabını geri açmak ister misin?",
+  "@reactivateAccountMessage": {
+    "description": "Hesabı silinmiş kullanıcıya gösterilen mesaj"
+  },
+
+  "reactivateAccountConfirm": "Hesabımı Geri Aç",
+  "@reactivateAccountConfirm": {
+    "description": "Hesabı silinmiş kullanıcıya gösterilen geri açma butonu metni"
   }
 }

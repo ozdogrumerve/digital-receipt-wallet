@@ -1360,6 +1360,41 @@
   "couldNotOpenLink": "Link konnte nicht geöffnet werden",
   "@couldNotOpenLink": {
     "description": "Fehler beim Öffnen von Links"
+  },
+
+  "deleteAccount": "Konto löschen",
+  "@deleteAccount": {
+    "description": "Text for the delete account button"
+  },
+
+  "deleteAccountTitle": "Bist du sicher, dass du dein Konto löschen möchtest?",
+  "@deleteAccountTitle": {
+    "description": "Title for the delete account confirmation dialog"
+  },
+
+  "deleteAccountWarning": "Dein Konto bleibt 30 Tage lang inaktiv. Während dieser Zeit kannst du dich erneut anmelden, um dein Konto zu reaktivieren. Nach 30 Tagen werden dein Konto und alle Daten dauerhaft gelöscht.",
+  "@deleteAccountWarning": {
+    "description": "Warning message for the delete account confirmation dialog"
+  },
+
+  "deleteAccountConfirm": "Ja, Konto löschen",
+  "@deleteAccountConfirm": {
+    "description": "Text for the delete account confirmation button"
+  },
+
+  "reactivateAccountTitle": "Dein Konto ist inaktiv",
+  "@reactivateAccountTitle": {
+    "description": "Title for the account reactivation dialog"
+  },
+
+  "reactivateAccountMessage": "Dein Konto ist zum Löschen markiert. Möchtest du es reaktivieren?",
+  "@reactivateAccountMessage": {
+    "description": "Message for the account reactivation dialog"
+  },
+
+  "reactivateAccountConfirm": "Konto reaktivieren",
+  "@reactivateAccountConfirm": {
+    "description": "Text for the account reactivation button"
   }
   
 }

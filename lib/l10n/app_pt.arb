@@ -1360,5 +1360,40 @@
   "couldNotOpenLink": "Não foi possível abrir o link",
   "@couldNotOpenLink": {
     "description": "Error when unable to open a link"
+  },
+
+  "deleteAccount": "Excluir Conta",
+  "@deleteAccount": {
+    "description": "Texto do botão para excluir conta"
+  },
+
+  "deleteAccountTitle": "Tem certeza de que deseja excluir sua conta?",
+  "@deleteAccountTitle": {
+    "description": "Título do diálogo de confirmação para excluir conta"
+  },
+
+  "deleteAccountWarning": "Sua conta ficará inativa por 30 dias. Durante esse período, você pode fazer login novamente para reativar sua conta. Após 30 dias, sua conta e todos os dados serão excluídos permanentemente.",
+  "@deleteAccountWarning": {
+    "description": "Aviso do diálogo de confirmação para excluir conta"
+  },
+
+  "deleteAccountConfirm": "Sim, Excluir",
+  "@deleteAccountConfirm": {
+    "description": "Texto do botão de confirmação para excluir conta"
+  },
+
+  "reactivateAccountTitle": "Sua conta está inativa",
+  "@reactivateAccountTitle": {
+    "description": "Título do diálogo para reativar conta"
+  },
+
+  "reactivateAccountMessage": "Sua conta está inativa. Deseja reativá-la?",
+  "@reactivateAccountMessage": {
+    "description": "Mensagem do diálogo para reativar conta"
+  },
+
+  "reactivateAccountConfirm": "Reativar Conta",
+  "@reactivateAccountConfirm": {
+    "description": "Texto do botão para reativar conta"
   }
 }   

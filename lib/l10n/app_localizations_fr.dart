@@ -836,4 +836,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Impossible d\'ouvrir le lien';
+
+  @override
+  String get deleteAccount => 'Supprimer le Compte';
+
+  @override
+  String get deleteAccountTitle => 'Êtes-vous sûr de vouloir supprimer votre compte?';
+
+  @override
+  String get deleteAccountWarning => 'Votre compte restera inactif pendant 30 jours. Pendant cette période, vous pouvez vous reconnecter pour réactiver votre compte. Après 30 jours, votre compte et toutes vos données seront définitivement supprimés.';
+
+  @override
+  String get deleteAccountConfirm => 'Oui, Supprimer mon Compte';
+
+  @override
+  String get reactivateAccountTitle => 'Réactiver le Compte';
+
+  @override
+  String get reactivateAccountMessage => 'Ce compte est marqué pour suppression. Souhaitez-vous le réactiver?';
+
+  @override
+  String get reactivateAccountConfirm => 'Réactiver le Compte';
 }

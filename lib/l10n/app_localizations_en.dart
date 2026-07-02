@@ -836,4 +836,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Could not open link';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountTitle => 'Are you sure you want to delete your account?';
+
+  @override
+  String get deleteAccountWarning => 'Your account will remain inactive for 30 days. During this period, you can sign in again to reactivate your account. After 30 days, your account and all data will be permanently deleted.';
+
+  @override
+  String get deleteAccountConfirm => 'Yes, Delete Account';
+
+  @override
+  String get reactivateAccountTitle => 'Your account is inactive';
+
+  @override
+  String get reactivateAccountMessage => 'This account is marked for deletion. Would you like to reactivate it?';
+
+  @override
+  String get reactivateAccountConfirm => 'Reactivate Account';
 }

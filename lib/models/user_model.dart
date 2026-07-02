@@ -7,6 +7,8 @@ class UserModel {
   final String? photo;
   final double monthlyBudget;
   final DateTime createdAt;
+  final bool isDeleted;
+  final DateTime? deletedAt;
 
   UserModel({
     required this.uid,
@@ -15,6 +17,8 @@ class UserModel {
     this.photo,
     required this.monthlyBudget,
     required this.createdAt,
+    this.isDeleted = false,
+    this.deletedAt,
   });
 
   factory UserModel.fromMap(String uid, Map<String, dynamic> map) {
@@ -25,6 +29,10 @@ class UserModel {
       photo: map['photo'],
       monthlyBudget: (map['monthlyBudget'] ?? 0).toDouble(),
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      isDeleted: map['isDeleted'] ?? false,
+      deletedAt: map['deletedAt'] != null
+          ? (map['deletedAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -35,6 +43,8 @@ class UserModel {
       'photo': photo,
       'monthlyBudget': monthlyBudget,
       'createdAt': Timestamp.fromDate(createdAt),
+      'isDeleted': isDeleted,
+      'deletedAt': deletedAt != null ? Timestamp.fromDate(deletedAt!) : null,
     };
   }
 }

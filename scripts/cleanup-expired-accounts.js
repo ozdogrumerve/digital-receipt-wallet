@@ -1,6 +1,5 @@
 const admin = require("firebase-admin");
 
-// GitHub Actions'tan env variable olarak gelecek
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
@@ -13,19 +12,28 @@ const auth = admin.auth();
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 async function deleteUserData(uid) {
-  // Alt koleksiyonları sil (örn. receipts)
-  const receiptsSnap = await db
-    .collection("users")
-    .doc(uid)
-    .collection("receipts")
-    .get();
+  const userRef = db.collection("users").doc(uid);
 
-  const batch = db.batch();
-  receiptsSnap.docs.forEach((doc) => batch.delete(doc.ref));
-  await batch.commit();
+  // transactions + her transaction'ın altındaki products
+  const transactionsSnap = await userRef.collection("transactions").get();
 
-  // Kullanıcı dokümanını sil
-  await db.collection("users").doc(uid).delete();
+  for (const txDoc of transactionsSnap.docs) {
+    const productsSnap = await txDoc.ref.collection("products").get();
+    const productBatch = db.batch();
+    productsSnap.docs.forEach((p) => productBatch.delete(p.ref));
+    if (productsSnap.size > 0) await productBatch.commit();
+
+    await txDoc.ref.delete();
+  }
+
+  // recurring
+  const recurringSnap = await userRef.collection("recurring").get();
+  const recurringBatch = db.batch();
+  recurringSnap.docs.forEach((doc) => recurringBatch.delete(doc.ref));
+  if (recurringSnap.size > 0) await recurringBatch.commit();
+
+  // kullanıcı dokümanının kendisi
+  await userRef.delete();
 }
 
 async function run() {

@@ -1360,5 +1360,40 @@
     "couldNotOpenLink": "Impossible d'ouvrir le lien",
     "@couldNotOpenLink": {
       "description": "Error when unable to open a link"
-    }
+    },
+
+  "deleteAccount": "Supprimer le Compte",
+  "@deleteAccount": {
+    "description": "Text for the delete account button"
+  },
+
+  "deleteAccountTitle": "Êtes-vous sûr de vouloir supprimer votre compte?",
+  "@deleteAccountTitle": {
+    "description": "Title for the delete account confirmation dialog"
+  },
+
+  "deleteAccountWarning": "Votre compte restera inactif pendant 30 jours. Pendant cette période, vous pouvez vous reconnecter pour réactiver votre compte. Après 30 jours, votre compte et toutes vos données seront définitivement supprimés.",
+  "@deleteAccountWarning": {
+    "description": "Warning message for the delete account confirmation dialog"
+  },
+
+  "deleteAccountConfirm": "Oui, Supprimer mon Compte",
+  "@deleteAccountConfirm": {
+    "description": "Text for the delete account confirmation button"
+  },
+
+  "reactivateAccountTitle": "Réactiver le Compte",
+  "@reactivateAccountTitle": {
+    "description": "Title for the reactivation account dialog"
+  },
+
+  "reactivateAccountMessage": "Ce compte est marqué pour suppression. Souhaitez-vous le réactiver?",
+  "@reactivateAccountMessage": {
+    "description": "Message for the reactivation account dialog"
+  },
+
+  "reactivateAccountConfirm": "Réactiver le Compte",
+  "@reactivateAccountConfirm": {
+    "description": "Text for the reactivation account button"
+  }
 }

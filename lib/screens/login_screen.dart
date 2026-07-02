@@ -81,6 +81,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Zaten kayıtlıysa dokunmaz, yoksa oluşturur
       await FirestoreService().createUserIfNotExists(userModel);
+      
+      final handled = await _checkAndHandleDeletedAccount(user.uid);
+      if (handled) {
+        setState(() => loading = false);
+        return;
+      }
 
       if (!mounted) return;
       Navigator.pushReplacement(
@@ -113,6 +119,51 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => loading = false);
   }
 
+  final _firestoreService = FirestoreService();
+
+  /// Hesap pasifse kullanıcıya sorar, geri açmak isterse açar.
+  /// true dönerse: kullanıcı zaten yönlendirildi/işlem tamamlandı, login akışı durmalı.
+  Future<bool> _checkAndHandleDeletedAccount(String uid) async {
+    final loc = AppLocalizations.of(context)!;
+    final userModel = await _firestoreService.getUserById(uid);
+
+    if (userModel == null || !userModel.isDeleted) {
+      return false; // hesap normal, akış devam etsin
+    }
+
+    final reactivate = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(loc.reactivateAccountTitle),
+        content: Text(loc.reactivateAccountMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(loc.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(loc.reactivateAccountConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (reactivate == true) {
+      await _firestoreService.reactivateAccount(uid);
+      if (!mounted) return true;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+    } else {
+      await FirebaseAuth.instance.signOut();
+    }
+
+    return true; // her iki durumda da login akışı burada bitmeli
+  }
+
   Future<void> login() async {
     final loc = AppLocalizations.of(context)!;
 
@@ -137,12 +188,18 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => loading = true);
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
       if (!mounted) return;
+
+      final handled = await _checkAndHandleDeletedAccount(credential.user!.uid);
+      if (handled) {
+        setState(() => loading = false);
+        return;
+      }
 
       Navigator.pushReplacement(
         context,

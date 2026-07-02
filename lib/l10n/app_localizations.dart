@@ -1728,6 +1728,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open link'**
   String get couldNotOpenLink;
+
+  /// Text for the delete account button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// Title for the delete account confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account?'**
+  String get deleteAccountTitle;
+
+  /// Warning message for the delete account confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Your account will remain inactive for 30 days. During this period, you can sign in again to reactivate your account. After 30 days, your account and all data will be permanently deleted.'**
+  String get deleteAccountWarning;
+
+  /// Text for the delete account confirmation button
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete Account'**
+  String get deleteAccountConfirm;
+
+  /// Title for the account reactivation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is inactive'**
+  String get reactivateAccountTitle;
+
+  /// Message for the account reactivation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This account is marked for deletion. Would you like to reactivate it?'**
+  String get reactivateAccountMessage;
+
+  /// Text for the account reactivation button
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate Account'**
+  String get reactivateAccountConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

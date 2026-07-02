@@ -836,4 +836,25 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get couldNotOpenLink => 'Bağlantı açılamadı';
+
+  @override
+  String get deleteAccount => 'Hesabı Sil';
+
+  @override
+  String get deleteAccountTitle => 'Hesabını silmek istediğine emin misin?';
+
+  @override
+  String get deleteAccountWarning => 'Hesabın 30 gün boyunca pasif kalacak. Bu süre içinde tekrar giriş yaparsan hesabını geri açabilirsin. 30 gün sonra hesabın ve tüm verilerin kalıcı olarak silinir.';
+
+  @override
+  String get deleteAccountConfirm => 'Evet, Sil';
+
+  @override
+  String get reactivateAccountTitle => 'Hesabın pasif durumda';
+
+  @override
+  String get reactivateAccountMessage => 'Bu hesap silinmek üzere işaretlenmiş. Hesabını geri açmak ister misin?';
+
+  @override
+  String get reactivateAccountConfirm => 'Hesabımı Geri Aç';
 }
