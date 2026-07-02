@@ -812,4 +812,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInWithGoogle => 'Se connecter avec Google';
+
+  @override
+  String get currency => 'DEVISE';
+
+  @override
+  String get selectCurrency => 'Sélectionner la Devise';
 }

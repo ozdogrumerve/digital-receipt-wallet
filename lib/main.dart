@@ -1,3 +1,4 @@
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 import 'package:digital_receipt_wallet/providers/locale_provider.dart';
 import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/providers/theme_provider.dart';
@@ -38,7 +39,9 @@ class _DigitalReceiptWalletAppState extends State<DigitalReceiptWalletApp> {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => CurrencyProvider()),
       ],
+
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp(

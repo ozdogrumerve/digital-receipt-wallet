@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/providers/theme_provider.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
@@ -106,6 +107,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void _openCurrencySheet(CurrencyProvider currencyProvider) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 12),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              children: CurrencyProvider.currencySymbols.keys.map((code) {
+                return ListTile(
+                  leading: Text(
+                    CurrencyProvider.currencySymbols[code]!,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  title: Text(code),
+                  subtitle: Text(CurrencyProvider.currencyNames[code]!),
+                  trailing: currencyProvider.currencyCode == code
+                      ? const Icon(Icons.check_circle, color: Colors.green)
+                      : null,
+                  onTap: () {
+                    currencyProvider.setCurrency(code);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
+
   ListTile _langTile(LocaleProvider localeProvider, String flag, String label, String code) {
     return ListTile(
       leading: Text(flag, style: const TextStyle(fontSize: 24)),
@@ -128,6 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final notificationProvider = Provider.of<NotificationProvider>(context);
     final localeProvider = Provider.of<LocaleProvider>(context);
     final user = FirebaseAuth.instance.currentUser;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     // Avatar image provider: once secilen local dosyaya bak,
     // yoksa Firestore'daki base64'e bak
@@ -337,6 +378,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 subtitle: Text(_languageName(localeProvider.locale.languageCode)),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _openLanguageSheet(localeProvider),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            /// CURRENCY
+            Text(loc.currency, style: theme.textTheme.bodyMedium), 
+
+            const SizedBox(height: 12),
+
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.attach_money),
+                title: Text(loc.selectCurrency), 
+                subtitle: Text(
+                  "${currencyProvider.symbol} ${currencyProvider.currencyCode}",
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _openCurrencySheet(currencyProvider),
               ),
             ),
 

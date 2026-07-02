@@ -1,4 +1,6 @@
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import '../models/receipt_model.dart';
 import '../services/firestore_service.dart';
@@ -48,7 +50,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   ];
 
   double get _total => _products.fold(0, (sum, p) => sum + p.total);
-  String _formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   // ─── Save ─────────────────────────────────────────────────────────────────
   Future<void> _save() async {
@@ -351,6 +352,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.addExpense)),
@@ -533,7 +535,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                   controller: _priceController,
                                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                                   decoration: InputDecoration(
-                                    hintText: "₺ 0.00",
+                                    hintText: "${currencyProvider.symbol} 0.00",
                                     filled: true,
                                     fillColor: theme.colorScheme.surfaceContainerHighest,
                                     border: OutlineInputBorder(
@@ -740,7 +742,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                                 const SizedBox(
                                                     height: 4),
                                                 Text(
-                                                  "${p.quantity} x ${_formatTL(p.price)}",
+                                                  "${p.quantity} x ${currencyProvider.format(p.price)}",
                                                   style: TextStyle(
                                                     fontSize: 12,
                                                     color: Colors
@@ -751,7 +753,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                             ),
                                           ),
                                           Text(
-                                            _formatTL(p.total),
+                                            currencyProvider.format(p.total),
                                             style: const TextStyle(
                                               fontWeight:
                                                   FontWeight.bold,
@@ -788,7 +790,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                                   fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              _formatTL(_total),
+                              currencyProvider.format(_total),
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

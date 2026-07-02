@@ -4,6 +4,8 @@ import '../models/receipt_model.dart';
 import '../models/product_model.dart';
 import '../services/firestore_service.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class ProductsScreen extends StatelessWidget {
   final ReceiptModel transaction;
@@ -12,9 +14,6 @@ class ProductsScreen extends StatelessWidget {
     super.key,
     required this.transaction,
   });
-
-  String formatTL(double amount) =>
-      "₺${amount.toStringAsFixed(2)}";
 
   IconData _getCategoryIcon(String category) {
     switch (category) {
@@ -58,6 +57,8 @@ class ProductsScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
     final FirestoreService service = FirestoreService();
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
+    final formatTL = currencyProvider.format;
 
     return Scaffold(
       appBar: AppBar(

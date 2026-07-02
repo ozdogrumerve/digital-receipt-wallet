@@ -1320,5 +1320,15 @@
   "signInWithGoogle": "Entrar com Google",
   "@signInWithGoogle": {
     "description": "Botão entrar com Google"
+  },
+
+  "currency": "MOEDA",
+  "@currency": {
+    "description": "Título da seção de moeda"
+  },
+
+  "selectCurrency": "Selecionar Moeda",
+  "@selectCurrency": {
+    "description": "Subtítulo da seleção de moeda"
   }
 }   

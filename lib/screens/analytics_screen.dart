@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import '../models/receipt_model.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -264,6 +266,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -531,9 +534,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 const SizedBox(height: 4),
                 Text(
                   analytics.topCategory == '-'
-                      ? loc.noDataYet
-                      : '${_localizeCategory(analytics.topCategory, loc)}'
-                      ' (₺${analytics.topCategoryAmount.toStringAsFixed(2)})',
+                    ? loc.noDataYet
+                    : '${_localizeCategory(analytics.topCategory, loc)}'
+                    ' (${currencyProvider.format(analytics.topCategoryAmount)})',
                   style: textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
@@ -544,7 +547,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     style: textTheme.bodySmall),
                 const SizedBox(height: 4),
                 Text(
-                  '₺${analytics.avgDailySpend.toStringAsFixed(2)} ${loc.perDay}',
+                  '${currencyProvider.format(analytics.avgDailySpend)} ${loc.perDay}',
                   style: textTheme.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
@@ -601,7 +604,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               ),
                             ),
                             Text(
-                              '₺${analytics.topMerchantAmount.toStringAsFixed(2)}',
+                              currencyProvider.format(analytics.topMerchantAmount),
                               style: textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold),
                             ),

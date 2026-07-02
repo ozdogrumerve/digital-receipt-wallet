@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/recurring_transaction_model.dart';
 import '../services/firestore_service.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class RecurringScreen extends StatefulWidget {
   const RecurringScreen({super.key});
@@ -293,6 +295,7 @@ class _RecurringCard extends StatelessWidget {
     final cs = theme.colorScheme;
     final isPaused = model.status == RecurringStatus.paused;
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Opacity(
       opacity: isPaused ? 0.6 : 1.0,
@@ -375,8 +378,9 @@ class _RecurringCard extends StatelessWidget {
                     ),
                   ),
                   // Tutar
+                  // Tutar
                   Text(
-                    '₺${model.amount.toStringAsFixed(2)}',
+                    currencyProvider.format(model.amount),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: cs.primary,

@@ -1,4 +1,5 @@
 import 'package:digital_receipt_wallet/models/user_model.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 import 'package:digital_receipt_wallet/providers/notifications_provider.dart';
 import 'package:digital_receipt_wallet/services/notification_service.dart';
 import 'package:digital_receipt_wallet/services/statement_service.dart';
@@ -82,6 +83,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _showBudgetBottomSheet() {
     final TextEditingController budgetController = TextEditingController();
+    final currencyProvider = Provider.of<CurrencyProvider>(context, listen: false);
 
     showModalBottomSheet(
       context: context,
@@ -139,7 +141,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Text(
-                        "${loc.current}: ₺${currentBudget.toStringAsFixed(0)}",
+                        "${loc.current}: ${currencyProvider.formatNoDecimal(currentBudget)}",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.primary),
                       ),
@@ -152,7 +154,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     autofocus: false,
                     decoration: InputDecoration(
                       labelText: loc.amountTL,
-                      prefixText: "₺ ",
+                      prefixText: "${currencyProvider.symbol} ",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16)),
                     ),
@@ -391,6 +393,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final textTheme = theme.textTheme;
     final loc = AppLocalizations.of(context)!;
     RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -624,7 +627,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'TL ${totalAmount.toStringAsFixed(0)}',
+                                  currencyProvider.formatNoDecimal(totalAmount),
                                   style: textTheme.headlineMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
@@ -701,7 +704,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  '₺${expense.amount.toStringAsFixed(0)}',
+                                  currencyProvider.formatNoDecimal(expense.amount),
                                   style: textTheme.bodyLarge
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
@@ -712,7 +715,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       const SizedBox(height: 10),
 
                       Text(
-                        '${loc.dailyAverage}: ₺${dailyAverage.toStringAsFixed(2)}',
+                        '${loc.dailyAverage}: ${currencyProvider.format(dailyAverage)}',
                         style: textTheme.labelSmall?.copyWith(
                             letterSpacing: 1.2, fontWeight: FontWeight.bold),
                       ),

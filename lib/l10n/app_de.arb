@@ -1320,5 +1320,15 @@
   "signInWithGoogle": "Mit Google einloggen",
   "@signInWithGoogle": {
     "description": "Button mit Google einloggen"
+  },
+
+  "currency": "WÄHRUNG",
+  "@currency": {
+    "description": "Label für Währungseinstellung"
+  },
+
+  "selectCurrency": "Währung auswählen",
+  "@selectCurrency": {
+    "description": "Untertitel für Währungseinstellung"
   }
 }

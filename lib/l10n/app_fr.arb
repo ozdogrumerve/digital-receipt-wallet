@@ -1320,5 +1320,15 @@
   "signInWithGoogle": "Se connecter avec Google",
   "@signInWithGoogle": {
     "description": "Bouton se connecter avec Google"
-  }
+  },
+
+  "currency": "DEVISE",
+  "@currency": {
+    "description": "Titre du paramètre de devise"
+  },
+
+  "selectCurrency": "Sélectionner la Devise",
+    "@selectCurrency": {
+        "description": "Sous-titre du paramètre de devise"
+    }
 }

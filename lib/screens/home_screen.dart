@@ -8,6 +8,8 @@ import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -129,6 +131,7 @@ class HomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
     final firestoreService = FirestoreService();
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return SafeArea(
       child: Padding(
@@ -243,7 +246,7 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              "₺${totalAmount.toStringAsFixed(2)}", // para birimini senin projene göre ₺ veya $ yap
+                              currencyProvider.format(totalAmount),
                               style: theme.textTheme.headlineMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -283,7 +286,7 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
-                                        "₺${(monthlyBudget - totalAmount).toStringAsFixed(0)}",
+                                        currencyProvider.formatNoDecimal(monthlyBudget - totalAmount),
                                         style: theme.textTheme.titleLarge?.copyWith(
                                           fontWeight: FontWeight.bold,
                                           color: (monthlyBudget - totalAmount) < 0
@@ -445,7 +448,7 @@ class HomeScreen extends StatelessWidget {
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Text(
-                                              "- ₺${receipt.totalAmount.toStringAsFixed(2)}",
+                                              "- ${currencyProvider.format(receipt.totalAmount)}",
                                               style: theme.textTheme.titleMedium?.copyWith(
                                                 color: theme.colorScheme.primary,
                                               ),

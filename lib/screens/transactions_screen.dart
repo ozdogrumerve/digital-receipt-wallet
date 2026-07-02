@@ -5,6 +5,8 @@ import '../services/firestore_service.dart';
 import '../models/receipt_model.dart';
 import 'products_screen.dart';
 import 'recurring_transactions_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -99,8 +101,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       default: return category;
     }
   }
-
-  String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   bool isToday(DateTime date) {
     final now = DateTime.now();
@@ -425,6 +425,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget _buildTransactionCard(ReceiptModel tx) {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -501,7 +502,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           Row(
             children: [
               Text(
-                "-${formatTL(tx.totalAmount)}",
+                "-${currencyProvider.format(tx.totalAmount)}",
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary,

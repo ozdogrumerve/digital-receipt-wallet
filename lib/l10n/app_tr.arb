@@ -1321,5 +1321,15 @@
   "signInWithGoogle": "Google ile giriş yap",
   "@signInWithGoogle": {
     "description": "Google giriş yap butonu metni"
+  },
+
+  "currency": "PARA BİRİMİ",
+  "@currency": {
+    "description": "Para birimi ayarı başlığı"
+  },
+
+  "selectCurrency": "Para Birimini Seçin",
+  "@selectCurrency": {
+    "description": "Para birimi ayarı alt metni"
   }
 }

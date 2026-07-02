@@ -812,4 +812,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get signInWithGoogle => 'Google ile giriş yap';
+
+  @override
+  String get currency => 'PARA BİRİMİ';
+
+  @override
+  String get selectCurrency => 'Para Birimini Seçin';
 }

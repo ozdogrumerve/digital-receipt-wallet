@@ -1322,6 +1322,16 @@
   "signInWithGoogle": "Sign in with Google",
   "@signInWithGoogle": {
     "description": "Google sign in button text"
+  },
+
+  "currency": "CURRENCY",
+  "@currency": {
+    "description": "Currency setting title"
+  },
+
+  "selectCurrency": "Select Currency",
+  "@selectCurrency": {
+    "description": "Subtitle for currency selection"
   }
 
 }

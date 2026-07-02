@@ -1680,6 +1680,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in with Google'**
   String get signInWithGoogle;
+
+  /// Currency setting title
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENCY'**
+  String get currency;
+
+  /// Subtitle for currency selection
+  ///
+  /// In en, this message translates to:
+  /// **'Select Currency'**
+  String get selectCurrency;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

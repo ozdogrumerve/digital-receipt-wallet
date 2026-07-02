@@ -8,6 +8,8 @@ import '../services/firestore_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class ScanReceiptScreen extends StatefulWidget {
   final List<ProductModel> detectedProducts;
@@ -77,8 +79,6 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   }
 
   double get total => _products.fold(0, (sum, p) => sum + p.total);
-
-  String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   Future<void> _pickImage() async {
 
@@ -557,6 +557,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.scanReceipt)),
@@ -700,9 +701,9 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                         controller: _totalController,
                         enabled: _isEditing,
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "0.00",
+                          hintText: "${currencyProvider.symbol} 0.00",
                         ),
                       )),
                 )
@@ -857,7 +858,7 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
                                 ),
 
                                 Text(
-                                  "₺${p.total.toStringAsFixed(2)}",
+                                  currencyProvider.format(p.total),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,

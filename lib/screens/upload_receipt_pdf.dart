@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pdfx/pdfx.dart'; // PDF'i image'e çevirmek için: pub add pdfx (sayfaları render et)
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:digital_receipt_wallet/providers/currency_provider.dart';
 
 class UploadReceiptPdf extends StatefulWidget {
   const UploadReceiptPdf({super.key});
@@ -77,8 +79,6 @@ class _UploadReceiptPdfState extends State<UploadReceiptPdf> {
   }
 
   double get total => _products.fold(0, (sum, p) => sum + p.total);
-
-  String formatTL(double amount) => "₺${amount.toStringAsFixed(2)}";
 
   // ─── _processPdf ──────────────────────────────────────────────────────────────
   Future<void> _processPdf() async {
@@ -763,6 +763,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   Widget _buildPdfContent() {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     // İşlemleri ay-yıl'a göre grupla
     final Map<String, List<_Transaction>> grouped = {};
@@ -884,7 +885,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                         child: _summaryItem(
                           context: context,
                           label: loc.totalExpense,
-                          value: "₺${_pdfTotalOut.toStringAsFixed(2)}",
+                          value: currencyProvider.format(_pdfTotalOut),
                           valueColor: const Color(0xFF993C1D),
                         ),
                       ),
@@ -892,7 +893,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                         child: _summaryItem(
                           context: context,
                           label: loc.totalIncome,
-                          value: "₺${_pdfTotalIn.toStringAsFixed(2)}",
+                          value: currencyProvider.format(_pdfTotalIn),
                           valueColor: const Color(0xFF3B6D11),
                         ),
                       ),
@@ -1080,7 +1081,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
 
                                 // Tutar
                                 Text(
-                                  "${isOut ? '-' : '+'}₺${tx.amount.abs().toStringAsFixed(2)}",
+                                  "${isOut ? '-' : '+'}${currencyProvider.format(tx.amount.abs())}",
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
@@ -1220,6 +1221,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   Widget _buildGalleryContent() {
     final theme = Theme.of(context);
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -1363,9 +1365,9 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                       controller: _totalController,
                       enabled: _isEditing,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "0.00",
+                        hintText: "${currencyProvider.symbol} 0.00",
                       ),
                     )),
               )
@@ -1512,7 +1514,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
                                     ),
                                   ),
                                   Text(
-                                    "₺${p.total.toStringAsFixed(2)}",
+                                    currencyProvider.format(p.total),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15,
@@ -1555,6 +1557,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final currencyProvider = Provider.of<CurrencyProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(loc.uploadReceipt),
