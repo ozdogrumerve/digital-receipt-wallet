@@ -1692,6 +1692,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Currency'**
   String get selectCurrency;
+
+  /// Text shown before Terms of Service and Privacy Policy links on signup screen
+  ///
+  /// In en, this message translates to:
+  /// **'By signing up, you agree to our'**
+  String get bySigningUpYouAgreeToOur;
+
+  /// Conjunction word between Terms of Service and Privacy Policy links
+  ///
+  /// In en, this message translates to:
+  /// **'and'**
+  String get and;
+
+  /// Link text for Terms of Service page
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// Link text for Privacy Policy page
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Suffix text after Terms of Service and Privacy Policy links
+  ///
+  /// In en, this message translates to:
+  /// **''**
+  String get agreementSuffix;
+
+  /// Error message shown when a URL fails to open
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open link'**
+  String get couldNotOpenLink;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

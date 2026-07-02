@@ -1330,5 +1330,35 @@
   "selectCurrency": "Sélectionner la Devise",
     "@selectCurrency": {
         "description": "Sous-titre du paramètre de devise"
+    },
+
+    "bySigningUpYouAgreeToOur": "En vous inscrivant, vous acceptez nos",
+    "@bySigningUpYouAgreeToOur": {
+      "description": "Text before Terms of Service and Privacy Policy links"
+    },
+
+    "and": "et",
+    "@and": {
+      "description": "Conjunction word between Terms of Service and Privacy Policy links"
+    },
+
+    "termsOfService": "Conditions d'Utilisation",
+    "@termsOfService": {
+      "description": "Link text for Terms of Service page"
+    },
+    
+    "privacyPolicy": "Politique de Confidentialité",
+    "@privacyPolicy": {
+      "description": "Link text for Privacy Policy page"
+    },
+
+    "agreementSuffix": "",
+    "@agreementSuffix": {
+      "description": "Text after Terms of Service and Privacy Policy links"
+    },
+
+    "couldNotOpenLink": "Impossible d'ouvrir le lien",
+    "@couldNotOpenLink": {
+      "description": "Error when unable to open a link"
     }
 }

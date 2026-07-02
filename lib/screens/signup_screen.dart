@@ -4,6 +4,8 @@ import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/gestures.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +20,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   bool loading = false;
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+
+  String _privacyPolicyUrl(BuildContext context) {
+    final code = Localizations.localeOf(context).languageCode;
+    return code == 'tr'
+        ? 'https://ozdogrumerve.github.io/privacy-policy/privacy-tr.html'
+        : 'https://ozdogrumerve.github.io/privacy-policy/privacy-en.html';
+  }
+
+  String _termsOfServiceUrl(BuildContext context) {
+    final code = Localizations.localeOf(context).languageCode;
+    return code == 'tr'
+        ? 'https://ozdogrumerve.github.io/privacy-policy/terms-tr.html'
+        : 'https://ozdogrumerve.github.io/privacy-policy/terms-en.html';
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.couldNotOpenLink)),
+        );
+      }
+    }
+  }
   
   String _authErrorMessage(String code, AppLocalizations loc) {
     switch (code) {
@@ -176,19 +205,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 20),
                 TextField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: obscurePassword,
                   decoration: InputDecoration(
                     labelText: loc.password,
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: confirmPasswordController,
-                  obscureText: true,
+                  obscureText: obscureConfirmPassword,
                   decoration: InputDecoration(
                     labelText: loc.confirmPassword,
                     prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscureConfirmPassword = !obscureConfirmPassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -201,6 +250,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Colors.white,
                           )
                         : Text(loc.createAccount),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(0x99),
+                    ),
+                    children: [
+                      TextSpan(text: "${loc.bySigningUpYouAgreeToOur} "),
+                      TextSpan(
+                        text: loc.termsOfService,
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _openUrl(_termsOfServiceUrl(context)),
+                      ),
+                      TextSpan(text: " ${loc.and} "),
+                      TextSpan(
+                        text: loc.privacyPolicy,
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _openUrl(_privacyPolicyUrl(context)),
+                      ),
+                      TextSpan(text: loc.agreementSuffix),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),

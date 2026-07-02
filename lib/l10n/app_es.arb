@@ -1330,5 +1330,35 @@
   "selectCurrency": "Seleccionar Moneda",
   "@selectCurrency": {
     "description": "Subtítulo de la configuración de moneda"
+  },
+
+  "bySigningUpYouAgreeToOur": "Al registrarte, aceptas nuestros",
+  "@bySigningUpYouAgreeToOur": {
+    "description": "Text shown before Terms of Service and Privacy Policy links on signup screen"
+  },
+
+  "and": "y",
+  "@and": {
+    "description": "Conjunction word between Terms of Service and Privacy Policy links"
+  },
+
+  "termsOfService": "Términos de Servicio",
+  "@termsOfService": {
+    "description": "Link text for Terms of Service page"
+  },
+
+  "privacyPolicy": "Política de Privacidad",
+  "@privacyPolicy": {
+    "description": "Link text for Privacy Policy page"
+  },
+
+  "agreementSuffix": "",
+  "@agreementSuffix": {
+    "description": "Suffix text after Terms of Service and Privacy Policy links"
+  },
+
+  "couldNotOpenLink": "No se pudo abrir el enlace",
+  "@couldNotOpenLink": {
+    "description": "Error message shown when a URL fails to open"
   }
 }

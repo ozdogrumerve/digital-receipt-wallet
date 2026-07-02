@@ -818,4 +818,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectCurrency => 'Währung auswählen';
+
+  @override
+  String get bySigningUpYouAgreeToOur => 'Mit der Registrierung stimmst du unseren';
+
+  @override
+  String get and => 'und';
+
+  @override
+  String get termsOfService => 'Nutzungsbedingungen';
+
+  @override
+  String get privacyPolicy => 'Datenschutzrichtlinien';
+
+  @override
+  String get agreementSuffix => ' zu.';
+
+  @override
+  String get couldNotOpenLink => 'Link konnte nicht geöffnet werden';
 }

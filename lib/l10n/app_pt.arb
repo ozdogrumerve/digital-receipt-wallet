@@ -1330,5 +1330,35 @@
   "selectCurrency": "Selecionar Moeda",
   "@selectCurrency": {
     "description": "Subtítulo da seleção de moeda"
+  },
+
+  "bySigningUpYouAgreeToOur": "Ao se cadastrar, você concorda com nossos",
+  "@bySigningUpYouAgreeToOur": {
+    "description": "Text before Terms of Service and Privacy Policy links"
+  },
+
+  "and": "e", 
+  "@and": {
+    "description": "Conjunction word between Terms of Service and Privacy Policy links"
+  },
+
+  "termsOfService": "Termos de Serviço",
+  "@termsOfService": {
+    "description": "Link text for Terms of Service page"
+  },
+
+  "privacyPolicy": "Política de Privacidade",
+  "@privacyPolicy": {
+    "description": "Link text for Privacy Policy page"
+  },
+
+  "agreementSuffix": "",
+    "@agreementSuffix": {
+        "description": "Suffix text after Terms of Service and Privacy Policy links"
+    },
+
+  "couldNotOpenLink": "Não foi possível abrir o link",
+  "@couldNotOpenLink": {
+    "description": "Error when unable to open a link"
   }
 }   

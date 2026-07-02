@@ -818,4 +818,22 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get selectCurrency => 'Para Birimini Seçin';
+
+  @override
+  String get bySigningUpYouAgreeToOur => 'Kayıt olarak';
+
+  @override
+  String get and => 've';
+
+  @override
+  String get termsOfService => 'Kullanım Koşulları\'nı';
+
+  @override
+  String get privacyPolicy => 'Gizlilik Politikası\'nı';
+
+  @override
+  String get agreementSuffix => ' kabul etmiş olursunuz.';
+
+  @override
+  String get couldNotOpenLink => 'Bağlantı açılamadı';
 }

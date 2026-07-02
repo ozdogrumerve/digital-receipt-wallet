@@ -1332,6 +1332,36 @@
   "selectCurrency": "Select Currency",
   "@selectCurrency": {
     "description": "Subtitle for currency selection"
+  },
+
+  "bySigningUpYouAgreeToOur": "By signing up, you agree to our",
+  "@bySigningUpYouAgreeToOur": {
+    "description": "Text shown before Terms of Service and Privacy Policy links on signup screen"
+  },
+
+  "and": "and",
+  "@and": {
+    "description": "Conjunction word between Terms of Service and Privacy Policy links"
+  },
+
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Link text for Terms of Service page"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Link text for Privacy Policy page"
+  },
+
+  "agreementSuffix": "",
+  "@agreementSuffix": {
+    "description": "Suffix text after Terms of Service and Privacy Policy links"
+  },
+
+  "couldNotOpenLink": "Could not open link",
+  "@couldNotOpenLink": {
+    "description": "Error message shown when a URL fails to open"
   }
 
 }

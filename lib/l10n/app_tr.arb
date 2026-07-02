@@ -1331,5 +1331,35 @@
   "selectCurrency": "Para Birimini Seçin",
   "@selectCurrency": {
     "description": "Para birimi ayarı alt metni"
+  },
+
+  "bySigningUpYouAgreeToOur": "Kayıt olarak",
+  "@bySigningUpYouAgreeToOur": {
+    "description": "Kayıt olurken Kullanım Koşulları ve Gizlilik Politikası bağlantıları öncesi gösterilen metin"
+  },
+
+  "and": "ve",
+  "@and": {
+    "description": "Kullanım Koşulları ve Gizlilik Politikası bağlantıları arasındaki bağlaç kelimesi"
+  },
+
+  "termsOfService": "Kullanım Koşulları'nı",
+  "@termsOfService": {
+    "description": "Kullanım Koşulları sayfası için bağlantı metni"
+  },
+
+  "privacyPolicy": "Gizlilik Politikası'nı",
+  "@privacyPolicy": {
+    "description": "Gizlilik Politikası sayfası için bağlantı metni"
+  },
+
+  "agreementSuffix": " kabul etmiş olursunuz.", 
+  "@agreementSuffix": {
+    "description": "Kayıt olurken Kullanım Koşulları ve Gizlilik Politikası bağlantıları sonrası gösterilen metin"
+  },
+
+  "couldNotOpenLink": "Bağlantı açılamadı",
+  "@couldNotOpenLink": {
+    "description": "Bir URL açılamadığında gösterilen hata mesajı"
   }
 }

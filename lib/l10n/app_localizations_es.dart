@@ -818,4 +818,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectCurrency => 'Seleccionar Moneda';
+
+  @override
+  String get bySigningUpYouAgreeToOur => 'Al registrarte, aceptas nuestros';
+
+  @override
+  String get and => 'y';
+
+  @override
+  String get termsOfService => 'Términos de Servicio';
+
+  @override
+  String get privacyPolicy => 'Política de Privacidad';
+
+  @override
+  String get agreementSuffix => '';
+
+  @override
+  String get couldNotOpenLink => 'No se pudo abrir el enlace';
 }
