@@ -1557,7 +1557,6 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final currencyProvider = Provider.of<CurrencyProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(loc.uploadReceipt),
