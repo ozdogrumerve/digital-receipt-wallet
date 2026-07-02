@@ -14,7 +14,9 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen>
+    with SingleTickerProviderStateMixin {
+
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -22,6 +24,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool loading = false;
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  late AnimationController _walletController;
+  late Animation<double> _receiptOffset;
+
+  @override
+  void initState() {
+    super.initState();
+    _walletController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    _receiptOffset = Tween<double>(begin: -28, end: 8).animate(
+      CurvedAnimation(parent: _walletController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _walletController.dispose();
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   String _privacyPolicyUrl(BuildContext context) {
     final code = Localizations.localeOf(context).languageCode;
@@ -181,6 +208,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                SizedBox(
+                  height: 90,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Fiş (hareketli, cüzdanın arkasından girip çıkıyor)
+                      AnimatedBuilder(
+                        animation: _receiptOffset,
+                        builder: (context, child) {
+                          return Positioned(
+                            top: _receiptOffset.value,
+                            child: child!,
+                          );
+                        },
+                        child: Container(
+                          width: 30,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(30),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: List.generate(
+                                4,
+                                (_) => Container(
+                                  height: 2,
+                                  color: theme.colorScheme.onSurface.withAlpha(60),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Cüzdan ikonu (sabit, önde)
+                      Icon(
+                        Icons.account_balance_wallet,
+                        size: 64,
+                        color: theme.colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Text(loc.createAccount,
                     style: theme.textTheme.headlineMedium),
                 const SizedBox(height: 12),
