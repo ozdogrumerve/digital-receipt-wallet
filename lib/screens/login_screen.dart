@@ -1,8 +1,11 @@
+import 'package:digital_receipt_wallet/models/user_model.dart';
 import 'package:digital_receipt_wallet/screens/homepage.dart';
 import 'package:digital_receipt_wallet/screens/signup_screen.dart';
+import 'package:digital_receipt_wallet/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,6 +47,70 @@ class _LoginScreenState extends State<LoginScreen> {
       default:
         return loc.errorUnknown;
     }
+  }
+
+  Future<void> signInWithGoogle() async {
+    final loc = AppLocalizations.of(context)!;
+    setState(() => loading = true);
+
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() => loading = false);
+        return;
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = userCredential.user!;
+
+      final userModel = UserModel(
+        uid: user.uid,
+        name: user.displayName ?? "",
+        email: user.email ?? "",
+        photo: user.photoURL,
+        monthlyBudget: 0,
+        createdAt: DateTime.now(),
+      );
+
+      // Zaten kayıtlıysa dokunmaz, yoksa oluşturur
+      await FirestoreService().createUserIfNotExists(userModel);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+      );
+
+    } on FirebaseAuthException catch (e) {
+      final msg = _authErrorMessage(e.code, loc); 
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      debugPrint("GOOGLE SIGN IN ERROR: $e");
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(loc.errorUnknown),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+
+    setState(() => loading = false);
   }
 
   Future<void> login() async {
@@ -163,6 +230,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Expanded(child: Divider()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(loc.orDivider),
+                    ),
+                    const Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: loading ? null : signInWithGoogle,
+                    icon: const Icon(Icons.g_mobiledata, size: 28),
+                    label: Text(loc.signInWithGoogle), // yeni key, "Google ile giriş yap"
+                  ),
+                ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(

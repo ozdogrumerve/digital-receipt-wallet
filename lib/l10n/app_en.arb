@@ -1302,5 +1302,26 @@
   "errorFillAllFields": "Please fill in all fields",
   "@errorFillAllFields": {
     "description": "Error message for required fields not filled"
+  },
+
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Label for the confirm password field"
+  },
+
+  "errorPasswordsDoNotMatch": "Passwords do not match",
+  "@errorPasswordsDoNotMatch": {
+    "description": "Error message for mismatched passwords"
+  },
+
+  "orDivider": "or",
+  "@orDivider": {
+    "description": "Divider text between sign up options"
+  },
+
+  "signInWithGoogle": "Sign in with Google",
+  "@signInWithGoogle": {
+    "description": "Google sign in button text"
   }
+
 }

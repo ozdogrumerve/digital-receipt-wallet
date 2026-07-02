@@ -800,4 +800,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorFillAllFields => 'Please fill in all fields';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get errorPasswordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
 }

@@ -243,7 +243,15 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen>
     if (_selectedImage != null) {
       imageProvider = FileImage(_selectedImage!);
     } else if (_currentBase64Photo != null && _currentBase64Photo!.isNotEmpty) {
-      imageProvider = MemoryImage(base64Decode(_currentBase64Photo!));
+      if (_currentBase64Photo!.startsWith('http')) {
+        imageProvider = NetworkImage(_currentBase64Photo!);
+      } else {
+        try {
+          imageProvider = MemoryImage(base64Decode(_currentBase64Photo!));
+        } catch (e) {
+          imageProvider = null;
+        }
+      }
     }
 
     return Center(

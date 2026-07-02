@@ -147,7 +147,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sun => 'Paz';
 
   @override
-  String get digitalReceiptWallet => 'Dijital Fiş Cüzdanı';
+  String get digitalReceiptWallet => 'Digital Receipt Wallet';
 
   @override
   String get totalSpent => 'Toplam Harcama';
@@ -800,4 +800,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorFillAllFields => 'Lütfen tüm alanları doldurun';
+
+  @override
+  String get confirmPassword => 'Şifreyi Onayla';
+
+  @override
+  String get errorPasswordsDoNotMatch => 'Şifreler eşleşmiyor';
+
+  @override
+  String get orDivider => 'veya';
+
+  @override
+  String get signInWithGoogle => 'Google ile giriş yap';
 }

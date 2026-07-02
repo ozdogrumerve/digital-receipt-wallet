@@ -12,7 +12,20 @@
           "package_name": "com.mervedev.digital_receipt_wallet"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "234104413984-l65djo2f7243rg3mh5n0jf50nfgpb52s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mervedev.digital_receipt_wallet",
+            "certificate_hash": "9b2df5db0da5ecf690d54a8fa57d14bcca02a4f3"
+          }
+        },
+        {
+          "client_id": "234104413984-vtsi7932bc708d7m3j27aaetvo0aa60r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDcG6p9u7ASaPVNbu_eV7RMLVRvsICTvYk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234104413984-vtsi7932bc708d7m3j27aaetvo0aa60r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -16,8 +16,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   bool loading = false;
-
+  
   String _authErrorMessage(String code, AppLocalizations loc) {
     switch (code) {
       // Email hataları
@@ -53,7 +54,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // Boş alan kontrolü
     if (nameController.text.trim().isEmpty ||
         emailController.text.trim().isEmpty ||
-        passwordController.text.trim().isEmpty) {
+        passwordController.text.trim().isEmpty || 
+        confirmPasswordController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -64,6 +66,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ],
           ),
           backgroundColor: Colors.orange.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // Şifre eşleşme kontrolü
+    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 10),
+              Expanded(child: Text(loc.errorPasswordsDoNotMatch)),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -160,6 +180,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     labelText: loc.password,
                     prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: loc.confirmPassword,
+                    prefixIcon: const Icon(Icons.lock_outline),
                   ),
                 ),
                 const SizedBox(height: 30),

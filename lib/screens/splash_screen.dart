@@ -3,6 +3,7 @@ import 'package:digital_receipt_wallet/screens/homepage.dart';
 import 'package:digital_receipt_wallet/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:digital_receipt_wallet/l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,6 +21,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _init() async {
+    // Önce güncelleme kontrolü yap
+    await _checkForUpdate();
+
+    if (!mounted) return;
+
     final user = FirebaseAuth.instance.currentUser;
 
     // 2 saniyelik bekleme hala çalışsın
@@ -33,6 +39,22 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (_) => user != null ? const HomePage() : const LoginScreen(),
       ),
     );
+  }
+
+  Future<void> _checkForUpdate() async {
+    try {
+      final info = await InAppUpdate.checkForUpdate();
+
+      if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+        // Kullanıcı güncellemeyi tamamlamadan devam edemez.
+        // Bu satır, güncelleme tamamlanana (ya da kullanıcı geri gidene) kadar bekler.
+        await InAppUpdate.performImmediateUpdate();
+      }
+    } catch (e) {
+      // Play Store üzerinden yüklenmemiş build'lerde (örn. flutter run ile test)
+      // ya da bağlantı sorunlarında hata fırlatır, bu durumda sessizce devam et.
+      debugPrint('Güncelleme kontrolü başarısız: $e');
+    }
   }
 
   @override

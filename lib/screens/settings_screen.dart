@@ -31,6 +31,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   String? _currentBase64Photo;
 
+  String _languageName(String code) {
+  switch (code) {
+    case 'tr':
+      return 'Türkçe';
+    case 'en':
+      return 'English';
+    case 'es':
+      return 'Español';
+    case 'de':
+      return 'Deutsch';
+    case 'pt':
+      return 'Português';
+    case 'fr':
+      return 'Français';
+    default:
+      return 'English';
+  }
+}
+
   Future<void> pickImage() async {
     final XFile? image =
         await picker.pickImage(source: ImageSource.gallery);
@@ -75,31 +94,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 12),
-          ListTile(
-            leading: const Text('🇬🇧', style: TextStyle(fontSize: 24)),
-            title: const Text('English'),
-            trailing: localeProvider.locale.languageCode == 'en'
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : null,
-            onTap: () {
-              localeProvider.setLocale(const Locale('en'));
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Text('🇹🇷', style: TextStyle(fontSize: 24)),
-            title: const Text('Türkçe'),
-            trailing: localeProvider.locale.languageCode == 'tr'
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : null,
-            onTap: () {
-              localeProvider.setLocale(const Locale('tr'));
-              Navigator.pop(context);
-            },
-          ),
+          _langTile(localeProvider, '🇬🇧', 'English', 'en'),
+          _langTile(localeProvider, '🇹🇷', 'Türkçe', 'tr'),
+          _langTile(localeProvider, '🇪🇸', 'Español', 'es'),
+          _langTile(localeProvider, '🇩🇪', 'Deutsch', 'de'),
+          _langTile(localeProvider, '🇵🇹', 'Português', 'pt'),
+          _langTile(localeProvider, '🇫🇷', 'Français', 'fr'),
           const SizedBox(height: 12),
         ],
       ),
+    );
+  }
+
+  ListTile _langTile(LocaleProvider localeProvider, String flag, String label, String code) {
+    return ListTile(
+      leading: Text(flag, style: const TextStyle(fontSize: 24)),
+      title: Text(label),
+      trailing: localeProvider.locale.languageCode == code
+          ? const Icon(Icons.check_circle, color: Colors.green)
+          : null,
+      onTap: () {
+        localeProvider.setLocale(Locale(code));
+        Navigator.pop(context);
+      },
     );
   }
 
@@ -119,7 +136,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       avatarImage = FileImage(selectedImage!);
     } else if (_currentBase64Photo != null &&
         _currentBase64Photo!.isNotEmpty) {
-      avatarImage = MemoryImage(base64Decode(_currentBase64Photo!));
+      if (_currentBase64Photo!.startsWith('http')) {
+        // Google hesabından gelen fotoğraf URL'si
+        avatarImage = NetworkImage(_currentBase64Photo!);
+      } else {
+        // Firestore'da base64 olarak saklanan fotoğraf
+        try {
+          avatarImage = MemoryImage(base64Decode(_currentBase64Photo!));
+        } catch (e) {
+          avatarImage = null;
+        }
+      }
     }
 
     return Scaffold(
@@ -307,11 +334,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListTile(
                 leading: const Icon(Icons.language_outlined),
                 title: Text(loc.selectAppLanguage),
-                subtitle: Text(
-                  localeProvider.locale.languageCode == 'tr'
-                      ? 'Türkçe'
-                      : 'English',
-                ),
+                subtitle: Text(_languageName(localeProvider.locale.languageCode)),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _openLanguageSheet(localeProvider),
               ),

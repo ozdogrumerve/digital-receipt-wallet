@@ -56,6 +56,10 @@ class _DigitalReceiptWalletAppState extends State<DigitalReceiptWalletApp> {
             supportedLocales: const [
               Locale('en'),
               Locale('tr'),
+              Locale('es'),
+              Locale('de'),
+              Locale('pt'),
+              Locale('fr'),
             ],
 
             debugShowCheckedModeBanner: false,

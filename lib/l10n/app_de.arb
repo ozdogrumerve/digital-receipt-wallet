@@ -1,0 +1,1324 @@
+{
+  "@@locale": "de",
+
+  "addExpense": "Manuelle Ausgabe Hinzufügen",
+  "@addExpense": {
+    "description": "AppBar Titel - Manuelle Ausgabe hinzufügen & FAB Menü"
+  },
+
+  "storeName": "Geschäftsname",
+  "@storeName": {
+    "description": "Label für Geschäftsname Feld"
+  },
+
+  "storeNameHint": "Bsp. Migros, A101",
+  "@storeNameHint": {
+    "description": "Platzhalter für Geschäftsname"
+  },
+
+  "date": "Datum",
+  "@date": {
+    "description": "Label für Datumsauswahl"
+  },
+
+  "category": "Kategorie",
+  "@category": {
+    "description": "Label für Kategorie Dropdown"
+  },
+
+  "aiSuggest": "KI-Vorschlag",
+  "@aiSuggest": {
+    "description": "Button-Text für KI-Kategorievorschlag"
+  },
+
+  "addItem": "PRODUKT HINZUFÜGEN",
+  "@addItem": {
+    "description": "Überschrift Produkt hinzufügen & Bottom Sheet"
+  },
+
+  "productName": "Produktname",
+  "@productName": {
+    "description": "Label für Produktname Feld"
+  },
+
+  "productNameHint": "Was hast du gekauft?",
+  "@productNameHint": {
+    "description": "Platzhalter für Produktname"
+  },
+
+  "price": "Preis (₺)",
+  "@price": {
+    "description": "Label für Preisfeld"
+  },
+
+  "quantity": "Menge",
+  "@quantity": {
+    "description": "Label für Mengenfeld"
+  },
+
+  "addToList": "+ Zur Liste hinzufügen",
+  "@addToList": {
+    "description": "Button zum Hinzufügen zur Einkaufsliste"
+  },
+
+  "purchaseList": "EINKAUFSLISTE",
+  "@purchaseList": {
+    "description": "Überschrift der hinzugefügten Produkte"
+  },
+
+  "itemsCount": "PRODUKT",
+  "@itemsCount": {
+    "description": "Text neben Produktanzahl"
+  },
+
+  "tapToEditSwipeToDelete": "Zum Bearbeiten tippen • Zum Löschen nach links wischen",
+  "@tapToEditSwipeToDelete": {
+    "description": "Hilfetext in der Einkaufsliste"
+  },
+
+  "swipeToDelete": "Zum Löschen nach links wischen",
+  "@swipeToDelete": {
+    "description": "Hilfetext für Wisch-Geste"
+  },
+
+  "noItemsYet": "Noch keine Produkte",
+  "@noItemsYet": {
+    "description": "Leerer Zustand - keine Produkte"
+  },
+
+  "totalAmount": "Gesamtbetrag",
+  "@totalAmount": {
+    "description": "Label für Gesamtbetrag"
+  },
+
+  "saveTransaction": "Transaktion Speichern",
+  "@saveTransaction": {
+    "description": "Speichern-Button unten"
+  },
+
+  "addItemTitle": "Produkt Hinzufügen",
+  "@addItemTitle": {
+    "description": "Bottom Sheet Titel - Produkt hinzufügen"
+  },
+
+  "editItemTitle": "Produkt Bearbeiten",
+  "@editItemTitle": {
+    "description": "Bottom Sheet Titel - Produkt bearbeiten"
+  },
+
+  "nameRequired": "Name ist erforderlich",
+  "@nameRequired": {
+    "description": "Validierungsfehler - Name leer"
+  },
+
+  "priceMustBeGreaterThanZero": "Preis muss größer als 0 sein",
+  "@priceMustBeGreaterThanZero": {
+    "description": "Fehler bei Preis ≤ 0"
+  },
+
+  "qtyMustBeGreaterThanZero": "Menge muss größer als 0 sein",
+  "@qtyMustBeGreaterThanZero": {
+    "description": "Fehler bei Menge ≤ 0"
+  },
+
+  "storeNameCannotBeEmpty": "Geschäftsname darf nicht leer sein",
+  "@storeNameCannotBeEmpty": {
+    "description": "Fehler wenn Geschäftsname leer ist"
+  },
+
+  "addAtLeastOneProduct": "Füge mindestens ein Produkt hinzu",
+  "@addAtLeastOneProduct": {
+    "description": "Fehler wenn keine Produkte hinzugefügt wurden"
+  },
+
+  "enterValidProduct": "Gib ein gültiges Produkt ein",
+  "@enterValidProduct": {
+    "description": "Fehler bei ungültigem Produkt"
+  },
+
+  "aiError": "KI-Fehler: ",
+  "@aiError": {
+    "description": "Fehlermeldung bei KI-Kategorievorschlag"
+  },
+
+  "analytics": "Analysen",
+  "@analytics": {
+    "description": "AppBar Titel Analytics & Button zu detaillierter Analyse"
+  },
+
+  "spendingTrend": "Ausgabentrend",
+  "@spendingTrend": {
+    "description": "Titel des wöchentlichen Liniendiagramms"
+  },
+
+  "weekly": "Wöchentlich",
+  "@weekly": {
+    "description": "Label über dem Liniendiagramm"
+  },
+
+  "categoryBudgets": "Kategorie-Budgets",
+  "@categoryBudgets": {
+    "description": "Titel der horizontalen Kategorie-Karten"
+  },
+
+  "selectRange": "Zeitraum auswählen",
+  "@selectRange": {
+    "description": "Text wenn kein Zeitraum ausgewählt"
+  },
+
+  "monthlyInsights": "MONATLICHE STATISTIKEN",
+  "@monthlyInsights": {
+    "description": "Titel der monatlichen Insights"
+  },
+
+  "highestSpendingCategory": "HÖCHSTE AUSGABENKATEGORIE",
+  "@highestSpendingCategory": {
+    "description": "Label für Kategorie mit höchsten Ausgaben"
+  },
+
+  "averageDailySpend": "TÄGLICHER DURCHSCHNITT (DIESER MONAT)",
+  "@averageDailySpend": {
+    "description": "Label für täglichen Durchschnitt"
+  },
+
+  "topMerchant": "Meistbesuchtes Geschäft",
+  "@topMerchant": {
+    "description": "Titel der Karte für das Geschäft mit den meisten Ausgaben"
+  },
+
+  "noDataYet": "Noch keine Daten",
+  "@noDataYet": {
+    "description": "Placeholder bei fehlenden Daten"
+  },
+
+  "transactionsCount": "Transaktionen",
+  "@transactionsCount": {
+    "description": "Text neben Transaktionsanzahl"
+  },
+
+  "perDay": " / Tag",
+  "@perDay": {
+    "description": "Suffix für täglichen Durchschnitt"
+  },
+
+  "mon": "Mo",
+  "tue": "Di",
+  "wed": "Mi",
+  "thu": "Do",
+  "fri": "Fr",
+  "sat": "Sa",
+  "sun": "So",
+  "@mon": { "description": "Abkürzung Montag" },
+  "@tue": { "description": "Abkürzung Dienstag" },
+  "@wed": { "description": "Abkürzung Mittwoch" },
+  "@thu": { "description": "Abkürzung Donnerstag" },
+  "@fri": { "description": "Abkürzung Freitag" },
+  "@sat": { "description": "Abkürzung Samstag" },
+  "@sun": { "description": "Abkürzung Sonntag" },
+
+  "digitalReceiptWallet": "Digital Receipt Wallet",
+  "@digitalReceiptWallet": {
+    "description": "Haupttitel der App auf der Startseite"
+  },
+
+  "totalSpent": "Gesamtausgaben",
+  "@totalSpent": {
+    "description": "Label für monatliche Gesamtausgaben"
+  },
+
+  "noMonthlyBudgetSetYet": "Noch kein Monatsbudget festgelegt",
+  "@noMonthlyBudgetSetYet": {
+    "description": "Text wenn noch kein Budget eingestellt wurde"
+  },
+
+  "limitLeft": "VERBLEIBENDES LIMIT",
+  "@limitLeft": {
+    "description": "Label für verbleibendes Budget"
+  },
+
+  "percentUsed": "VERWENDET",
+  "@percentUsed": {
+    "description": "Text im Prozent-Chip"
+  },
+
+  "recentActivity": "Letzte Aktivitäten",
+  "@recentActivity": {
+    "description": "Titel der letzten Transaktionen"
+  },
+
+  "seeHistory": "Verlauf Ansehen",
+  "@seeHistory": {
+    "description": "Button zum gesamten Verlauf"
+  },
+
+  "noReceiptsYet": "Noch keine Quittungen",
+  "@noReceiptsYet": {
+    "description": "Titel bei leerer Startseite"
+  },
+
+  "yourScannedReceiptsWillAppearHere": "Deine gescannten Quittungen erscheinen hier",
+  "@yourScannedReceiptsWillAppearHere": {
+    "description": "Untertext beim leeren Zustand"
+  },
+
+  "home": "Startseite",
+  "@home": {
+    "description": "Bottom Navigation - Startseite"
+  },
+
+  "reports": "Berichte",
+  "@reports": {
+    "description": "Bottom Navigation - Berichte"
+  },
+
+  "settings": "Einstellungen",
+  "@settings": {
+    "description": "Bottom Navigation - Einstellungen"
+  },
+
+  "scanReceipt": "Quittung Scannen",
+  "@scanReceipt": {
+    "description": "FAB Button & Scan-Bildschirm Titel"
+  },
+
+  "uploadReceiptPdf": "Quittung / PDF Hochladen",
+  "@uploadReceiptPdf": {
+    "description": "FAB Menü Option"
+  },
+
+  "welcomeBack": "Willkommen zurück",
+  "@welcomeBack": {
+    "description": "Haupttitel Login-Bildschirm"
+  },
+
+  "signInToManageYourReceipts": "Melde dich an, um deine Quittungen zu verwalten",
+  "@signInToManageYourReceipts": {
+    "description": "Untertitel Login"
+  },
+
+  "email": "E-Mail",
+  "@email": {
+    "description": "Label für E-Mail Feld"
+  },
+
+  "password": "Passwort",
+  "@password": {
+    "description": "Label für Passwort Feld"
+  },
+
+  "signIn": "Anmelden",
+  "@signIn": {
+    "description": "Haupt-Anmeldebutton"
+  },
+
+  "dontHaveAnAccount": "Noch kein Konto? Registrieren",
+  "@dontHaveAnAccount": {
+    "description": "Button zur Registrierung"
+  },
+
+  "loginError": "Fehler bei der Anmeldung",
+  "@loginError": {
+    "description": "Allgemeiner Login-Fehler"
+  },
+
+  "productDetails": "Produktdetails",
+  "@productDetails": {
+    "description": "AppBar Titel Transaktionsdetails"
+  },
+
+  "items": "Produkte",
+  "@items": {
+    "description": "Titel der Produktliste"
+  },
+
+  "noItemsRecorded": "Keine Produkte aufgezeichnet",
+  "@noItemsRecorded": {
+    "description": "Leerer Zustand bei Transaktion ohne Produkte"
+  },
+
+  "scanned": "Gescannt",
+  "@scanned": {
+    "description": "Label für gescannte Transaktion"
+  },
+
+  "pdf": "PDF",
+  "@pdf": {
+    "description": "Label für PDF-Transaktion"
+  },
+
+  "manual": "Manuell",
+  "@manual": {
+    "description": "Label für manuell hinzugefügte Transaktion"
+  },
+
+  "total": "Gesamt",
+  "@total": {
+    "description": "Label für Gesamtsumme"
+  },
+
+  "profileDetails": "Profildetails",
+  "@profileDetails": {
+    "description": "Titel Profildetails Bildschirm"
+  },
+
+  "displayName": "Anzeigename",
+  "@displayName": {
+    "description": "Label für Anzeigename"
+  },
+
+  "yourNameHint": "Dein Name",
+  "@yourNameHint": {
+    "description": "Platzhalter für Namen"
+  },
+
+  "emailAddress": "E-Mail Adresse (Erneute Anmeldung erforderlich)",
+  "@emailAddress": {
+    "description": "Label für E-Mail mit Hinweis"
+  },
+
+  "yourEmailHint": "beispiel@email.com",
+  "@yourEmailHint": {
+    "description": "Platzhalter für E-Mail"
+  },
+
+  "currentPassword": "Aktuelles Passwort",
+  "@currentPassword": {
+    "description": "Label für aktuelles Passwort"
+  },
+
+  "requiredToChangeEmail": "Zum Ändern der E-Mail erforderlich",
+  "@requiredToChangeEmail": {
+    "description": "Hinweis für aktuelles Passwort"
+  },
+
+  "changePassword": "Passwort Ändern",
+  "@changePassword": {
+    "description": "Titel Passwort ändern Bereich"
+  },
+
+  "currentPasswordHint": "Aktuelles Passwort",
+  "@currentPasswordHint": {
+    "description": "Platzhalter aktuelles Passwort"
+  },
+
+  "newPasswordHint": "Neues Passwort",
+  "@newPasswordHint": {
+    "description": "Platzhalter neues Passwort"
+  },
+
+  "confirmNewPasswordHint": "Neues Passwort bestätigen",
+  "@confirmNewPasswordHint": {
+    "description": "Platzhalter Passwort bestätigen"
+  },
+
+  "verificationEmailSent": "Bestätigungs-E-Mail wurde gesendet. Bitte überprüfe dein Postfach.",
+  "@verificationEmailSent": {
+    "description": "Erfolgsmeldung bei E-Mail Änderung"
+  },
+
+  "profileUpdatedSuccessfully": "Profil erfolgreich aktualisiert.",
+  "@profileUpdatedSuccessfully": {
+    "description": "Erfolgsmeldung Profilupdate"
+  },
+
+  "nameCannotBeEmpty": "Name darf nicht leer sein.",
+  "@nameCannotBeEmpty": {
+    "description": "Fehler bei leerem Namen"
+  },
+
+  "newPasswordMustBeAtLeast6": "Neues Passwort muss mindestens 6 Zeichen lang sein",
+  "@newPasswordMustBeAtLeast6": {
+    "description": "Fehler bei zu kurzem Passwort"
+  },
+
+  "passwordsDontMatch": "Passwörter stimmen nicht überein",
+  "@passwordsDontMatch": {
+    "description": "Fehler bei nicht übereinstimmenden Passwörtern"
+  },
+
+  "enterCurrentPassword": "Gib dein aktuelles Passwort ein",
+  "@enterCurrentPassword": {
+    "description": "Fehler bei fehlendem aktuellem Passwort"
+  },
+
+  "enterPasswordToChangeEmail": "Gib dein Passwort ein, um die E-Mail zu ändern.",
+  "@enterPasswordToChangeEmail": {
+    "description": "Fehler bei fehlendem Passwort für E-Mail-Änderung"
+  },
+
+  "incorrectPassword": "Falsches Passwort.",
+  "@incorrectPassword": {
+    "description": "Fehler bei falschem Passwort"
+  },
+
+  "emailAlreadyInUse": "Diese E-Mail-Adresse wird bereits verwendet.",
+  "@emailAlreadyInUse": {
+    "description": "Fehler wenn E-Mail schon vergeben"
+  },
+
+  "invalidEmail": "Ungültige E-Mail-Adresse.",
+  "@invalidEmail": {
+    "description": "Fehler bei ungültigem E-Mail-Format"
+  },
+
+  "anErrorOccurred": "Ein Fehler ist aufgetreten.",
+  "@anErrorOccurred": {
+    "description": "Allgemeine Fehlermeldung"
+  },
+
+  "aVerificationEmailWillBeSent": "Eine Bestätigungs-E-Mail wird an die neue Adresse gesendet.",
+  "@aVerificationEmailWillBeSent": {
+    "description": "Info-Text bei E-Mail-Änderung"
+  },
+
+  "addRecurring": "Wiederkehrend Hinzufügen",
+  "@addRecurring": {
+    "description": "Floating Action Button Text"
+  },
+
+  "noRecurringTransactions": "Keine wiederkehrenden Transaktionen",
+  "@noRecurringTransactions": {
+    "description": "Titel bei keinen wiederkehrenden Transaktionen"
+  },
+
+  "tapToAddSubscriptionsRentEtc": "Tippe auf + um Abos, Miete etc. hinzuzufügen",
+  "@tapToAddSubscriptionsRentEtc": {
+    "description": "Leerer Zustand Untertext"
+  },
+
+  "paused": "PAUSIERT",
+  "@paused": {
+    "description": "Titel pausierter wiederkehrender Transaktionen"
+  },
+
+  "dueSoon": "Zahlung bald fällig",
+  "@dueSoon": {
+    "description": "Badge für in 3 Tagen fällige Zahlungen"
+  },
+
+  "next": "Nächste:",
+  "@next": {
+    "description": "Label vor nächstem Zahlungsdatum"
+  },
+
+  "deleteRecurring": "Wiederkehrende löschen",
+  "@deleteRecurring": {
+    "description": "Dialog-Titel löschen"
+  },
+
+  "removeFromRecurring": "Die Ausgabe \"{storeName}\" aus den wiederkehrenden entfernen?",
+  "@removeFromRecurring": {
+    "description": "Dialog-Inhalt",
+    "placeholders": {
+      "storeName": {}
+    }
+  },
+
+  "cancel": "Abbrechen",
+  "@cancel": {
+    "description": "Abbrechen-Button in Dialogen"
+  },
+
+  "delete": "Löschen",
+  "@delete": {
+    "description": "Löschen-Button in Dialogen"
+  },
+
+  "newRecurring": "Neue wiederkehrende Transaktion",
+  "@newRecurring": {
+    "description": "Titel neuer wiederkehrender Eintrag"
+  },
+
+  "editRecurring": "Wiederkehrende bearbeiten",
+  "@editRecurring": {
+    "description": "Titel beim Bearbeiten"
+  },
+
+  "nameOrStore": "Name / Geschäft",
+  "@nameOrStore": {
+    "description": "Label Name/Geschäft im Formular"
+  },
+
+  "amountTL": "Betrag (₺)",
+  "@amountTL": {
+    "description": "Label für Betrag"
+  },
+
+  "frequency": "Häufigkeit",
+  "@frequency": {
+    "description": "Label für Häufigkeitsauswahl"
+  },
+
+  "startDate": "Startdatum",
+  "@startDate": {
+    "description": "Label für Startdatum"
+  },
+
+  "noteOptional": "Notiz (optional)",
+  "@noteOptional": {
+    "description": "Label für Notizfeld"
+  },
+
+  "add": "Hinzufügen",
+  "@add": {
+    "description": "Hinzufügen-Button"
+  },
+
+  "saveChanges": "Änderungen Speichern",
+  "@saveChanges": {
+    "description": "Button zum Speichern von Änderungen"
+  },
+
+  "resume": "Fortsetzen",
+  "@resume": {
+    "description": "Button zum Fortsetzen einer pausierten Transaktion"
+  },
+
+  "pause": "Pausieren",
+  "@pause": {
+    "description": "Button zum Pausieren"
+  },
+
+  "monthlyBudget": "Monatsbudget",
+  "@monthlyBudget": {
+    "description": "Label Monatsbudget"
+  },
+
+  "setAlert": "Alarm einstellen",
+  "@setAlert": {
+    "description": "Button Budget-Alarm"
+  },
+
+  "adjustBudget": "Budget",
+  "@adjustBudget": {
+    "description": "Kurzlabel für Budget-Button"
+  },
+
+  "alertAyari": "Alarm einstellen",
+  "@alertAyari": {
+    "description": "Bottom Sheet Titel Alarm"
+  },
+
+  "alertDescription": "Benachrichtige mich bei %{percentage} des Budgets",
+  "@alertDescription": {
+    "description": "Beschreibung im Alarm Bottom Sheet",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "cancelAlert": "Alarm entfernen",
+  "@cancelAlert": {
+    "description": "Button Alarm löschen"
+  },
+
+  "current": "Aktuell",
+  "@current": {
+    "description": "Option 'Aktuell' bei Budgetauswahl"
+  },
+
+  "save": "Speichern",
+  "@save": {
+    "description": "Allgemeiner Speichern-Button"
+  },
+
+  "alertRemoved": "Alarm entfernt",
+  "@alertRemoved": {
+    "description": "Snackbar bei Alarm-Löschung"
+  },
+
+  "alertSetFor": "Alarm für %{percentage} des Budgets eingerichtet",
+  "@alertSetFor": {
+    "description": "Erfolgsmeldung Alarm",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "budgetUpdatedTo": "Budget auf ₺{amount} aktualisiert",
+  "@budgetUpdatedTo": {
+    "description": "Erfolgsmeldung Budget-Update",
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "pleaseEnterBudgetAmount": "Bitte Budgetbetrag eingeben",
+  "@pleaseEnterBudgetAmount": {
+    "description": "Fehler bei leerem Budgetfeld"
+  },
+
+  "pleaseEnterValidAmount": "Bitte gültigen Betrag eingeben",
+  "@pleaseEnterValidAmount": {
+    "description": "Fehler bei ungültigem Budgetbetrag"
+  },
+
+  "generating": "Wird erstellt...",
+  "@generating": {
+    "description": "Lade-Text beim PDF-Export"
+  },
+
+  "exportStatement": "Bericht Exportieren",
+  "@exportStatement": {
+    "description": "Button für monatlichen PDF-Bericht"
+  },
+
+  "statementCouldNotBeGenerated": "Bericht konnte nicht erstellt werden: {error}",
+  "@statementCouldNotBeGenerated": {
+    "description": "Fehlermeldung PDF-Generierung",
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "noDataForPreviousMonth": "Keine Daten vom Vormonat",
+  "@noDataForPreviousMonth": {
+    "description": "Text bei fehlenden Vormonatsdaten"
+  },
+
+  "increase": "Zunahme",
+  "@increase": {
+    "description": "Wort für '%X Zunahme'"
+  },
+
+  "decrease": "Abnahme",
+  "@decrease": {
+    "description": "Wort für '%X Abnahme'"
+  },
+
+  "noChange": "Keine Veränderung",
+  "@noChange": {
+    "description": "Text bei keiner Veränderung zum Vormonat"
+  },
+
+  "dailyAverage": "TÄGLICHER DURCHSCHNITT",
+  "@dailyAverage": {
+    "description": "Label täglicher Durchschnitt"
+  },
+
+  "notificationsAreDisabled": "Benachrichtigungen sind deaktiviert. Aktiviere sie in den Einstellungen.",
+  "@notificationsAreDisabled": {
+    "description": "Warnung bei deaktivierten Benachrichtigungen"
+  },
+
+  "noImageCaptured": "Kein Foto aufgenommen",
+  "@noImageCaptured": {
+    "description": "Text wenn noch kein Foto gemacht wurde"
+  },
+
+  "takePhoto": "Foto Aufnehmen",
+  "@takePhoto": {
+    "description": "Button Foto aufnehmen"
+  },
+
+  "retake": "Neu Aufnehmen",
+  "@retake": {
+    "description": "Button Foto neu aufnehmen"
+  },
+
+  "extractionResults": "Ergebnisse der Extraktion",
+  "@extractionResults": {
+    "description": "Titel der Scan-Ergebnisse"
+  },
+
+  "edit": "Bearbeiten",
+  "@edit": {
+    "description": "Button in den Bearbeitungsmodus"
+  },
+
+  "done": "Fertig",
+  "@done": {
+    "description": "Button Bearbeitungsmodus verlassen"
+  },
+
+  "aiSuggested": "Von KI vorgeschlagen ⚡",
+  "@aiSuggested": {
+    "description": "Kleiner Text bei KI-Vorschlag"
+  },
+
+  "detectedProducts": "Erkannte Produkte",
+  "@detectedProducts": {
+    "description": "Titel erkannter Produkte"
+  },
+
+  "noProductsDetected": "Keine Produkte erkannt",
+  "@noProductsDetected": {
+    "description": "Leerer Zustand keine Produkte"
+  },
+
+  "addItemManually": "+ Manuell Produkt Hinzufügen",
+  "@addItemManually": {
+    "description": "Button manuelles Hinzufügen"
+  },
+
+  "saveReceipt": "Quittung Speichern",
+  "@saveReceipt": {
+    "description": "Haupt-Speichern Button"
+  },
+
+  "pleaseScanReceiptFirst": "Bitte zuerst eine Quittung scannen",
+  "@pleaseScanReceiptFirst": {
+    "description": "Fehler ohne Scan"
+  },
+
+  "totalMustBeGreaterThanZero": "Gesamtbetrag muss größer als 0 sein",
+  "@totalMustBeGreaterThanZero": {
+    "description": "Fehler bei Gesamtbetrag ≤ 0"
+  },
+
+  "editItem": "Produkt Bearbeiten",
+  "@editItem": {
+    "description": "Bottom Sheet Titel Bearbeiten"
+  },
+
+  "invalidReceiptScan": "Ungültiger Quittungsscan",
+  "@invalidReceiptScan": {
+    "description": "Fehler bei ungültigem KI-JSON"
+  },
+
+  "thisDoesntLookLikeAReceipt": "Das sieht nicht wie eine Quittung aus",
+  "@thisDoesntLookLikeAReceipt": {
+    "description": "Fehler bei ungültiger Quittung"
+  },
+
+  "scanError": "Scan-Fehler: ",
+  "@scanError": {
+    "description": "Fehler-Präfix Scan"
+  },
+
+  "personalAccount": "PERSÖNLICHES KONTO",
+  "@personalAccount": {
+    "description": "Titel persönliches Konto"
+  },
+
+  "changeNameEmailAndAvatar": "Name, E-Mail und Avatar ändern",
+  "@changeNameEmailAndAvatar": {
+    "description": "Untertext Profildetails"
+  },
+
+  "appPreferences": "APP-EINSTELLUNGEN",
+  "@appPreferences": {
+    "description": "Titel App-Einstellungen"
+  },
+
+  "pushNotifications": "Benachrichtigungen",
+  "@pushNotifications": {
+    "description": "Titel Benachrichtigungseinstellungen"
+  },
+
+  "alertsForLargeTransactions": "Benachrichtigungen bei großen Ausgaben",
+  "@alertsForLargeTransactions": {
+    "description": "Beschreibung Benachrichtigungen"
+  },
+
+  "visualTheme": "Visuelles Thema",
+  "@visualTheme": {
+    "description": "Titel Hell/Dunkel-Modus"
+  },
+
+  "switchBetweenLightAndDark": "Zwischen hellem und dunklem Thema wechseln",
+  "@switchBetweenLightAndDark": {
+    "description": "Untertext Thema"
+  },
+
+  "language": "SPRACHE",
+  "@language": {
+    "description": "Titel Spracheinstellungen"
+  },
+
+  "selectAppLanguage": "App-Sprache auswählen",
+  "@selectAppLanguage": {
+    "description": "Untertext Sprache"
+  },
+
+  "signOut": "Abmelden",
+  "@signOut": {
+    "description": "Abmelde-Button"
+  },
+
+  "notificationsDisabledPermission": "Du musst Benachrichtigungen erlauben.",
+  "@notificationsDisabledPermission": {
+    "description": "Fehler bei verweigerter Berechtigung"
+  },
+
+  "notificationsTurnedOff": "Benachrichtigungen wurden ausgeschaltet. Du kannst sie komplett in den Geräteeinstellungen deaktivieren.",
+  "@notificationsTurnedOff": {
+    "description": "Meldung bei ausgeschalteten Benachrichtigungen"
+  },
+
+  "goToSettings": "Zu den Einstellungen",
+  "@goToSettings": {
+    "description": "Snackbar Button zu Geräteeinstellungen"
+  },
+
+  "createAccount": "Konto Erstellen",
+  "@createAccount": {
+    "description": "Titel Registrierung"
+  },
+
+  "signUpToStartManagingYourReceipts": "Registriere dich, um deine Quittungen zu verwalten",
+  "@signUpToStartManagingYourReceipts": {
+    "description": "Untertitel Registrierung"
+  },
+
+  "fullName": "Vor- und Nachname",
+  "@fullName": {
+    "description": "Label Vor- und Nachname"
+  },
+
+  "createAccountButton": "Konto Erstellen",
+  "@createAccountButton": {
+    "description": "Haupt-Registrierungsbutton"
+  },
+
+  "alreadyHaveAnAccount": "Hast du schon ein Konto? Anmelden",
+  "@alreadyHaveAnAccount": {
+    "description": "Button zur Anmeldung"
+  },
+
+  "error": "Fehler",
+  "@error": {
+    "description": "Allgemeiner Fehler-Titel"
+  },
+
+  "splashSlogan": "INTELLIGENTER VERFOLGEN. BESSER AUSGEBEN.",
+  "@splashSlogan": {
+    "description": "Hauptslogan auf Splash Screen"
+  },
+
+  "transactions": "Transaktionen",
+  "@transactions": {
+    "description": "Titel Transaktionsbildschirm & Bottom Nav"
+  },
+
+  "search": "Suchen...",
+  "@search": {
+    "description": "Platzhalter Suchfeld"
+  },
+
+  "recurringTransactions": "Wiederkehrende Transaktionen",
+  "@recurringTransactions": {
+    "description": "Menüeintrag Wiederkehrende"
+  },
+
+  "noTransactionsYet": "Noch keine Transaktionen",
+  "@noTransactionsYet": {
+    "description": "Leerer Zustand Transaktionen"
+  },
+
+  "yourTransactionsWillAppearHere": "Deine Transaktionen erscheinen hier",
+  "@yourTransactionsWillAppearHere": {
+    "description": "Untertext leerer Zustand"
+  },
+
+  "all": "Alle",
+  "@all": {
+    "description": "Filter 'Alle Transaktionen'"
+  },
+
+  "food": "Essen",
+  "@food": {
+    "description": "Kategorie Essen"
+  },
+
+  "clothing": "Kleidung",
+  "@clothing": {
+    "description": "Kategorie Kleidung"
+  },
+
+  "tech": "Technik",
+  "@tech": {
+    "description": "Kategorie Technik"
+  },
+
+  "transportation": "Verkehr",
+  "@transportation": {
+    "description": "Kategorie Verkehr"
+  },
+
+  "bills": "Rechnungen",
+  "@bills": {
+    "description": "Kategorie Rechnungen"
+  },
+
+  "rent": "Miete",
+  "@rent": {
+    "description": "Kategorie Miete"
+  },
+
+  "education": "Bildung",
+  "@education": {
+    "description": "Kategorie Bildung"
+  },
+
+  "healthcare": "Gesundheit",
+  "@healthcare": {
+    "description": "Kategorie Gesundheit"
+  },
+
+  "personalCare": "Körperpflege",
+  "@personalCare": {
+    "description": "Kategorie Körperpflege"
+  },
+
+  "entertainment": "Unterhaltung",
+  "@entertainment": {
+    "description": "Kategorie Unterhaltung"
+  },
+
+  "householdFurniture": "Haushalt / Möbel",
+  "@householdFurniture": {
+    "description": "Kategorie Haushalt"
+  },
+
+  "stationery": "Schreibwaren",
+  "@stationery": {
+    "description": "Kategorie Schreibwaren"
+  },
+
+  "vacationTravel": "Urlaub / Reisen",
+  "@vacationTravel": {
+    "description": "Kategorie Urlaub"
+  },
+
+  "taxesOfficialPayments": "Steuern / Amtliche Zahlungen",
+  "@taxesOfficialPayments": {
+    "description": "Kategorie Steuern"
+  },
+
+  "other": "Sonstiges",
+  "@other": {
+    "description": "Kategorie Sonstiges"
+  },
+
+  "thisWeek": "Diese Woche",
+  "@thisWeek": {
+    "description": "Datumsfilter Diese Woche"
+  },
+
+  "thisMonth": "Dieser Monat",
+  "@thisMonth": {
+    "description": "Datumsfilter Dieser Monat"
+  },
+
+  "customDate": "Benutzerdefiniert",
+  "@customDate": {
+    "description": "Text bei benutzerdefiniertem Zeitraum"
+  },
+
+  "today": "HEUTE",
+  "@today": {
+    "description": "Überschrift für heutige Transaktionen"
+  },
+
+  "yesterday": "GESTERN",
+  "@yesterday": {
+    "description": "Überschrift für gestrige Transaktionen"
+  },
+
+  "uploadReceipt": "Quittung / PDF Hochladen",
+  "@uploadReceipt": {
+    "description": "AppBar Titel Upload"
+  },
+
+  "gallery": "Galerie",
+  "@gallery": {
+    "description": "Galerie-Tab"
+  },
+
+  "noImageSelected": "Kein Bild ausgewählt",
+  "@noImageSelected": {
+    "description": "Text wenn kein Bild ausgewählt"
+  },
+
+  "selectFromGallery": "Aus Galerie auswählen",
+  "@selectFromGallery": {
+    "description": "Button aus Galerie auswählen"
+  },
+
+  "changeImage": "Foto ändern",
+  "@changeImage": {
+    "description": "Button Foto ändern"
+  },
+
+  "uploadEkstre": "Kontoauszug Hochladen",
+  "@uploadEkstre": {
+    "description": "Titel PDF Upload Karte"
+  },
+
+  "selectBankStatement": "Wähle deinen Kontoauszug",
+  "@selectBankStatement": {
+    "description": "Platzhalter wenn kein PDF ausgewählt"
+  },
+
+  "changePdf": "Zum Ändern tippen",
+  "@changePdf": {
+    "description": "Text zum Ändern des PDFs"
+  },
+
+  "analyze": "Analysieren",
+  "@analyze": {
+    "description": "Button PDF mit KI analysieren"
+  },
+
+  "analyzing": "Wird analysiert...",
+  "@analyzing": {
+    "description": "Lade-Text während PDF-Analyse"
+  },
+
+  "totalExpense": "Gesamtausgaben",
+  "@totalExpense": {
+    "description": "Label Gesamtausgaben"
+  },
+
+  "totalIncome": "Gesamteinnahmen",
+  "@totalIncome": {
+    "description": "Label Gesamteinnahmen"
+  },
+
+  "bank": "Bank",
+  "@bank": {
+    "description": "Label Bankname im PDF"
+  },
+
+  "period": "Zeitraum",
+  "@period": {
+    "description": "Label Zeitraum im PDF"
+  },
+
+  "saveTransactions": "Transaktionen Speichern",
+  "@saveTransactions": {
+    "description": "Button Transaktionen aus PDF speichern"
+  },
+
+  "pleaseSelectAllCategories": "Bitte wähle für alle Transaktionen eine Kategorie",
+  "@pleaseSelectAllCategories": {
+    "description": "Fehler wenn nicht alle Kategorien ausgewählt sind"
+  },
+
+  "noTransactionsFound": "Keine Transaktionen gefunden",
+  "@noTransactionsFound": {
+    "description": "Fehler wenn PDF keine Transaktionen enthält"
+  },
+
+  "pdfError": "PDF-Fehler: ",
+  "@pdfError": {
+    "description": "Fehler-Präfix PDF"
+  },
+
+  "uploadError": "Upload-Fehler: ",
+  "@uploadError": {
+    "description": "Fehler-Präfix Upload"
+  },
+
+  "frequencyDaily": "Täglich",
+  "@frequencyDaily": {
+    "description": "Häufigkeit Täglich"
+  },
+
+  "frequencyWeekly": "Wöchentlich",
+  "@frequencyWeekly": {
+    "description": "Häufigkeit Wöchentlich"
+  },
+
+  "frequencyMonthly": "Monatlich",
+  "@frequencyMonthly": {
+    "description": "Häufigkeit Monatlich"
+  },
+  "frequencyYearly": "Jährlich",
+  "@frequencyYearly": {
+    "description": "Häufigkeit Jährlich"
+  },
+
+  "monthlyStatement": "Monatsauszug",
+  "@monthlyStatement": {
+    "description": "Titel PDF-Bericht"
+  },
+
+  "totalSpending": "Gesamtausgaben",
+  "@totalSpending": {
+    "description": "Label Gesamtausgaben im PDF"
+  },
+
+  "transactionCount": "Transaktionsanzahl",
+  "@transactionCount": {
+    "description": "Label Transaktionsanzahl im PDF"
+  },
+
+  "budgetUsed": "Budgetverbrauch",
+  "@budgetUsed": {
+    "description": "Label Budgetverbrauch im PDF"
+  },
+
+  "categorySummary": "Kategorieübersicht",
+  "@categorySummary": {
+    "description": "Titel Kategorieübersicht im PDF"
+  },
+
+  "transactionDetails": "Transaktionsdetails",
+  "@transactionDetails": {
+    "description": "Titel Transaktionsdetails im PDF"
+  },
+  
+  "store": "Geschäft",
+  "@store": {
+    "description": "Spaltenüberschrift Geschäft im PDF"
+  },
+
+  "amount": "Betrag",
+  "@amount": {
+    "description": "Spaltenüberschrift Betrag im PDF"
+  },
+
+  "generatedBy": "Erstellt von Digital Receipt Wallet",
+  "@generatedBy": {
+    "description": "Fußzeile im PDF"
+  },
+
+  "statementFileName": "kontoauszug",
+  "@statementFileName": {
+    "description": "Standard-Dateiname PDF"
+  },
+
+  "budgetUsedPercent": "%{value}",
+  "@budgetUsedPercent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationBudgetFullTitle": "Budget Vollständig Verbraucht 💸",
+  "@notificationBudgetFullTitle": {
+    "description": "Benachrichtigungstitel Budget aufgebraucht"
+  },
+
+  "notificationBudgetFullBody": "Du hast dein Monatsbudget vollständig aufgebraucht.",
+  "@notificationBudgetFullBody": {
+    "description": "Benachrichtigungstext Budget aufgebraucht"
+  },
+
+  "notificationRecurringTitle": "Wiederkehrende Transaktion Ausgeführt 🔁",
+  "@notificationRecurringTitle": {
+    "description": "Titel wiederkehrende Transaktion ausgeführt"
+  },
+
+  "notificationRecurringBody": "{storeName} — {amount} ({category})",
+
+  "@notificationRecurringBody": {
+    "placeholders": {
+      "storeName": {},
+      "amount": {},
+      "category": {}
+    }
+  },
+
+  "notificationBudgetAlertTitle": "Budget-Warnung ⚠️",
+  "@notificationBudgetAlertTitle": {
+    "description": "Titel Budget-Alarm"
+  },
+
+  "notificationBudgetAlertBody": "Es wurden %{value} deines Budgets verbraucht.",
+
+  "@notificationBudgetAlertBody": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+
+  "budgetRemoved": "Budget entfernt",
+  "@budgetRemoved": {
+    "description": "Snackbar Budget entfernt"
+  },
+
+  "removeBudget": "Budget Entfernen",
+  "@removeBudget": {
+    "description": "Button Budget entfernen"
+  },
+
+  "errorNameRequired": "Name ist erforderlich",
+  "@errorNameRequired": {
+    "description": "Fehler Name erforderlich"
+  },
+
+  "errorAmountRequired": "Betrag ist erforderlich",
+  "@errorAmountRequired": {
+    "description": "Fehler Betrag erforderlich"
+  },
+
+  "errorAmountPositive": "Betrag muss positiv sein",
+  "@errorAmountPositive": {
+    "description": "Fehler Betrag muss positiv sein"
+  },
+
+  "errorInvalidEmail": "Ungültige E-Mail-Adresse",
+  "@errorInvalidEmail": {
+    "description": "Fehler ungültige E-Mail"
+  },
+
+  "errorEmailInUse": "Diese E-Mail wird bereits verwendet",
+  "@errorEmailInUse": {
+    "description": "Fehler E-Mail bereits vergeben"
+  },
+
+  "errorUserNotFound": "Kein Konto mit dieser E-Mail gefunden",
+  "@errorUserNotFound": {
+    "description": "Fehler Benutzer nicht gefunden"
+  },
+
+  "errorUserDisabled": "Dieses Konto wurde deaktiviert",
+  "@errorUserDisabled": {
+    "description": "Fehler Konto deaktiviert"
+  },
+
+  "errorWrongPassword": "Falsches Passwort",
+  "@errorWrongPassword": {
+    "description": "Fehler falsches Passwort"
+  },
+
+  "errorWeakPassword": "Passwort muss mindestens 6 Zeichen lang sein",
+  "@errorWeakPassword": {
+    "description": "Fehler schwaches Passwort"
+  },
+
+  "errorTooManyRequests": "Zu viele Versuche, bitte warte",
+  "@errorTooManyRequests": {
+    "description": "Fehler zu viele Anfragen"
+  },
+
+  "errorNetworkFailed": "Internetverbindung fehlgeschlagen",
+  "@errorNetworkFailed": {
+    "description": "Netzwerkfehler"
+  },
+
+  "errorUnknown": "Ein unerwarteter Fehler ist aufgetreten",
+  "@errorUnknown": {
+    "description": "Unbekannter Fehler"
+  },
+
+  "errorFillAllFields": "Bitte fülle alle Felder aus",
+  "@errorFillAllFields": {
+    "description": "Fehler nicht alle Felder ausgefüllt"
+  },
+
+  "confirmPassword": "Passwort Bestätigen",
+  "@confirmPassword": {
+    "description": "Label Passwort bestätigen"
+  },
+  
+  "errorPasswordsDoNotMatch": "Passwörter stimmen nicht überein",
+  "@errorPasswordsDoNotMatch": {
+    "description": "Fehler Passwörter stimmen nicht überein"
+  },
+
+  "orDivider": "oder",
+  "@orDivider": {
+    "description": "Trenner für Social Login"
+  },
+
+  "signInWithGoogle": "Mit Google einloggen",
+  "@signInWithGoogle": {
+    "description": "Button mit Google einloggen"
+  }
+}

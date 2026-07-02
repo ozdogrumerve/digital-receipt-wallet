@@ -216,7 +216,7 @@
   "@sat": { "description": "Grafik için kısaltılmış gün adı - Cumartesi" },
   "@sun": { "description": "Grafik için kısaltılmış gün adı - Pazar" },
 
-  "digitalReceiptWallet": "Dijital Fiş Cüzdanı",
+  "digitalReceiptWallet": "Digital Receipt Wallet",
   "@digitalReceiptWallet": {
     "description": "Ana sayfada üstte görünen uygulama başlığı"
   },
@@ -1301,5 +1301,25 @@
   "errorFillAllFields": "Lütfen tüm alanları doldurun",
   "@errorFillAllFields": {
     "description": "Gerekli alanlar doldurulmadığında gösterilen hata mesajı"
+  },
+
+  "confirmPassword": "Şifreyi Onayla",
+  "@confirmPassword": {
+    "description": "Şifre onay alanı etiketi"
+  },
+  
+  "errorPasswordsDoNotMatch": "Şifreler eşleşmiyor",
+  "@errorPasswordsDoNotMatch": {
+    "description": "Eşleşmeyen şifreler için hata mesajı"
+  },
+
+  "orDivider": "veya",
+  "@orDivider": {
+    "description": "Kayıt olma ekranında sosyal giriş seçeneklerini ayıran metin"
+  },
+
+  "signInWithGoogle": "Google ile giriş yap",
+  "@signInWithGoogle": {
+    "description": "Google giriş yap butonu metni"
   }
 }

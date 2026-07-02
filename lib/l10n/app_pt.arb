@@ -1,0 +1,1324 @@
+{
+  "@@locale": "pt",
+
+  "addExpense": "Adicionar Despesa Manual",
+  "@addExpense": {
+    "description": "Título da AppBar - Tela de adicionar despesa manual & menu FAB"
+  },
+
+  "storeName": "Nome da Loja",
+  "@storeName": {
+    "description": "Etiqueta do campo nome da loja"
+  },
+
+  "storeNameHint": "Ex: Migros, A101",
+  "@storeNameHint": {
+    "description": "Placeholder para nome da loja"
+  },
+
+  "date": "Data",
+  "@date": {
+    "description": "Etiqueta do seletor de data"
+  },
+
+  "category": "Categoria",
+  "@category": {
+    "description": "Etiqueta do dropdown de categoria"
+  },
+
+  "aiSuggest": "Sugestão IA",
+  "@aiSuggest": {
+    "description": "Texto do botão de sugestão de categoria por IA"
+  },
+
+  "addItem": "ADICIONAR PRODUTO",
+  "@addItem": {
+    "description": "Título da seção adicionar produto & bottom sheet"
+  },
+
+  "productName": "Nome do Produto",
+  "@productName": {
+    "description": "Etiqueta do campo nome do produto"
+  },
+
+  "productNameHint": "O que você comprou?",
+  "@productNameHint": {
+    "description": "Placeholder para nome do produto"
+  },
+
+  "price": "Preço (₺)",
+  "@price": {
+    "description": "Etiqueta do campo de preço"
+  },
+
+  "quantity": "Quantidade",
+  "@quantity": {
+    "description": "Etiqueta do campo de quantidade"
+  },
+
+  "addToList": "+ Adicionar à Lista",
+  "@addToList": {
+    "description": "Botão para adicionar à lista de compras"
+  },
+
+  "purchaseList": "LISTA DE COMPRAS",
+  "@purchaseList": {
+    "description": "Título da lista de produtos adicionados"
+  },
+
+  "itemsCount": "PRODUTO",
+  "@itemsCount": {
+    "description": "Texto ao lado da contagem de produtos"
+  },
+
+  "tapToEditSwipeToDelete": "Toque para editar • Deslize para a esquerda para excluir",
+  "@tapToEditSwipeToDelete": {
+    "description": "Texto de ajuda na lista de compras"
+  },
+
+  "swipeToDelete": "Deslize para a esquerda para excluir",
+  "@swipeToDelete": {
+    "description": "Texto de ajuda para excluir deslizando"
+  },
+
+  "noItemsYet": "Ainda não há produtos",
+  "@noItemsYet": {
+    "description": "Estado vazio - nenhum produto"
+  },
+
+  "totalAmount": "Valor Total",
+  "@totalAmount": {
+    "description": "Etiqueta do valor total"
+  },
+
+  "saveTransaction": "Salvar Transação",
+  "@saveTransaction": {
+    "description": "Botão salvar no final"
+  },
+
+  "addItemTitle": "Adicionar Produto",
+  "@addItemTitle": {
+    "description": "Título do bottom sheet adicionar produto"
+  },
+
+  "editItemTitle": "Editar Produto",
+  "@editItemTitle": {
+    "description": "Título do bottom sheet editar produto"
+  },
+
+  "nameRequired": "Nome é obrigatório",
+  "@nameRequired": {
+    "description": "Erro de validação - nome vazio"
+  },
+
+  "priceMustBeGreaterThanZero": "O preço deve ser maior que 0",
+  "@priceMustBeGreaterThanZero": {
+    "description": "Erro quando preço ≤ 0"
+  },
+
+  "qtyMustBeGreaterThanZero": "A quantidade deve ser maior que 0",
+  "@qtyMustBeGreaterThanZero": {
+    "description": "Erro quando quantidade ≤ 0"
+  },
+
+  "storeNameCannotBeEmpty": "Nome da loja não pode estar vazio",
+  "@storeNameCannotBeEmpty": {
+    "description": "Erro quando nome da loja está vazio"
+  },
+
+  "addAtLeastOneProduct": "Adicione pelo menos um produto",
+  "@addAtLeastOneProduct": {
+    "description": "Erro quando nenhum produto foi adicionado"
+  },
+
+  "enterValidProduct": "Insira um produto válido",
+  "@enterValidProduct": {
+    "description": "Erro ao adicionar produto inválido"
+  },
+
+  "aiError": "Erro de IA: ",
+  "@aiError": {
+    "description": "Prefixo de erro na sugestão de categoria por IA"
+  },
+
+  "analytics": "Análises",
+  "@analytics": {
+    "description": "Título da tela de análises"
+  },
+
+  "spendingTrend": "Tendência de Gastos",
+  "@spendingTrend": {
+    "description": "Título do gráfico de linha semanal"
+  },
+
+  "weekly": "Semanal",
+  "@weekly": {
+    "description": "Etiqueta acima do gráfico"
+  },
+
+  "categoryBudgets": "Orçamentos por Categoria",
+  "@categoryBudgets": {
+    "description": "Título da seção de cartões de categorias"
+  },
+
+  "selectRange": "Selecionar período",
+  "@selectRange": {
+    "description": "Texto quando nenhum período foi selecionado"
+  },
+
+  "monthlyInsights": "ESTATÍSTICAS MENSAIS",
+  "@monthlyInsights": {
+    "description": "Título das estatísticas mensais"
+  },
+
+  "highestSpendingCategory": "CATEGORIA COM MAIOR GASTO",
+  "@highestSpendingCategory": {
+    "description": "Etiqueta da categoria com maior gasto"
+  },
+
+  "averageDailySpend": "GASTO DIÁRIO MÉDIO (ESTE MÊS)",
+  "@averageDailySpend": {
+    "description": "Etiqueta do gasto diário médio"
+  },
+
+  "topMerchant": "Loja com Mais Gastos",
+  "@topMerchant": {
+    "description": "Título do cartão da loja mais frequentada"
+  },
+
+  "noDataYet": "Ainda não há dados",
+  "@noDataYet": {
+    "description": "Placeholder sem dados"
+  },
+
+  "transactionsCount": "transações",
+  "@transactionsCount": {
+    "description": "Texto ao lado da contagem de transações"
+  },
+
+  "perDay": " / dia",
+  "@perDay": {
+    "description": "Sufixo gasto diário médio"
+  },
+
+  "mon": "Seg",
+  "tue": "Ter",
+  "wed": "Qua",
+  "thu": "Qui",
+  "fri": "Sex",
+  "sat": "Sáb",
+  "sun": "Dom",
+  "@mon": { "description": "Abreviação Segunda-feira" },
+  "@tue": { "description": "Abreviação Terça-feira" },
+  "@wed": { "description": "Abreviação Quarta-feira" },
+  "@thu": { "description": "Abreviação Quinta-feira" },
+  "@fri": { "description": "Abreviação Sexta-feira" },
+  "@sat": { "description": "Abreviação Sábado" },
+  "@sun": { "description": "Abreviação Domingo" },
+
+  "digitalReceiptWallet": "Digital Receipt Wallet",
+  "@digitalReceiptWallet": {
+    "description": "Título principal do app na tela inicial"
+  },
+
+  "totalSpent": "Total Gasto",
+  "@totalSpent": {
+    "description": "Etiqueta do total gasto no mês"
+  },
+
+  "noMonthlyBudgetSetYet": "Ainda não foi definido um orçamento mensal",
+  "@noMonthlyBudgetSetYet": {
+    "description": "Texto quando não há orçamento mensal"
+  },
+
+  "limitLeft": "LIMITE RESTANTE",
+  "@limitLeft": {
+    "description": "Etiqueta do limite restante"
+  },
+
+  "percentUsed": "USADO",
+  "@percentUsed": {
+    "description": "Texto no chip de percentual usado"
+  },
+
+  "recentActivity": "Atividade Recente",
+  "@recentActivity": {
+    "description": "Título das transações recentes"
+  },
+
+  "seeHistory": "Ver Histórico",
+  "@seeHistory": {
+    "description": "Botão para ver todo o histórico"
+  },
+
+  "noReceiptsYet": "Ainda não há recibos",
+  "@noReceiptsYet": {
+    "description": "Título quando não há recibos"
+  },
+
+  "yourScannedReceiptsWillAppearHere": "Seus recibos escaneados aparecerão aqui",
+  "@yourScannedReceiptsWillAppearHere": {
+    "description": "Texto do estado vazio"
+  },
+
+  "home": "Início",
+  "@home": {
+    "description": "Navegação inferior - Início"
+  },
+
+  "reports": "Relatórios",
+  "@reports": {
+    "description": "Navegação inferior - Relatórios"
+  },
+
+  "settings": "Configurações",
+  "@settings": {
+    "description": "Navegação inferior - Configurações"
+  },
+
+  "scanReceipt": "Escanear Recibo",
+  "@scanReceipt": {
+    "description": "Botão FAB e título da tela de escaneamento"
+  },
+
+  "uploadReceiptPdf": "Enviar Recibo / PDF",
+  "@uploadReceiptPdf": {
+    "description": "Opção no menu FAB"
+  },
+
+  "welcomeBack": "Bem-vindo de Volta",
+  "@welcomeBack": {
+    "description": "Título principal da tela de login"
+  },
+
+  "signInToManageYourReceipts": "Faça login para gerenciar seus recibos",
+  "@signInToManageYourReceipts": {
+    "description": "Subtítulo da tela de login"
+  },
+
+  "email": "E-mail",
+  "@email": {
+    "description": "Etiqueta do campo de e-mail"
+  },
+
+  "password": "Senha",
+  "@password": {
+    "description": "Etiqueta do campo de senha"
+  },
+
+  "signIn": "Entrar",
+  "@signIn": {
+    "description": "Botão principal de login"
+  },
+
+  "dontHaveAnAccount": "Não tem conta? Cadastre-se",
+  "@dontHaveAnAccount": {
+    "description": "Botão para ir para cadastro"
+  },
+
+  "loginError": "Erro ao fazer login",
+  "@loginError": {
+    "description": "Mensagem de erro genérica de login"
+  },
+
+  "productDetails": "Detalhes do Produto",
+  "@productDetails": {
+    "description": "Título da tela de detalhes da transação"
+  },
+
+  "items": "Produtos",
+  "@items": {
+    "description": "Título da lista de produtos"
+  },
+
+  "noItemsRecorded": "Nenhum produto registrado",
+  "@noItemsRecorded": {
+    "description": "Estado vazio sem produtos na transação"
+  },
+
+  "scanned": "Escaneado",
+  "@scanned": {
+    "description": "Etiqueta para transação escaneada"
+  },
+
+  "pdf": "PDF",
+  "@pdf": {
+    "description": "Etiqueta para transação vinda de PDF"
+  },
+
+  "manual": "Manual",
+  "@manual": {
+    "description": "Etiqueta para transação adicionada manualmente"
+  },
+
+  "total": "Total",
+  "@total": {
+    "description": "Etiqueta do total final"
+  },
+
+  "profileDetails": "Detalhes do Perfil",
+  "@profileDetails": {
+    "description": "Título da tela de detalhes do perfil"
+  },
+
+  "displayName": "Nome de Exibição",
+  "@displayName": {
+    "description": "Etiqueta do nome de exibição"
+  },
+
+  "yourNameHint": "Seu nome",
+  "@yourNameHint": {
+    "description": "Placeholder para nome"
+  },
+
+  "emailAddress": "Endereço de E-mail (Requer Reautenticação)",
+  "@emailAddress": {
+    "description": "Etiqueta do campo de e-mail com aviso"
+  },
+
+  "yourEmailHint": "exemplo@email.com",
+  "@yourEmailHint": {
+    "description": "Placeholder para e-mail"
+  },
+
+  "currentPassword": "Senha Atual",
+  "@currentPassword": {
+    "description": "Etiqueta da senha atual"
+  },
+
+  "requiredToChangeEmail": "Necessário para alterar o e-mail",
+  "@requiredToChangeEmail": {
+    "description": "Dica para campo de senha atual"
+  },
+
+  "changePassword": "Alterar Senha",
+  "@changePassword": {
+    "description": "Título da seção alterar senha"
+  },
+
+  "currentPasswordHint": "Senha atual",
+  "@currentPasswordHint": {
+    "description": "Placeholder senha atual"
+  },
+
+  "newPasswordHint": "Nova senha",
+  "@newPasswordHint": {
+    "description": "Placeholder nova senha"
+  },
+
+  "confirmNewPasswordHint": "Confirme a nova senha",
+  "@confirmNewPasswordHint": {
+    "description": "Placeholder confirmar nova senha"
+  },
+
+  "verificationEmailSent": "E-mail de verificação enviado. Verifique sua caixa de entrada.",
+  "@verificationEmailSent": {
+    "description": "Mensagem de sucesso ao alterar e-mail"
+  },
+
+  "profileUpdatedSuccessfully": "Perfil atualizado com sucesso.",
+  "@profileUpdatedSuccessfully": {
+    "description": "Mensagem de sucesso ao atualizar perfil"
+  },
+
+  "nameCannotBeEmpty": "O nome não pode estar vazio.",
+  "@nameCannotBeEmpty": {
+    "description": "Erro nome vazio"
+  },
+
+  "newPasswordMustBeAtLeast6": "A nova senha deve ter no mínimo 6 caracteres",
+  "@newPasswordMustBeAtLeast6": {
+    "description": "Erro senha muito curta"
+  },
+
+  "passwordsDontMatch": "As senhas não coincidem",
+  "@passwordsDontMatch": {
+    "description": "Erro senhas diferentes"
+  },
+
+  "enterCurrentPassword": "Digite sua senha atual",
+  "@enterCurrentPassword": {
+    "description": "Erro senha atual não preenchida"
+  },
+
+  "enterPasswordToChangeEmail": "Digite sua senha para alterar o e-mail.",
+  "@enterPasswordToChangeEmail": {
+    "description": "Erro senha não preenchida para troca de e-mail"
+  },
+
+  "incorrectPassword": "Senha incorreta.",
+  "@incorrectPassword": {
+    "description": "Erro senha errada"
+  },
+
+  "emailAlreadyInUse": "Este endereço de e-mail já está em uso.",
+  "@emailAlreadyInUse": {
+    "description": "Erro e-mail já cadastrado"
+  },
+
+  "invalidEmail": "Endereço de e-mail inválido.",
+  "@invalidEmail": {
+    "description": "Erro formato de e-mail inválido"
+  },
+
+  "anErrorOccurred": "Ocorreu um erro.",
+  "@anErrorOccurred": {
+    "description": "Mensagem de erro genérica"
+  },
+
+  "aVerificationEmailWillBeSent": "Um e-mail de verificação será enviado para o novo endereço.",
+  "@aVerificationEmailWillBeSent": {
+    "description": "Mensagem informativa ao alterar e-mail"
+  },
+
+  "addRecurring": "Adicionar Recorrente",
+  "@addRecurring": {
+    "description": "Texto do Floating Action Button"
+  },
+
+  "noRecurringTransactions": "Nenhuma transação recorrente",
+  "@noRecurringTransactions": {
+    "description": "Título quando não há recorrentes"
+  },
+
+  "tapToAddSubscriptionsRentEtc": "Toque em + para adicionar assinaturas, aluguel, etc.",
+  "@tapToAddSubscriptionsRentEtc": {
+    "description": "Texto do estado vazio"
+  },
+
+  "paused": "PAUSADO",
+  "@paused": {
+    "description": "Título das transações recorrentes pausadas"
+  },
+
+  "dueSoon": "Vence em breve",
+  "@dueSoon": {
+    "description": "Badge para pagamentos que vencem em 3 dias"
+  },
+
+  "next": "Próxima:",
+  "@next": {
+    "description": "Etiqueta antes da próxima data de pagamento"
+  },
+
+  "deleteRecurring": "Excluir Recorrente",
+  "@deleteRecurring": {
+    "description": "Título do diálogo de exclusão"
+  },
+
+  "removeFromRecurring": "Remover a despesa de \"{storeName}\" das recorrentes?",
+  "@removeFromRecurring": {
+    "description": "Conteúdo do diálogo de exclusão",
+    "placeholders": {
+      "storeName": {}
+    }
+  },
+
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Botão cancelar nos diálogos"
+  },
+
+  "delete": "Excluir",
+  "@delete": {
+    "description": "Botão excluir nos diálogos"
+  },
+
+  "newRecurring": "Nova Recorrente",
+  "@newRecurring": {
+    "description": "Título do formulário nova recorrente"
+  },
+
+  "editRecurring": "Editar Recorrente",
+  "@editRecurring": {
+    "description": "Título ao editar recorrente"
+  },
+
+  "nameOrStore": "Nome / Loja",
+  "@nameOrStore": {
+    "description": "Etiqueta nome/loja no formulário"
+  },
+
+  "amountTL": "Valor (₺)",
+  "@amountTL": {
+    "description": "Etiqueta do campo de valor"
+  },
+
+  "frequency": "Frequência",
+  "@frequency": {
+    "description": "Etiqueta de seleção de frequência"
+  },
+
+  "startDate": "Data de Início",
+  "@startDate": {
+    "description": "Etiqueta do seletor de data de início"
+  },
+
+  "noteOptional": "Nota (opcional)",
+  "@noteOptional": {
+    "description": "Etiqueta do campo de nota"
+  },
+
+  "add": "Adicionar",
+  "@add": {
+    "description": "Botão adicionar"
+  },
+
+  "saveChanges": "Salvar Alterações",
+  "@saveChanges": {
+    "description": "Botão salvar alterações"
+  },
+
+  "resume": "Retomar",
+  "@resume": {
+    "description": "Botão retomar recorrente pausada"
+  },
+
+  "pause": "Pausar",
+  "@pause": {
+    "description": "Botão pausar recorrente ativa"
+  },
+
+  "monthlyBudget": "Orçamento Mensal",
+  "@monthlyBudget": {
+    "description": "Etiqueta do orçamento mensal"
+  },
+
+  "setAlert": "Configurar Alerta",
+  "@setAlert": {
+    "description": "Botão configurar alerta de orçamento"
+  },
+
+  "adjustBudget": "Orçamento",
+  "@adjustBudget": {
+    "description": "Label curto para botão de orçamento"
+  },
+
+  "alertAyari": "Configurar Alerta",
+  "@alertAyari": {
+    "description": "Título do bottom sheet de alerta"
+  },
+
+  "alertDescription": "Notificar-me quando gastar %{percentage} do orçamento",
+  "@alertDescription": {
+    "description": "Descrição no bottom sheet de alerta",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "cancelAlert": "Remover Alerta",
+  "@cancelAlert": {
+    "description": "Botão remover alerta"
+  },
+
+  "current": "Atual",
+  "@current": {
+    "description": "Opção 'Atual' na seleção de orçamento"
+  },
+
+  "save": "Salvar",
+  "@save": {
+    "description": "Botão salvar geral"
+  },
+
+  "alertRemoved": "Alerta removido",
+  "@alertRemoved": {
+    "description": "Mensagem ao remover alerta"
+  },
+
+  "alertSetFor": "Alerta configurado para %{percentage} do orçamento",
+  "@alertSetFor": {
+    "description": "Mensagem de sucesso ao configurar alerta",
+    "placeholders": {
+      "percentage": {}
+    }
+  },
+
+  "budgetUpdatedTo": "Orçamento atualizado para ₺{amount}",
+  "@budgetUpdatedTo": {
+    "description": "Mensagem ao atualizar orçamento mensal",
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "pleaseEnterBudgetAmount": "Por favor, insira o valor do orçamento",
+  "@pleaseEnterBudgetAmount": {
+    "description": "Erro quando o campo de orçamento está vazio"
+  },
+
+  "pleaseEnterValidAmount": "Por favor, insira um valor válido",
+  "@pleaseEnterValidAmount": {
+    "description": "Erro quando o valor do orçamento é inválido"
+  },
+
+  "generating": "Gerando...",
+  "@generating": {
+    "description": "Texto de carregamento ao gerar PDF"
+  },
+
+  "exportStatement": "Exportar Relatório",
+  "@exportStatement": {
+    "description": "Botão para exportar relatório mensal em PDF"
+  },
+
+  "statementCouldNotBeGenerated": "Não foi possível gerar o relatório: {error}",
+  "@statementCouldNotBeGenerated": {
+    "description": "Mensagem de erro ao gerar PDF",
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "noDataForPreviousMonth": "Sem dados do mês anterior",
+  "@noDataForPreviousMonth": {
+    "description": "Texto quando não há dados do mês anterior"
+  },
+
+  "increase": "aumento",
+  "@increase": {
+    "description": "Palavra usada em '%X aumento'"
+  },
+
+  "decrease": "diminuição",
+  "@decrease": {
+    "description": "Palavra usada em '%X diminuição'"
+  },
+
+  "noChange": "Sem alteração",
+  "@noChange": {
+    "description": "Texto quando não há mudança em relação ao mês anterior"
+  },
+
+  "dailyAverage": "MÉDIA DIÁRIA",
+  "@dailyAverage": {
+    "description": "Etiqueta média diária"
+  },
+
+  "notificationsAreDisabled": "As notificações estão desativadas. Ative nas configurações.",
+  "@notificationsAreDisabled": {
+    "description": "Aviso ao tentar configurar alerta com notificações desativadas"
+  },
+
+  "noImageCaptured": "Nenhuma foto tirada",
+  "@noImageCaptured": {
+    "description": "Texto quando nenhuma foto foi tirada"
+  },
+
+  "takePhoto": "Tirar Foto",
+  "@takePhoto": {
+    "description": "Botão tirar foto"
+  },
+
+  "retake": "Tirar Novamente",
+  "@retake": {
+    "description": "Botão tirar foto novamente"
+  },
+
+  "extractionResults": "Resultados da Extração",
+  "@extractionResults": {
+    "description": "Título dos resultados do escaneamento"
+  },
+
+  "edit": "Editar",
+  "@edit": {
+    "description": "Botão entrar no modo edição"
+  },
+
+  "done": "Concluído",
+  "@done": {
+    "description": "Botão sair do modo edição"
+  },
+
+  "aiSuggested": "Sugerido pela IA ⚡",
+  "@aiSuggested": {
+    "description": "Texto pequeno quando IA sugeriu categoria"
+  },
+
+  "detectedProducts": "Produtos Detectados",
+  "@detectedProducts": {
+    "description": "Título dos produtos detectados"
+  },
+
+  "noProductsDetected": "Nenhum produto detectado",
+  "@noProductsDetected": {
+    "description": "Mensagem quando nenhum produto foi detectado"
+  },
+
+  "addItemManually": "+ Adicionar Produto Manualmente",
+  "@addItemManually": {
+    "description": "Botão adicionar manualmente"
+  },
+
+  "saveReceipt": "Salvar Recibo",
+  "@saveReceipt": {
+    "description": "Botão principal salvar recibo"
+  },
+
+  "pleaseScanReceiptFirst": "Por favor, escaneie um recibo primeiro",
+  "@pleaseScanReceiptFirst": {
+    "description": "Erro ao tentar salvar sem escanear"
+  },
+
+  "totalMustBeGreaterThanZero": "O valor total deve ser maior que 0",
+  "@totalMustBeGreaterThanZero": {
+    "description": "Erro quando total ≤ 0"
+  },
+
+  "editItem": "Editar Produto",
+  "@editItem": {
+    "description": "Título do bottom sheet de edição"
+  },
+
+  "invalidReceiptScan": "Escaneamento de recibo inválido",
+  "@invalidReceiptScan": {
+    "description": "Erro quando IA não retorna JSON válido"
+  },
+
+  "thisDoesntLookLikeAReceipt": "Isso não parece um recibo",
+  "@thisDoesntLookLikeAReceipt": {
+    "description": "Erro quando não parece um recibo válido"
+  },
+
+  "scanError": "Erro no escaneamento: ",
+  "@scanError": {
+    "description": "Prefixo de erros de escaneamento"
+  },
+
+  "personalAccount": "CONTA PESSOAL",
+  "@personalAccount": {
+    "description": "Título da seção conta pessoal"
+  },
+
+  "changeNameEmailAndAvatar": "Alterar nome, e-mail e avatar",
+  "@changeNameEmailAndAvatar": {
+    "description": "Subtítulo da opção de detalhes do perfil"
+  },
+
+  "appPreferences": "PREFERÊNCIAS DO APLICATIVO",
+  "@appPreferences": {
+    "description": "Título das preferências do app"
+  },
+
+  "pushNotifications": "Notificações",
+  "@pushNotifications": {
+    "description": "Título das configurações de notificações"
+  },
+
+  "alertsForLargeTransactions": "Alertas para despesas grandes",
+  "@alertsForLargeTransactions": {
+    "description": "Descrição das notificações"
+  },
+
+  "visualTheme": "Tema Visual",
+  "@visualTheme": {
+    "description": "Título do ajuste de tema claro/escuro"
+  },
+
+  "switchBetweenLightAndDark": "Alternar entre tema claro e escuro",
+  "@switchBetweenLightAndDark": {
+    "description": "Subtítulo do tema"
+  },
+
+  "language": "IDIOMA",
+  "@language": {
+    "description": "Título da seção de idioma"
+  },
+
+  "selectAppLanguage": "Selecionar Idioma do Aplicativo",
+  "@selectAppLanguage": {
+    "description": "Subtítulo da seleção de idioma"
+  },
+
+  "signOut": "Sair",
+  "@signOut": {
+    "description": "Botão sair da conta"
+  },
+
+  "notificationsDisabledPermission": "Você precisa permitir notificações.",
+  "@notificationsDisabledPermission": {
+    "description": "Erro quando permissão de notificações é negada"
+  },
+
+  "notificationsTurnedOff": "Notificações foram desativadas. Você pode desativá-las completamente nas configurações do dispositivo.",
+  "@notificationsTurnedOff": {
+    "description": "Mensagem quando notificações são desativadas"
+  },
+
+  "goToSettings": "Ir para Configurações",
+  "@goToSettings": {
+    "description": "Botão no snackbar para configurações do dispositivo"
+  },
+
+  "createAccount": "Criar Conta",
+  "@createAccount": {
+    "description": "Título da tela de cadastro"
+  },
+
+  "signUpToStartManagingYourReceipts": "Cadastre-se para começar a gerenciar seus recibos",
+  "@signUpToStartManagingYourReceipts": {
+    "description": "Subtítulo da tela de cadastro"
+  },
+
+  "fullName": "Nome Completo",
+  "@fullName": {
+    "description": "Etiqueta do campo nome completo"
+  },
+
+  "createAccountButton": "Criar Conta",
+  "@createAccountButton": {
+    "description": "Botão principal de cadastro"
+  },
+
+  "alreadyHaveAnAccount": "Já tem conta? Entrar",
+  "@alreadyHaveAnAccount": {
+    "description": "Botão para ir para login"
+  },
+
+  "error": "Erro",
+  "@error": {
+    "description": "Título genérico de erro"
+  },
+
+  "splashSlogan": "ACOMPANHE COM MAIS INTELIGÊNCIA. GASTE MELHOR.",
+  "@splashSlogan": {
+    "description": "Slogan principal na tela splash"
+  },
+
+  "transactions": "Transações",
+  "@transactions": {
+    "description": "Título da tela de transações e aba de navegação"
+  },
+
+  "search": "Buscar...",
+  "@search": {
+    "description": "Placeholder do campo de busca"
+  },
+
+  "recurringTransactions": "Transações Recorrentes",
+  "@recurringTransactions": {
+    "description": "Opção no menu 'Mais'"
+  },
+
+  "noTransactionsYet": "Ainda não há transações",
+  "@noTransactionsYet": {
+    "description": "Título estado vazio de transações"
+  },
+
+  "yourTransactionsWillAppearHere": "Suas transações aparecerão aqui",
+  "@yourTransactionsWillAppearHere": {
+    "description": "Texto do estado vazio"
+  },
+
+  "all": "Todas",
+  "@all": {
+    "description": "Filtro 'Todas as transações'"
+  },
+
+  "food": "Comida",
+  "@food": {
+    "description": "Categoria Comida"
+  },
+
+  "clothing": "Roupas",
+  "@clothing": {
+    "description": "Categoria Roupas"
+  },
+
+  "tech": "Tecnologia",
+  "@tech": {
+    "description": "Categoria Tecnologia"
+  },
+
+  "transportation": "Transporte",
+  "@transportation": {
+    "description": "Categoria Transporte"
+  },
+
+  "bills": "Contas",
+  "@bills": {
+    "description": "Categoria Contas"
+  },
+
+  "rent": "Aluguel",
+  "@rent": {
+    "description": "Categoria Aluguel"
+  },
+
+  "education": "Educação",
+  "@education": {
+    "description": "Categoria Educação"
+  },
+
+  "healthcare": "Saúde",
+  "@healthcare": {
+    "description": "Categoria Saúde"
+  },
+
+  "personalCare": "Cuidados Pessoais",
+  "@personalCare": {
+    "description": "Categoria Cuidados Pessoais"
+  },
+
+  "entertainment": "Entretenimento",
+  "@entertainment": {
+    "description": "Categoria Entretenimento"
+  },
+
+  "householdFurniture": "Casa / Móveis",
+  "@householdFurniture": {
+    "description": "Categoria Casa e Móveis"
+  },
+
+  "stationery": "Papelaria",
+  "@stationery": {
+    "description": "Categoria Papelaria"
+  },
+
+  "vacationTravel": "Férias / Viagens",
+  "@vacationTravel": {
+    "description": "Categoria Férias e Viagens"
+  },
+
+  "taxesOfficialPayments": "Impostos / Pagamentos Oficiais",
+  "@taxesOfficialPayments": {
+    "description": "Categoria Impostos"
+  },
+
+  "other": "Outros",
+  "@other": {
+    "description": "Categoria Outros"
+  },
+
+  "thisWeek": "Esta Semana",
+  "@thisWeek": {
+    "description": "Filtro Esta Semana"
+  },
+
+  "thisMonth": "Este Mês",
+  "@thisMonth": {
+    "description": "Filtro Este Mês"
+  },
+
+  "customDate": "Período Personalizado",
+  "@customDate": {
+    "description": "Texto quando período personalizado é selecionado"
+  },
+
+  "today": "HOJE",
+  "@today": {
+    "description": "Cabeçalho para transações de hoje"
+  },
+
+  "yesterday": "ONTEM",
+  "@yesterday": {
+    "description": "Cabeçalho para transações de ontem"
+  },
+
+  "uploadReceipt": "Enviar Recibo / PDF",
+  "@uploadReceipt": {
+    "description": "Título da tela de upload"
+  },
+
+  "gallery": "Galeria",
+  "@gallery": {
+    "description": "Aba da galeria"
+  },
+
+  "noImageSelected": "Nenhuma imagem selecionada",
+  "@noImageSelected": {
+    "description": "Texto quando nenhuma imagem foi selecionada"
+  },
+
+  "selectFromGallery": "Selecionar da Galeria",
+  "@selectFromGallery": {
+    "description": "Botão selecionar da galeria"
+  },
+
+  "changeImage": "Alterar Foto",
+  "@changeImage": {
+    "description": "Botão alterar foto"
+  },
+
+  "uploadEkstre": "Enviar Extrato",
+  "@uploadEkstre": {
+    "description": "Título do cartão de upload de extrato PDF"
+  },
+
+  "selectBankStatement": "Selecione seu extrato bancário",
+  "@selectBankStatement": {
+    "description": "Placeholder quando nenhum PDF foi selecionado"
+  },
+
+  "changePdf": "Toque para alterar",
+  "@changePdf": {
+    "description": "Texto para alterar PDF selecionado"
+  },
+
+  "analyze": "Analisar",
+  "@analyze": {
+    "description": "Botão analisar PDF com IA"
+  },
+
+  "analyzing": "Analisando...",
+  "@analyzing": {
+    "description": "Texto de carregamento durante análise do PDF"
+  },
+
+  "totalExpense": "Despesa Total",
+  "@totalExpense": {
+    "description": "Etiqueta de total de saídas"
+  },
+
+  "totalIncome": "Receita Total",
+  "@totalIncome": {
+    "description": "Etiqueta de total de entradas"
+  },
+
+  "bank": "Banco",
+  "@bank": {
+    "description": "Etiqueta nome do banco no PDF"
+  },
+
+  "period": "Período",
+  "@period": {
+    "description": "Etiqueta período no PDF"
+  },
+
+  "saveTransactions": "Salvar Transações",
+  "@saveTransactions": {
+    "description": "Botão salvar transações do PDF"
+  },
+
+  "pleaseSelectAllCategories": "Por favor, selecione categoria para todas as transações",
+  "@pleaseSelectAllCategories": {
+    "description": "Erro quando nem todas as categorias foram selecionadas"
+  },
+
+  "noTransactionsFound": "Nenhuma transação encontrada",
+  "@noTransactionsFound": {
+    "description": "Erro quando PDF não gera transações"
+  },
+
+  "pdfError": "Erro no PDF: ",
+  "@pdfError": {
+    "description": "Prefixo de erros de PDF"
+  },
+
+  "uploadError": "Erro no envio: ",
+  "@uploadError": {
+    "description": "Prefixo de erros de upload"
+  },
+
+  "frequencyDaily": "Diário",
+  "@frequencyDaily": {
+    "description": "Opção de frequência diária"
+  },
+
+  "frequencyWeekly": "Semanal",
+  "@frequencyWeekly": {
+    "description": "Opção de frequência semanal"
+  },
+
+  "frequencyMonthly": "Mensal",
+  "@frequencyMonthly": {
+    "description": "Opção de frequência mensal"
+  },
+  "frequencyYearly": "Anual",
+  "@frequencyYearly": {
+    "description": "Opção de frequência anual"
+  },
+
+  "monthlyStatement": "Extrato Mensal",
+  "@monthlyStatement": {
+    "description": "Título do relatório PDF"
+  },
+
+  "totalSpending": "Gasto Total",
+  "@totalSpending": {
+    "description": "Etiqueta gasto total no PDF"
+  },
+
+  "transactionCount": "Número de Transações",
+  "@transactionCount": {
+    "description": "Etiqueta quantidade de transações no PDF"
+  },
+
+  "budgetUsed": "Uso do Orçamento",
+  "@budgetUsed": {
+    "description": "Etiqueta uso do orçamento no PDF"
+  },
+
+  "categorySummary": "Resumo por Categoria",
+  "@categorySummary": {
+    "description": "Título do resumo por categoria no PDF"
+  },
+
+  "transactionDetails": "Detalhes das Transações",
+  "@transactionDetails": {
+    "description": "Título dos detalhes das transações no PDF"
+  },
+  
+  "store": "Loja",
+  "@store": {
+    "description": "Cabeçalho da coluna loja na tabela PDF"
+  },
+
+  "amount": "Valor",
+  "@amount": {
+    "description": "Cabeçalho da coluna valor na tabela PDF"
+  },
+
+  "generatedBy": "Gerado por Digital Receipt Wallet",
+  "@generatedBy": {
+    "description": "Rodapé do PDF"
+  },
+
+  "statementFileName": "extrato",
+  "@statementFileName": {
+    "description": "Nome padrão do arquivo PDF"
+  },
+
+  "budgetUsedPercent": "%{value}",
+  "@budgetUsedPercent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationBudgetFullTitle": "Orçamento Totalmente Utilizado 💸",
+  "@notificationBudgetFullTitle": {
+    "description": "Título da notificação quando orçamento é esgotado"
+  },
+
+  "notificationBudgetFullBody": "Você gastou todo o seu orçamento mensal.",
+  "@notificationBudgetFullBody": {
+    "description": "Texto da notificação orçamento esgotado"
+  },
+
+  "notificationRecurringTitle": "Transação Recorrente Realizada 🔁",
+  "@notificationRecurringTitle": {
+    "description": "Título da notificação de recorrente executada"
+  },
+
+  "notificationRecurringBody": "{storeName} — {amount} ({category})",
+
+  "@notificationRecurringBody": {
+    "placeholders": {
+      "storeName": {},
+      "amount": {},
+      "category": {}
+    }
+  },
+
+  "notificationBudgetAlertTitle": "Alerta de Orçamento ⚠️",
+  "@notificationBudgetAlertTitle": {
+    "description": "Título da notificação de alerta de orçamento"
+  },
+
+  "notificationBudgetAlertBody": "Foi gasto %{value} do seu orçamento.",
+
+  "@notificationBudgetAlertBody": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+
+  "budgetRemoved": "Orçamento removido",
+  "@budgetRemoved": {
+    "description": "Mensagem ao remover orçamento"
+  },
+
+  "removeBudget": "Remover Orçamento",
+  "@removeBudget": {
+    "description": "Botão remover orçamento mensal"
+  },
+
+  "errorNameRequired": "Nome é obrigatório",
+  "@errorNameRequired": {
+    "description": "Erro nome obrigatório"
+  },
+
+  "errorAmountRequired": "Valor é obrigatório",
+  "@errorAmountRequired": {
+    "description": "Erro valor obrigatório"
+  },
+
+  "errorAmountPositive": "O valor deve ser positivo",
+  "@errorAmountPositive": {
+    "description": "Erro valor deve ser positivo"
+  },
+
+  "errorInvalidEmail": "E-mail inválido",
+  "@errorInvalidEmail": {
+    "description": "Erro e-mail inválido"
+  },
+
+  "errorEmailInUse": "Este e-mail já está em uso",
+  "@errorEmailInUse": {
+    "description": "Erro e-mail já cadastrado"
+  },
+
+  "errorUserNotFound": "Nenhuma conta encontrada com este e-mail",
+  "@errorUserNotFound": {
+    "description": "Erro usuário não encontrado"
+  },
+
+  "errorUserDisabled": "Esta conta foi desativada",
+  "@errorUserDisabled": {
+    "description": "Erro conta desativada"
+  },
+
+  "errorWrongPassword": "Senha incorreta",
+  "@errorWrongPassword": {
+    "description": "Erro senha incorreta"
+  },
+
+  "errorWeakPassword": "A senha deve ter no mínimo 6 caracteres",
+  "@errorWeakPassword": {
+    "description": "Erro senha fraca"
+  },
+
+  "errorTooManyRequests": "Muitas tentativas, por favor aguarde",
+  "@errorTooManyRequests": {
+    "description": "Erro muitas tentativas"
+  },
+
+  "errorNetworkFailed": "Erro de conexão com a internet",
+  "@errorNetworkFailed": {
+    "description": "Erro de rede"
+  },
+
+  "errorUnknown": "Ocorreu um erro inesperado",
+  "@errorUnknown": {
+    "description": "Erro desconhecido"
+  },
+
+  "errorFillAllFields": "Por favor, preencha todos os campos",
+  "@errorFillAllFields": {
+    "description": "Erro campos não preenchidos"
+  },
+
+  "confirmPassword": "Confirmar Senha",
+  "@confirmPassword": {
+    "description": "Etiqueta confirmar senha"
+  },
+  
+  "errorPasswordsDoNotMatch": "As senhas não coincidem",
+  "@errorPasswordsDoNotMatch": {
+    "description": "Erro senhas não coincidem"
+  },
+
+  "orDivider": "ou",
+  "@orDivider": {
+    "description": "Separador para login social"
+  },
+
+  "signInWithGoogle": "Entrar com Google",
+  "@signInWithGoogle": {
+    "description": "Botão entrar com Google"
+  }
+}   
