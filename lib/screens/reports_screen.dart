@@ -139,7 +139,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: Text(
-                        "Mevcut: ₺${currentBudget.toStringAsFixed(0)}",
+                        "${loc.current}: ₺${currentBudget.toStringAsFixed(0)}",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context).colorScheme.primary),
                       ),
