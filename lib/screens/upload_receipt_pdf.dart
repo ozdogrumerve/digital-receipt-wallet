@@ -172,6 +172,7 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           "generationConfig": {
             "temperature": 0.2,
             "maxOutputTokens": 4096,
+            "responseMimeType": "application/json",
           }
         }),
       );
@@ -370,7 +371,8 @@ STRING İÇİNDE TIRNAK KARAKTERLERİNİ KAÇIR (\" şeklinde).
           ],
           "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 2048,
+            "maxOutputTokens": 4096,
+            "responseMimeType": "application/json",
           }
         }),
       );
