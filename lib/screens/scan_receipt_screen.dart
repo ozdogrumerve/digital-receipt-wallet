@@ -171,37 +171,40 @@ class _ScanReceiptScreenState extends State<ScanReceiptScreen> {
         }
         Fiyatlar her zaman sayı olsun (virgül nokta olarak), ürün isimleri tam ve doğru olsun. Adres, kasiyer adı, fiş numarası vb. ürün olarak ekleme!""";
 
+      final apiKey = dotenv.env['GEMINI_API_KEY'];
+
       final response = await http.post(
-        Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
+        Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=$apiKey'),
         headers: {
-          'Authorization': 'Bearer ${dotenv.env['GROQ_API_KEY']}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "model": "meta-llama/llama-4-scout-17b-16e-instruct",
-          "messages": [
+          "contents": [
             {
-              "role": "user",
-              "content": [
-                {"type": "text", "text": prompt},
+              "parts": [
+                {"text": prompt},
                 {
-                  "type": "image_url",
-                  "image_url": {"url": "data:image/jpeg;base64,$base64Data"}
+                  "inline_data": {
+                    "mime_type": "image/jpeg",
+                    "data": base64Data
+                  }
                 }
               ]
             }
           ],
-          "temperature": 0.1,
-          "max_tokens": 1024,
+          "generationConfig": {
+            "temperature": 0.1,
+            "maxOutputTokens": 1024,
+          }
         }),
       );
 
       if (response.statusCode != 200) {
-        throw Exception("API Error ${response.statusCode}");
+        throw Exception("API Error ${response.statusCode}: ${response.body}");
       }
 
       final decoded = jsonDecode(response.body);
-      final content = decoded['choices'][0]['message']['content'];
+      final content = decoded['candidates'][0]['content']['parts'][0]['text'];
       final cleaned = content
         .replaceAll("```json", "")
         .replaceAll("```", "")
