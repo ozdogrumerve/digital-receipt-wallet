@@ -33,8 +33,7 @@
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![Llama](https://img.shields.io/badge/Llama_4_Scout-7C3AED?style=for-the-badge&logo=meta&logoColor=white)
-![Groq](https://img.shields.io/badge/Groq_API-F55036?style=for-the-badge&logo=groq&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini_Flash-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
 
 <br>
 
@@ -91,17 +90,17 @@ You use multiple banks. Each has its own app. Cash spending appears in none of t
          │   (Stream Architecture)    │
          └──────┬──────────┬──────────┘
                 │          │
-    ┌───────────▼──┐  ┌────▼──────────────┐
-    │   Firebase   │  │    Groq API        │
-    │  Firestore   │  │  Llama 4 Scout     │
-    │    Auth      │  │ (Vision + Text AI) │
-    └──────────────┘  └───────────────────┘
+    ┌───────────▼──┐  ┌────▼───────────────────┐
+    │   Firebase   │  │   Gemini API           │
+    │  Firestore   │  │  gemini-flash-latest   │
+    │    Auth      │  │ (Vision + Text AI)     │
+    └──────────────┘  └────────────────────────┘
 ```
  
 ### Data Flow — Receipt Scanning
  
 ```
-Camera → Base64 → Groq API → JSON Parse → Validation → Firestore → UI (Real-time Stream)
+Camera → Base64 → Gemini API → JSON Parse → Validation → Firestore → UI (Real-time Stream)
 ```
  
 ### Data Models
@@ -118,14 +117,14 @@ RecurringTransactionModel  // Recurring expense definition
  
 ## 🤖 AI Integration
  
-The app uses **Llama 4 Scout** (`meta-llama/llama-4-scout-17b-16e-instruct`) via the **Groq API**.
- 
+The app uses **Gemini Flash** (`gemini-flash-latest`) via the **Google Gemini API**.
+
 **When does it kick in?**
- 
+
 - 📸 Receipt scanned via camera → vision analysis
 - 🖼️ Image uploaded from gallery → vision analysis
-- 📄 PDF bank statement uploaded → text analysis
-- ✍️ Manual entry → category suggestion *(AI Suggest button)*  
+- 📄 PDF bank statement uploaded → vision analysis (rendered page → image)
+- ✍️ Manual entry → category suggestion *(AI Suggest button)*
 
 **Expected output format:**
 ```json
@@ -180,7 +179,7 @@ Splash Screen
 | **Framework** | ![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white) |
 | **Database** | ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black) |
 | **Authentication** | ![Firebase Auth](https://img.shields.io/badge/Auth-Firebase-orange) |
-| **Artificial Intelligence** | ![Llama](https://img.shields.io/badge/Llama-4%20Scout-purple) ![Groq](https://img.shields.io/badge/Groq-API-black) |
+| **Artificial Intelligence** | ![Gemini](https://img.shields.io/badge/Gemini-Flash-8E75B2?logo=googlegemini&logoColor=white) |
 | **Image Processing** | ![Image Picker](https://img.shields.io/badge/image__picker-plugin-blue) |
 | **PDF Handling** | ![PDF](https://img.shields.io/badge/PDF-processing-red) |
 | **Reporting** | ![Charts](https://img.shields.io/badge/Charts-fl__chart-green) |
@@ -206,7 +205,7 @@ Splash Screen
 | 11 | **Recurring transactions** module + Product Detail screen |
 | 12 | **Notification system** — budget alerts & recurring reminders |
 | 13 | **TR/EN localization** — full multi-language support |
-| 14 | Comprehensive testing, bug fixes & final polish |
+| 14 | Comprehensive testing, bug fixes & final polish, **migrated AI provider from Groq/Llama 4 Scout to Google Gemini (gemini-flash-latest)** |
  
 ---
  
